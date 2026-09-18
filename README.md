@@ -87,6 +87,16 @@ named and versioned verifier and to the hash of the verified input, abstains on
 an unknown identity, and marks evidence built from it as schema version 2. See
 [Deterministic verification](docs/VERIFICATION.md).
 
+Both gates run end to end on a deterministic fixture corpus:
+
+```powershell
+python examples/fixture_suite.py --out runs/fixtures
+```
+
+The suite executes 20 local tasks twice, records 40 measured runs and 20
+attributed observations, and includes one deliberate route failure. Fixture
+results prove provenance and replay, not representative cost.
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,

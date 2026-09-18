@@ -42,6 +42,15 @@ attributed evidence use schema version 2 and store the verifier block instead of
 the caller boolean. An abstained verification is never recorded as a success,
 and a record cannot mix attributed evidence with caller assertions.
 
+`capture_run(...)` composes the whole path: it executes a caller-supplied
+callable once through `run_baseline`, verifies the output, and returns both the
+measurement record and the attributed evidence. A failing run produces a
+measurement and no evidence, because there is nothing to verify.
+
+```powershell
+python examples/fixture_suite.py --out runs/fixtures
+```
+
 ## Limits
 
 This layer provides determinism and attribution, not truth. A shape check proves

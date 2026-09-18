@@ -5,6 +5,7 @@ from .measurement import (
     run_baseline,
     write_measurement,
 )
+from .capture import CapturedRun, capture_run
 from .observations import (
     compare_observation,
     read_observation,
@@ -34,6 +35,8 @@ __all__ = [
     "run_baseline",
     "write_measurement",
     "read_measurement",
+    "CapturedRun",
+    "capture_run",
     "Verification",
     "VerifierRegistry",
     "shape_verifier",

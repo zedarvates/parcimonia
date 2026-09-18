@@ -48,9 +48,12 @@ Deliverables:
   with a strict reader and a non-overwriting writer
 - no task inputs, outputs or exception messages inside a record
 
-Status: `run_baseline` and the `measurement/1` reader and writer are implemented;
-see [Baseline measurements](MEASUREMENT.md). The exit criteria below still await
-20 real runs.
+Status: `run_baseline` and the `measurement/1` reader and writer are implemented
+and exercised end to end by `examples/fixture_suite.py`, which records 40 measured
+local runs including one recorded failure. See
+[Baseline measurements](MEASUREMENT.md). These are deterministic fixture tasks:
+they demonstrate provenance and replay, not representative cost, which belongs
+to G5.
 
 Exit criteria:
 - at least 20 real measurements recorded and replayable
@@ -72,9 +75,10 @@ Deliverables:
   cost and error rate, never as ground truth
 
 Status: the registry, three deterministic verifiers, input hashing and the
-attributed-evidence bridge are implemented; see
-[Deterministic verification](VERIFICATION.md). All three exit criteria below are
-covered by tests, and no real output has been verified yet.
+attributed-evidence bridge are implemented and exercised on the outputs of
+`examples/fixture_suite.py`: 18 attributed acceptances, one rejection on a wrong
+answer and one pair with no verdict because the route failed. See
+[Deterministic verification](VERIFICATION.md).
 
 Exit criteria:
 - same input and same verifier version produce the same verdict

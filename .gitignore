@@ -9,3 +9,4 @@ build/
 .env.*
 !.env.example
 tiberium-ai-bootstrap.zip
+runs/
