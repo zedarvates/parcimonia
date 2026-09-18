@@ -1,0 +1,26 @@
+name: Feature proposal
+description: Propose a bounded Tiberium capability or experiment
+title: "[Feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+    validations:
+      required: true
+  - type: textarea
+    id: route
+    attributes:
+      label: Proposed route / capability
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and benchmark plan
+    validations:
+      required: true
+  - type: textarea
+    id: nong
+    attributes:
+      label: Non-goals

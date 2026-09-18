@@ -1,0 +1,167 @@
+![Parcimonia — Adaptive compute for AI agents. A mint-green route connects selected nodes within a dark network.](docs/assets/parcimonia-header.png)
+
+# Parcimonia
+
+> An open-source adaptive compute router for AI agents, started under the working codename Tiberium AI.
+
+Repository: https://github.com/zedarvates/parcimonia
+
+Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.
+
+It is not intended to be another general-purpose LLM. It sits between an agent/LLM and its execution mechanisms:
+
+```text
+Agent / LLM
+    |
+    v
+Parcimonia Router
+    |
+    +-- deterministic rules / state machines / calculators
+    +-- cache / proof reuse
+    +-- KNN retrieval
+    +-- nano-NN classifiers / routers
+    +-- micro-NN specialized predictors
+    +-- ShardJEPA-style predictive modules
+    +-- small local LLM
+    +-- large local or cloud LLM
+    |
+    v
+Verifier -> Accept | Escalate
+```
+
+## Core principle
+
+**Use the minimum amount of intelligence required for each fragment of work.**
+
+Parcimonia's planned routing criteria include:
+- expected token/API cost
+- local compute and VRAM
+- latency
+- confidence
+- historical success evidence
+- task risk
+- required proof level
+- privacy / locality constraints
+- available hardware and models
+
+## V0: shadow mode only
+
+The current router receives a task and caller-supplied candidates and returns
+an observation-only proposal. It does not execute a route or replace a baseline.
+Collecting real task observations and comparing proposals with actual execution
+are the next steps; production routing must remain unchanged.
+
+## Initial integrations
+
+Planned adapters include:
+- Botte Secrète / CapabilityAtlas
+- OpenAI-compatible APIs
+- Ollama and local LLM runtimes
+- MCP and CLI tools
+- KNN memory/retrieval
+- nano-NN and micro-NN registries
+- ShardJEPA experiments
+- protobuf/ID based capability manifests
+
+## Success metrics
+
+Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, unsafe false positives, abstention, escalation, model calls, evidence completeness and reproducibility.
+
+## Status
+
+Early design / bootstrap. No automatic routing is enabled.
+
+The current `ShadowRouter` validates confidence and cost estimates, applies a
+configurable confidence threshold (default `0.9`), and proposes the lowest known
+estimated cost among eligible candidates. Equal costs use higher confidence,
+then lexical route ID, so input order does not change the decision.
+
+Unknown costs are never treated as zero. If all eligible costs are unknown,
+the router uses confidence and explicitly reports that no cost comparison is
+possible. Unsupported task requirements and ambiguous route IDs cause abstention.
+
+Confidence is caller-declared and uncalibrated. Independent verification,
+capability matching and real baseline comparisons remain roadmap work;
+the prototype does not yet demonstrate cost savings.
+
+See the [routing policy](docs/SHADOW_ROUTING.md) for exact rules and limitations.
+
+## Local development
+
+Requires Python 3.10 or newer. From the repository root on Windows:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+The Python distribution and import name remain `tiberium-ai` and `tiberium_ai`
+for compatibility with the bootstrap. Parcimonia is the repository and project
+name; a package rename can be handled separately.
+
+## Shadow observations
+
+Each proposal can be stored as a replayable JSON observation that records the
+task identity, candidate estimates, policy version, decision and any evidence
+bound to the baseline and proposed routes. Replay re-runs the policy and rejects
+a record whose stored decision no longer matches.
+
+```python
+from pathlib import Path
+
+from tiberium_ai import (
+    CandidateRoute, Evidence, Task,
+    compare_observation, read_observation, record_observation, write_observation,
+)
+
+task = Task("format-001", "format", {"text": "example"})
+record = record_observation(
+    task,
+    [
+        CandidateRoute("baseline", ["model:baseline"], 1.0, 900, 0.99),
+        CandidateRoute("rule", ["rule:format"], 0.01, 5, 0.95),
+    ],
+    baseline_route_id="baseline",
+    cost_unit="USD per 1k tasks",
+    data_origin="synthetic",
+    baseline_evidence=Evidence("format-001", "baseline", True, 900, 1.0),
+    proposal_evidence=Evidence("format-001", "rule", True, 5, 0.01),
+)
+Path("observations").mkdir(exist_ok=True)
+write_observation("observations/format-001.json", record)
+print(compare_observation(read_observation("observations/format-001.json"))["status"])
+```
+
+Estimated and measured costs stay in separate fields, and a missing measurement
+is never replaced by an estimate. See the [observation format](docs/OBSERVATIONS.md)
+for the stored fields, the comparison statuses and the privacy exclusions.
+`write_observation` requires the target directory to exist and never overwrites
+an existing file.
+
+## Minimal example
+
+These are synthetic estimates in a shared arbitrary cost unit, not benchmark
+measurements. No model or tool is called.
+
+```python
+from tiberium_ai.contracts import CandidateRoute, Task
+from tiberium_ai.router import ShadowRouter
+
+task = Task("format-001", "format", {"text": "example"})
+candidates = [
+    CandidateRoute("baseline", ["model:baseline"], estimated_cost=1.0, confidence=0.99),
+    CandidateRoute("rule", ["rule:format"], estimated_cost=0.01, confidence=0.95),
+]
+decision = ShadowRouter(min_confidence=0.9).propose(task, candidates)
+print(decision.selected_route_id)  # rule
+print(decision.mode)               # shadow
+```
+
+## License
+
+Apache-2.0 for the software bootstrap. Model weights, datasets or third-party components may require separate licensing.
+
+## Name / affiliation
+
+Parcimonia started under the working codename "Tiberium AI", inspired by the Command & Conquer universe. This project is not affiliated with or endorsed by Electronic Arts. The header artwork uses an original abstract routing motif; see [visual identity notes](docs/BRANDING.md).
