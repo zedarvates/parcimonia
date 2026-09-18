@@ -151,6 +151,14 @@ Deliverables:
   seeds and environment capture
 - a report that includes negative results
 
+Status: `resources.py` implements the vector and the Pareto front, and
+`benchmark.py` implements the seeded split, the harness and the claim gate; see
+[Benchmark plan](BENCHMARKS.md). The first fixture report refuses its claim with
+`quality_regression` because a held-out case failed verification. Two pieces
+remain: tokens, VRAM and energy are still null in measurement records, and the
+corpus is a fixture rather than representative work; both are tracked in issue
+#8.
+
 Exit criteria:
 - every claim cites `measurement/1` records
 - no scalar mixes resources with constraints

@@ -8,6 +8,16 @@ from .measurement import (
 from .capture import CapturedRun, capture_run
 from .escalation import Budget, EscalationDecision, EscalationPolicy, EscalationState
 from .registry import RouteManifest, RouteRegistry, load_route_registry
+from .resources import ResourceVector, pareto_front
+from .benchmark import (
+    BenchmarkCase,
+    BenchmarkRoute,
+    BenchmarkSplit,
+    CaseResult,
+    build_report,
+    run_benchmark,
+    split_cases,
+)
 from .observations import (
     compare_observation,
     read_observation,
@@ -46,6 +56,15 @@ __all__ = [
     "RouteManifest",
     "RouteRegistry",
     "load_route_registry",
+    "ResourceVector",
+    "pareto_front",
+    "BenchmarkCase",
+    "BenchmarkRoute",
+    "BenchmarkSplit",
+    "CaseResult",
+    "split_cases",
+    "build_report",
+    "run_benchmark",
     "Verification",
     "VerifierRegistry",
     "shape_verifier",

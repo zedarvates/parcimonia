@@ -107,6 +107,12 @@ declares capabilities, estimates, task constraints and the verifier each route
 requires, and the registry version is part of the recorded policy version. See
 [Route registry](docs/REGISTRY.md).
 
+The fifth gate is implemented for latency: a resource vector keeps tokens,
+latency, VRAM and energy apart from constraints, routes are compared on a Pareto
+front instead of a weighted scalar, and a seeded benchmark splits cases into
+development and held-out sets before any claim is allowed. See the
+[benchmark plan](docs/BENCHMARKS.md).
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,
