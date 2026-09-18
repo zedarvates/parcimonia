@@ -71,6 +71,11 @@ Deliverables:
 - a model-based verifier may exist later, registered as a route with its own
   cost and error rate, never as ground truth
 
+Status: the registry, three deterministic verifiers, input hashing and the
+attributed-evidence bridge are implemented; see
+[Deterministic verification](VERIFICATION.md). All three exit criteria below are
+covered by tests, and no real output has been verified yet.
+
 Exit criteria:
 - same input and same verifier version produce the same verdict
 - an unknown verifier identity causes abstention

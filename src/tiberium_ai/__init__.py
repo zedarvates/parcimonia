@@ -1,4 +1,4 @@
-from .contracts import Task, CandidateRoute, Decision, Evidence
+from .contracts import Task, CandidateRoute, Decision, Evidence, Verification
 from .measurement import (
     Environment,
     read_measurement,
@@ -11,6 +11,13 @@ from .observations import (
     record_observation,
     replay_observation,
     write_observation,
+)
+from .verification import (
+    VerifierRegistry,
+    attributed_evidence,
+    exact_match_verifier,
+    shape_verifier,
+    runner_result_verifier,
 )
 
 __all__ = [
@@ -27,5 +34,11 @@ __all__ = [
     "run_baseline",
     "write_measurement",
     "read_measurement",
+    "Verification",
+    "VerifierRegistry",
+    "shape_verifier",
+    "exact_match_verifier",
+    "runner_result_verifier",
+    "attributed_evidence",
 ]
 __version__ = "0.0.1"

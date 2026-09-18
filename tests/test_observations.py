@@ -11,6 +11,32 @@ from tiberium_ai.observations import (
     replay_observation,
     write_observation,
 )
+from tiberium_ai.verification import (
+    VerifierRegistry,
+    attributed_evidence,
+    shape_verifier,
+)
+
+
+def attributed_side(
+    task_id,
+    route_id,
+    value,
+    latency=None,
+    cost=None,
+    verifier_id="shape",
+    version="1",
+):
+    registry = VerifierRegistry()
+    registry.register("shape", "1", shape_verifier({"answer": "str"}))
+    verification = registry.verify(verifier_id, version, value)
+    return attributed_evidence(
+        verification,
+        task_id=task_id,
+        route_id=route_id,
+        measured_latency_ms=latency,
+        measured_cost=cost,
+    )
 
 
 def example_record(**overrides):
@@ -67,7 +93,8 @@ def test_estimates_and_measurements_remain_separate():
     assert result["estimated_cost_delta"] == 8
     assert result["measured_cost_delta"] == 5
     assert result["measured_latency_delta_ms"] == 80
-    assert result["status"] == "verified_evidence"
+    # Version 1 evidence carries a caller assertion without verifier identity.
+    assert result["status"] == "unattributed_evidence"
     assert result["data_origin"] == "synthetic"
     assert result["cost_unit"] == "synthetic-unit/task"
 
@@ -159,7 +186,7 @@ def test_proposal_evidence_must_match_the_actual_proposal():
 
 
 @pytest.mark.parametrize("field,value", [
-    ("schema_version", 2), ("schema_version", True),
+    ("schema_version", 3), ("schema_version", True),
     ("data_origin", "made-up"), ("cost_unit", ""),
     ("baseline_route_id", "absent"),
 ])
@@ -227,3 +254,99 @@ def test_comparison_does_not_modify_record():
     original = deepcopy(record)
     compare_observation(record)
     assert record == original
+
+
+CANDIDATES = [
+    CandidateRoute("baseline", ["model"], 10, 120, 0.99),
+    CandidateRoute("rule", ["rule"], 2, 30, 0.95),
+]
+
+
+def attributed_record(**overrides):
+    arguments = dict(
+        baseline_evidence=attributed_side("t1", "baseline", {"answer": "ok"}, 100, 8),
+        proposal_evidence=attributed_side("t1", "rule", {"answer": "ok"}, 20, 3),
+    )
+    arguments.update(overrides)
+    return record_observation(
+        Task("t1", "format", {}),
+        [CandidateRoute(c.route_id, list(c.capability_ids), c.estimated_cost,
+                        c.estimated_latency_ms, c.confidence) for c in CANDIDATES],
+        baseline_route_id="baseline",
+        cost_unit="unit/task",
+        data_origin="synthetic",
+        **arguments,
+    )
+
+
+def test_attributed_evidence_produces_a_version_two_record():
+    record = attributed_record()
+    assert record["schema_version"] == 2
+    assert "verification" in record["baseline_evidence"]
+    assert "verifier_ok" not in record["baseline_evidence"]
+    blocked = record["baseline_evidence"]["verification"]
+    assert blocked["verifier_id"] == "shape"
+    assert blocked["verifier_version"] == "1"
+    assert blocked["verdict"] is True
+    result = compare_observation(record)
+    assert result["status"] == "verified_evidence"
+    assert result["measured_cost_delta"] == 5
+    assert result["measured_latency_delta_ms"] == 80
+
+
+def test_mixing_attributed_and_unattributed_evidence_is_rejected():
+    with pytest.raises(ValueError, match="attributed"):
+        attributed_record(
+            baseline_evidence=Evidence("t1", "baseline", True, 100, 8),
+        )
+
+
+def test_rejected_verification_withholds_measured_deltas():
+    record = attributed_record(
+        proposal_evidence=attributed_side("t1", "rule", {"answer": 1}, 20, 3),
+    )
+    result = compare_observation(record)
+    assert result["status"] == "verification_failed"
+    assert result["estimated_cost_delta"] == 8
+    assert result["measured_cost_delta"] is None
+
+
+def test_abstained_verification_is_stored_and_withholds_measured_deltas():
+    record = attributed_record(
+        baseline_evidence=attributed_side(
+            "t1", "baseline", {"answer": "ok"}, 100, 8, verifier_id="absent"
+        ),
+        proposal_evidence=attributed_side(
+            "t1", "rule", {"answer": "ok"}, 20, 3, verifier_id="absent"
+        ),
+    )
+    assert record["baseline_evidence"]["verification"]["verdict"] is None
+    assert (
+        record["baseline_evidence"]["verification"]["detail_code"]
+        == "unregistered_verifier"
+    )
+    result = compare_observation(record)
+    assert result["status"] == "verification_abstained"
+    assert result["measured_cost_delta"] is None
+    assert result["measured_latency_delta_ms"] is None
+
+
+def test_version_two_requires_a_complete_verifier_block():
+    record = attributed_record()
+    del record["baseline_evidence"]["verification"]["input_hash"]
+    with pytest.raises(ValueError):
+        replay_observation(record)
+
+
+def test_version_two_rejects_a_malformed_input_hash():
+    record = attributed_record()
+    record["baseline_evidence"]["verification"]["input_hash"] = "short"
+    with pytest.raises(ValueError):
+        replay_observation(record)
+
+
+def test_version_two_rejects_version_one_evidence():
+    record = example_record()
+    record["schema_version"] = 2
+    with pytest.raises(ValueError):
+        replay_observation(record)

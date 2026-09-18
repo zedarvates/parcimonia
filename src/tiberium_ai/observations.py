@@ -12,10 +12,18 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-from .contracts import CandidateRoute, Decision, Evidence, Task
+from .contracts import (
+    CandidateRoute,
+    Decision,
+    Evidence,
+    Task,
+    Verification,
+    validate_verification_record,
+)
 from .router import ShadowRouter, is_nonnegative_number
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+SUPPORTED_SCHEMA_VERSIONS = (1, 2)
 POLICY_VERSION = "shadow-routing/1"
 SUPPORTED_DATA_ORIGINS = ("caller_reported", "synthetic")
 
@@ -35,8 +43,11 @@ _ROUTER_FIELDS = frozenset({"policy_version", "min_confidence"})
 _DECISION_FIELDS = frozenset(
     {"task_id", "selected_route_id", "mode", "rationale", "abstained"}
 )
-_EVIDENCE_FIELDS = frozenset(
+_EVIDENCE_FIELDS_V1 = frozenset(
     {"task_id", "route_id", "verifier_ok", "measured_latency_ms", "measured_cost"}
+)
+_EVIDENCE_FIELDS_V2 = frozenset(
+    {"task_id", "route_id", "verification", "measured_latency_ms", "measured_cost"}
 )
 _RECORD_FIELDS = frozenset(
     {
@@ -97,8 +108,22 @@ def record_observation(
             "proposal_evidence",
         )
 
+    present = [
+        evidence
+        for evidence in (baseline_evidence, proposal_evidence)
+        if evidence is not None
+    ]
+    attributed = [e for e in present if e.verification is not None]
+    unattributed = [e for e in present if e.verification is None]
+    if attributed and unattributed:
+        raise ValueError(
+            "Evidence must be either fully attributed or fully unattributed; a "
+            "record cannot mix verifier-bound evidence with caller assertions."
+        )
+    schema_version = SCHEMA_VERSION if attributed else 1
+
     record = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version,
         "task": {
             "task_id": task.task_id,
             "kind": task.kind,
@@ -116,10 +141,14 @@ def record_observation(
         "cost_unit": cost_unit,
         "data_origin": data_origin,
         "baseline_evidence": (
-            None if baseline_evidence is None else _evidence_to_record(baseline_evidence)
+            None
+            if baseline_evidence is None
+            else _evidence_to_record(baseline_evidence, schema_version)
         ),
         "proposal_evidence": (
-            None if proposal_evidence is None else _evidence_to_record(proposal_evidence)
+            None
+            if proposal_evidence is None
+            else _evidence_to_record(proposal_evidence, schema_version)
         ),
     }
     replay_observation(record)
@@ -189,8 +218,15 @@ def compare_observation(record: Mapping[str, Any]) -> dict[str, Any]:
     if baseline_evidence is None or proposal_evidence is None:
         result["status"] = "insufficient_evidence"
         return result
-    if not (baseline_evidence["verifier_ok"] and proposal_evidence["verifier_ok"]):
+
+    schema_version = record["schema_version"]
+    baseline_verdict = _verdict_of(baseline_evidence, schema_version)
+    proposal_verdict = _verdict_of(proposal_evidence, schema_version)
+    if baseline_verdict is False or proposal_verdict is False:
         result["status"] = "verification_failed"
+        return result
+    if baseline_verdict is None or proposal_verdict is None:
+        result["status"] = "verification_abstained"
         return result
 
     result["measured_cost_delta"] = _delta(
@@ -200,12 +236,22 @@ def compare_observation(record: Mapping[str, Any]) -> dict[str, Any]:
         baseline_evidence["measured_latency_ms"],
         proposal_evidence["measured_latency_ms"],
     )
-    result["status"] = (
-        "verified_evidence"
-        if result["measured_cost_delta"] is not None
-        else "verified_without_measurements"
-    )
+    if schema_version == 1:
+        # Version 1 evidence is a caller assertion without verifier identity.
+        result["status"] = "unattributed_evidence"
+    else:
+        result["status"] = (
+            "verified_evidence"
+            if result["measured_cost_delta"] is not None
+            else "verified_without_measurements"
+        )
     return result
+
+
+def _verdict_of(evidence: Mapping[str, Any], schema_version: int) -> bool | None:
+    if schema_version == 2:
+        return evidence["verification"]["verdict"]
+    return True if evidence["verifier_ok"] else False
 
 
 def write_observation(path: str | Path, record: Mapping[str, Any]) -> None:
@@ -259,15 +305,21 @@ def _candidate_from_record(candidate: Mapping[str, Any]) -> CandidateRoute:
     )
 
 
-def _evidence_to_record(evidence: Evidence) -> dict[str, Any]:
+def _evidence_to_record(evidence: Evidence, schema_version: int) -> dict[str, Any]:
     # metadata is caller-defined and therefore excluded from the record.
-    return {
+    record = {
         "task_id": evidence.task_id,
         "route_id": evidence.route_id,
         "verifier_ok": evidence.verifier_ok,
         "measured_latency_ms": evidence.measured_latency_ms,
         "measured_cost": evidence.measured_cost,
     }
+    if schema_version == 2:
+        if evidence.verification is None:
+            raise ValueError("Version 2 evidence requires a verifier attribution.")
+        del record["verifier_ok"]
+        record["verification"] = evidence.verification.to_record()
+    return record
 
 
 def _decision_to_record(decision: Any) -> dict[str, Any]:
@@ -300,6 +352,13 @@ def _check_evidence(
         raise ValueError(f"{label}.verifier_ok must be a boolean.")
     _check_optional_number(evidence.measured_latency_ms, f"{label}.measured_latency_ms")
     _check_optional_number(evidence.measured_cost, f"{label}.measured_cost")
+    if evidence.verification is not None:
+        if not isinstance(evidence.verification, Verification):
+            raise ValueError(f"{label}.verification must be a Verification instance.")
+        if evidence.verifier_ok is not (evidence.verification.verdict is True):
+            raise ValueError(
+                f"{label}.verifier_ok must match {label}.verification.verdict."
+            )
 
 
 def _require_exact_keys(
@@ -314,8 +373,10 @@ def _require_exact_keys(
 def _validate_record(record: object) -> None:
     _require_exact_keys(record, _RECORD_FIELDS, "observation")
     schema_version = record["schema_version"]
-    if type(schema_version) is not int or schema_version != SCHEMA_VERSION:
-        raise ValueError(f"Unsupported schema_version; expected {SCHEMA_VERSION}.")
+    if type(schema_version) is not int or schema_version not in SUPPORTED_SCHEMA_VERSIONS:
+        raise ValueError(
+            f"Unsupported schema_version; expected one of {list(SUPPORTED_SCHEMA_VERSIONS)}."
+        )
 
     task = record["task"]
     _require_exact_keys(task, _TASK_FIELDS, "task")
@@ -398,27 +459,42 @@ def _validate_record(record: object) -> None:
     baseline_evidence = record["baseline_evidence"]
     if baseline_evidence is not None:
         _validate_evidence_record(
-            baseline_evidence, task["task_id"], baseline_route_id, "baseline_evidence"
+            baseline_evidence,
+            task["task_id"],
+            baseline_route_id,
+            "baseline_evidence",
+            schema_version,
         )
     proposal_evidence = record["proposal_evidence"]
     if proposal_evidence is not None:
         if selected is None:
             raise ValueError("proposal_evidence is present but the decision abstained.")
         _validate_evidence_record(
-            proposal_evidence, task["task_id"], selected, "proposal_evidence"
+            proposal_evidence,
+            task["task_id"],
+            selected,
+            "proposal_evidence",
+            schema_version,
         )
 
 
 def _validate_evidence_record(
-    evidence: object, task_id: str, route_id: str, label: str
+    evidence: object, task_id: str, route_id: str, label: str, schema_version: int
 ) -> None:
-    _require_exact_keys(evidence, _EVIDENCE_FIELDS, label)
+    if schema_version == 2:
+        _require_exact_keys(evidence, _EVIDENCE_FIELDS_V2, label)
+        try:
+            validate_verification_record(evidence["verification"])
+        except ValueError as exc:
+            raise ValueError(f"{label}.verification is invalid: {exc}") from exc
+    else:
+        _require_exact_keys(evidence, _EVIDENCE_FIELDS_V1, label)
+        if not isinstance(evidence["verifier_ok"], bool):
+            raise ValueError(f"{label}.verifier_ok must be a boolean.")
     if evidence["task_id"] != task_id:
         raise ValueError(f"{label}.task_id must match the observation task.")
     if evidence["route_id"] != route_id:
         raise ValueError(f"{label}.route_id must match the route it documents.")
-    if not isinstance(evidence["verifier_ok"], bool):
-        raise ValueError(f"{label}.verifier_ok must be a boolean.")
     _check_optional_number(evidence["measured_latency_ms"], f"{label}.measured_latency_ms")
     _check_optional_number(evidence["measured_cost"], f"{label}.measured_cost")
 

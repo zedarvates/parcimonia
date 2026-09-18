@@ -29,6 +29,21 @@ purpose: they are free-form text that can carry sensitive payloads, and none of
 them is needed to reproduce the routing decision. Failure-mode identifiers can
 be added once they become stable IDs instead of prose.
 
+## Evidence shapes
+
+Two record versions exist, and the version follows the evidence it carries.
+
+| Version | Evidence block | Meaning |
+| --- | --- | --- |
+| 1 | `verifier_ok` boolean | A caller assertion without verifier identity |
+| 2 | `verification` block with `verifier_id`, `verifier_version`, `verdict` and `input_hash` | An attributed verifier run |
+
+A record cannot mix attributed and unattributed evidence, and a version 2 record
+whose verifier block is incomplete or whose hash is malformed is rejected. An
+abstained verdict (`null`) is never a success. See
+[deterministic verification](VERIFICATION.md) for the registry that produces
+those blocks.
+
 ## Validation
 
 A record is rejected when its schema or policy version is unsupported, when a
@@ -36,7 +51,9 @@ key is missing or unexpected, when candidate route IDs are duplicated or
 untrimmed, when confidence or cost values are invalid, when the baseline does
 not identify a candidate, when evidence documents a different task or route, or
 when the stored decision does not match a replay. Replayed active-mode decisions
-are rejected; only `shadow` is supported.
+are rejected; only `shadow` is supported. In version 2, evidence must also carry
+a complete verifier attribution, and a `verifier_ok` that contradicts the
+verdict is refused at record time.
 
 `write_observation` refuses to overwrite an existing file and requires the
 target directory to exist. It validates the record before writing, so an invalid
@@ -55,8 +72,10 @@ proposed route:
 | `baseline_selected` | The proposal equals the baseline, so the estimated delta is zero |
 | `insufficient_evidence` | Baseline or proposal evidence is missing; only the estimated delta is reported |
 | `verification_failed` | A verifier rejected one side; measured deltas are withheld |
-| `verified_evidence` | Both sides are verified and a measured cost delta exists |
-| `verified_without_measurements` | Both sides are verified but no paired measurements exist |
+| `verification_abstained` | No verdict exists for one side, for example an unregistered verifier; measured deltas are withheld |
+| `unattributed_evidence` | Version 1 evidence asserts success without naming a verifier |
+| `verified_evidence` | Both sides carry an attributed accepted verdict and a measured cost delta exists |
+| `verified_without_measurements` | Both sides carry an attributed accepted verdict but no paired measurements exist |
 
 Estimated and measured deltas are always separate fields. A missing measurement
 is never filled from an estimate, and a negative delta is a regression, not a
