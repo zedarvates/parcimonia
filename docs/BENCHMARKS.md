@@ -80,6 +80,7 @@ the deliberately wrong answer sits in the held-out split.
 
 `ResourceVector` carries tokens, latency, VRAM and energy, keeps unknown
 dimensions as null, and ignores them in comparisons instead of assuming equality.
-Measurement records currently carry latency only, so tokens, VRAM and energy stay
-null until the measurement schema carries them; a fixture corpus further means
-the numbers are not representative of real work.
+Measurement records now carry a version 2 resources block, so an instrumented
+route can report tokens, VRAM and energy. The fixture corpus does not instrument
+them, so those dimensions stay null there, and representative real work remains
+open in issue #8.

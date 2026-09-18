@@ -45,7 +45,12 @@ def test_successful_run_records_measured_provenance():
     result = successful_run()
     record = result.to_record()
     assert record["kind"] == "measurement"
-    assert record["schema_version"] == 1
+    assert record["schema_version"] == 2
+    assert record["resources"] == {
+        "tokens": None,
+        "vram_mb": None,
+        "energy_joules": None,
+    }
     assert record["data_origin"] == "measured"
     assert record["method"] == WALL_CLOCK_METHOD
     assert record["outcome"] == {"ok": True, "error_type": None}
@@ -187,7 +192,11 @@ def test_invalid_record_is_rejected_before_creating_a_file(tmp_path):
 @pytest.mark.parametrize("mutate", [
     lambda r: r.update(kind="observation"),
     lambda r: r.update(data_origin="synthetic"),
-    lambda r: r.update(schema_version=2),
+    lambda r: r.update(schema_version=3),
+    lambda r: r.pop("resources"),
+    lambda r: r.update(resources={"tokens": -1, "vram_mb": None, "energy_joules": None}),
+    lambda r: r.update(resources={"tokens": None, "vram_mb": "512"}),
+    lambda r: r.update(resources={"tokens": None, "vram_mb": None}),
     lambda r: r.update(latency_ms=None),
     lambda r: r.update(outcome={"ok": True, "error_type": "ValueError"}),
     lambda r: r.update(outcome={"ok": False, "error_type": None}),
@@ -216,3 +225,39 @@ def test_reader_rejects_ambiguous_or_malformed_json(tmp_path, invalid_json):
     path.write_text(invalid_json, encoding="utf-8")
     with pytest.raises(ValueError):
         read_measurement(path)
+
+
+def test_instrumented_resources_are_recorded():
+    from tiberium_ai.resources import ResourceVector
+
+    record = successful_run(
+        resources=ResourceVector(tokens=120, vram_mb=2048.0, energy_joules=12.5)
+    ).to_record()
+    assert record["resources"] == {
+        "tokens": 120,
+        "vram_mb": 2048.0,
+        "energy_joules": 12.5,
+    }
+    vector = ResourceVector.from_measurement(record)
+    assert vector.tokens == 120
+    assert vector.latency_ms == 250.0
+    assert vector.vram_mb == 2048.0
+    assert vector.energy_joules == 12.5
+
+
+def test_resources_must_be_a_resource_vector():
+    with pytest.raises((TypeError, ValueError)):
+        successful_run(resources={"tokens": 1})
+
+
+def test_version_one_records_still_read_with_unknown_resources(tmp_path):
+    from tiberium_ai.resources import ResourceVector
+
+    legacy = successful_run().to_record()
+    legacy["schema_version"] = 1
+    legacy.pop("resources")
+    path = tmp_path / "legacy.json"
+    path.write_text(json.dumps(legacy), encoding="utf-8")
+    restored = read_measurement(path)
+    assert restored == legacy
+    assert ResourceVector.from_measurement(restored).tokens is None

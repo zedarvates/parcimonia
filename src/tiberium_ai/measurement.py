@@ -15,15 +15,19 @@ from pathlib import Path
 from typing import Any, Callable, Mapping
 
 from .router import is_nonnegative_number
+from .resources import ResourceVector
 
-MEASUREMENT_SCHEMA_VERSION = 1
+MEASUREMENT_SCHEMA_VERSION = 2
+SUPPORTED_MEASUREMENT_SCHEMA_VERSIONS = (1, 2)
 MEASUREMENT_KIND = "measurement"
 MEASURED_DATA_ORIGIN = "measured"
 WALL_CLOCK_METHOD = "wall_clock/monotonic"
 
+_RESOURCE_FIELDS = frozenset({"tokens", "vram_mb", "energy_joules"})
+
 _ENVIRONMENT_FIELDS = frozenset({"machine_id", "runtime_versions"})
 _OUTCOME_FIELDS = frozenset({"ok", "error_type"})
-_RECORD_FIELDS = frozenset(
+_RECORD_FIELDS_V1 = frozenset(
     {
         "schema_version",
         "kind",
@@ -39,6 +43,7 @@ _RECORD_FIELDS = frozenset(
         "data_origin",
     }
 )
+_RECORD_FIELDS_V2 = _RECORD_FIELDS_V1 | {"resources"}
 
 
 @dataclass(frozen=True)
@@ -78,6 +83,7 @@ class BaselineRun:
     measured_at: str
     method: str
     environment: Environment
+    resources: ResourceVector = field(default_factory=ResourceVector)
 
     def to_record(self) -> dict[str, Any]:
         record = {
@@ -96,6 +102,11 @@ class BaselineRun:
             "cost": self.cost,
             "cost_unit": self.cost_unit,
             "data_origin": MEASURED_DATA_ORIGIN,
+            "resources": {
+                "tokens": self.resources.tokens,
+                "vram_mb": self.resources.vram_mb,
+                "energy_joules": self.resources.energy_joules,
+            },
         }
         _validate_measurement_record(record)
         return record
@@ -111,6 +122,7 @@ def run_baseline(
     clock: Callable[[], float],
     now: Callable[[], str] | None = None,
     cost: float | None = None,
+    resources: ResourceVector | None = None,
 ) -> BaselineRun:
     """Execute `run` once and record what happened.
 
@@ -133,6 +145,8 @@ def run_baseline(
         raise TypeError("clock must be callable.")
     if cost is not None and not is_nonnegative_number(cost):
         raise ValueError("cost must be null or a finite nonnegative number.")
+    if resources is not None and not isinstance(resources, ResourceVector):
+        raise TypeError("resources must be a ResourceVector instance.")
 
     started = clock()
     ok = True
@@ -160,6 +174,7 @@ def run_baseline(
         measured_at=_normalise_timestamp((now or _utc_now)()),
         method=WALL_CLOCK_METHOD,
         environment=environment,
+        resources=resources or ResourceVector(),
     )
 
 
@@ -219,12 +234,22 @@ def _require_exact_keys(value: object, expected: frozenset[str], label: str) -> 
 
 
 def _validate_measurement_record(record: object) -> None:
-    _require_exact_keys(record, _RECORD_FIELDS, "measurement")
-    schema_version = record["schema_version"]
-    if type(schema_version) is not int or schema_version != MEASUREMENT_SCHEMA_VERSION:
+    if not isinstance(record, dict):
+        raise ValueError("measurement must be a JSON object.")
+    schema_version = record.get("schema_version")
+    if (
+        type(schema_version) is not int
+        or schema_version not in SUPPORTED_MEASUREMENT_SCHEMA_VERSIONS
+    ):
         raise ValueError(
-            f"Unsupported schema_version; expected {MEASUREMENT_SCHEMA_VERSION}."
+            "Unsupported schema_version; expected one of "
+            f"{list(SUPPORTED_MEASUREMENT_SCHEMA_VERSIONS)}."
         )
+    _require_exact_keys(
+        record,
+        _RECORD_FIELDS_V2 if schema_version == 2 else _RECORD_FIELDS_V1,
+        "measurement",
+    )
     if record["kind"] != MEASUREMENT_KIND:
         raise ValueError(f"kind must be {MEASUREMENT_KIND!r}.")
     if record["data_origin"] != MEASURED_DATA_ORIGIN:
@@ -274,6 +299,19 @@ def _validate_measurement_record(record: object) -> None:
         raise ValueError("cost must be null or a finite nonnegative number.")
     if not _is_trimmed_nonempty(record["cost_unit"]):
         raise ValueError("cost_unit must be a nonempty, trimmed string.")
+    if schema_version == 2:
+        resources = record["resources"]
+        _require_exact_keys(resources, _RESOURCE_FIELDS, "resources")
+        if resources["tokens"] is not None and (
+            type(resources["tokens"]) is not int or resources["tokens"] < 0
+        ):
+            raise ValueError("resources.tokens must be null or a nonnegative integer.")
+        for name in ("vram_mb", "energy_joules"):
+            value = resources[name]
+            if value is not None and not is_nonnegative_number(value):
+                raise ValueError(
+                    f"resources.{name} must be null or a finite nonnegative number."
+                )
 
 
 def _reject_constant(value: str) -> Any:

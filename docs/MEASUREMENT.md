@@ -23,6 +23,7 @@ never calls a network, and never executes a route on its own initiative.
 | `cost` | Measured or billed cost, or null |
 | `cost_unit` | Unit shared by every cost in the record |
 | `data_origin` | Always `measured` |
+| `resources` | Version 2: tokens, VRAM and energy, or null when not instrumented |
 
 Task inputs, outputs, exception messages and free-form metadata are never
 stored: a failure keeps the exception type name only. `machine_id` is a label
@@ -43,6 +44,9 @@ timestamp carries no timezone, or when `outcome.ok` and `outcome.error_type`
 disagree. Reading rejects malformed JSON, duplicate keys and non-finite
 numbers. Writing validates first, refuses to overwrite an existing file, and
 requires the target directory to exist.
+A version 2 resources block must contain exactly `tokens`, `vram_mb` and
+`energy_joules`, each null or a finite nonnegative value, with `tokens` an
+integer. Version 1 records remain readable and their resources stay unknown.
 
 ## Usage
 

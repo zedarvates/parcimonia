@@ -69,8 +69,8 @@ class ResourceVector:
     def from_measurement(cls, record: Mapping[str, Any]) -> "ResourceVector":
         """Build a vector from a measured run.
 
-        Measurement records carry latency today; tokens, VRAM and energy stay
-        unknown until the measurement schema carries them.
+        Latency always comes from the record; tokens, VRAM and energy come from
+        the version 2 resources block and stay unknown for version 1 records.
         """
         if not isinstance(record, Mapping) or not is_nonnegative_number(
             record.get("latency_ms")
@@ -78,7 +78,23 @@ class ResourceVector:
             raise ValueError(
                 "a measurement record must carry a finite nonnegative latency_ms."
             )
-        return cls(latency_ms=record["latency_ms"])
+        resources = record.get("resources")
+        if resources is None:
+            return cls(latency_ms=record["latency_ms"])
+        if not isinstance(resources, Mapping) or set(resources) != {
+            "tokens",
+            "vram_mb",
+            "energy_joules",
+        }:
+            raise ValueError(
+                "a resources block must contain exactly tokens, vram_mb and energy_joules."
+            )
+        return cls(
+            tokens=resources["tokens"],
+            latency_ms=record["latency_ms"],
+            vram_mb=resources["vram_mb"],
+            energy_joules=resources["energy_joules"],
+        )
 
 
 def pareto_front(vectors: Mapping[str, ResourceVector]) -> tuple[str, ...]:

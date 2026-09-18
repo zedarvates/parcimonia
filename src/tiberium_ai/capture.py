@@ -39,6 +39,7 @@ def capture_run(
     clock: Callable[[], float],
     now: Callable[[], str] | None = None,
     cost: float | None = None,
+    resources: "ResourceVector | None" = None,
 ) -> CapturedRun:
     """Execute `run` once, measure it, then verify what it returned.
 
@@ -62,6 +63,7 @@ def capture_run(
         clock=clock,
         now=now,
         cost=cost,
+        resources=resources,
     )
     measurement = measured.to_record()
     if not measured.ok:
