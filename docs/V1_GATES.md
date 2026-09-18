@@ -125,6 +125,11 @@ Deliverables:
   constraints and unregistered verifiers are rejected
 - the registry version is recorded in observations
 
+Status: `registry.py` implements the manifest, its validation, constraint and
+capability matching, and the registry-qualified policy version; both the router
+and `record_observation` accept a registry and then need no caller-supplied
+candidate list. See [Route registry](REGISTRY.md).
+
 Exit criteria:
 - an unknown capability or verifier causes abstention
 - a registry change appears as a policy-version change

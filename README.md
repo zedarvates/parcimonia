@@ -102,6 +102,11 @@ The third gate is implemented: an escalation policy decides between `ACCEPT`,
 loop guard, a fail-closed rule for unknown cost and a reason code on every
 decision. See [Escalation policy](docs/ESCALATION.md).
 
+The fourth gate is implemented: routes come from a versioned JSON manifest that
+declares capabilities, estimates, task constraints and the verifier each route
+requires, and the registry version is part of the recorded policy version. See
+[Route registry](docs/REGISTRY.md).
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,

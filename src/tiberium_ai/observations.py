@@ -20,11 +20,10 @@ from .contracts import (
     Verification,
     validate_verification_record,
 )
-from .router import ShadowRouter, is_nonnegative_number
+from .router import POLICY_VERSION, ShadowRouter, is_nonnegative_number
 
 SCHEMA_VERSION = 2
 SUPPORTED_SCHEMA_VERSIONS = (1, 2)
-POLICY_VERSION = "shadow-routing/1"
 SUPPORTED_DATA_ORIGINS = ("caller_reported", "synthetic")
 
 _TASK_FIELDS = frozenset(
@@ -67,7 +66,7 @@ _RECORD_FIELDS = frozenset(
 
 def record_observation(
     task: Task,
-    candidates: list[CandidateRoute],
+    candidates: list[CandidateRoute] | None = None,
     *,
     baseline_route_id: str,
     cost_unit: str,
@@ -75,6 +74,7 @@ def record_observation(
     min_confidence: float = 0.9,
     baseline_evidence: Evidence | None = None,
     proposal_evidence: Evidence | None = None,
+    registry: Any | None = None,
 ) -> dict[str, Any]:
     """Build a replayable observation from one shadow proposal.
 
@@ -86,7 +86,12 @@ def record_observation(
     if data_origin not in SUPPORTED_DATA_ORIGINS:
         raise ValueError(f"data_origin must be one of {list(SUPPORTED_DATA_ORIGINS)}.")
 
-    decision = ShadowRouter(min_confidence=min_confidence).propose(task, candidates)
+    router = ShadowRouter(min_confidence=min_confidence, registry=registry)
+    if candidates is None:
+        if registry is None:
+            raise ValueError("record_observation needs candidates or a registry.")
+        candidates = registry.candidates_for(task)
+    decision = router.propose(task, candidates)
 
     route_ids = [candidate.route_id for candidate in candidates]
     if not isinstance(baseline_route_id, str) or baseline_route_id not in route_ids:
@@ -133,7 +138,7 @@ def record_observation(
         },
         "candidates": [_candidate_to_record(c) for c in candidates],
         "router": {
-            "policy_version": POLICY_VERSION,
+            "policy_version": router.policy_version,
             "min_confidence": min_confidence,
         },
         "decision": _decision_to_record(decision),
@@ -419,9 +424,14 @@ def _validate_record(record: object) -> None:
 
     router = record["router"]
     _require_exact_keys(router, _ROUTER_FIELDS, "router")
-    if router["policy_version"] != POLICY_VERSION:
+    policy_version = router["policy_version"]
+    if not isinstance(policy_version, str) or not (
+        policy_version == POLICY_VERSION
+        or policy_version.startswith(f"{POLICY_VERSION}+")
+    ):
         raise ValueError(
-            f"Unsupported policy_version; expected {POLICY_VERSION}."
+            f"Unsupported policy_version; expected {POLICY_VERSION} or a "
+            "registry-qualified variant."
         )
     try:
         ShadowRouter(min_confidence=router["min_confidence"])

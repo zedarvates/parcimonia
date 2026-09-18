@@ -7,6 +7,7 @@ from .measurement import (
 )
 from .capture import CapturedRun, capture_run
 from .escalation import Budget, EscalationDecision, EscalationPolicy, EscalationState
+from .registry import RouteManifest, RouteRegistry, load_route_registry
 from .observations import (
     compare_observation,
     read_observation,
@@ -42,6 +43,9 @@ __all__ = [
     "EscalationPolicy",
     "EscalationState",
     "EscalationDecision",
+    "RouteManifest",
+    "RouteRegistry",
+    "load_route_registry",
     "Verification",
     "VerifierRegistry",
     "shape_verifier",

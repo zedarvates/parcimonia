@@ -62,6 +62,12 @@ class VerifierRegistry:
             )
         self._verifiers[key] = verifier
 
+    def is_registered(self, verifier_id: str, version: str) -> bool:
+        """Return whether exactly this identity and version is registered."""
+        _check_identity(verifier_id, "verifier_id")
+        _check_identity(version, "verifier_version")
+        return (verifier_id, version) in self._verifiers
+
     def verify(self, verifier_id: str, version: str, value: Any) -> Verification:
         """Verify `value`, abstaining when the identity is unknown."""
         _check_identity(verifier_id, "verifier_id")

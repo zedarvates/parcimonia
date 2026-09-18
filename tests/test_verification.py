@@ -65,6 +65,13 @@ def test_duplicate_registration_is_rejected():
         registry.register("shape", "1", shape_verifier({"answer": "str"}))
 
 
+def test_is_registered_requires_the_exact_identity_and_version():
+    registry = registry_with()
+    assert registry.is_registered("shape", "1") is True
+    assert registry.is_registered("shape", "2") is False
+    assert registry.is_registered("absent", "1") is False
+
+
 @pytest.mark.parametrize("verifier_id,version", [
     ("", "1"), (" padded ", "1"), (123, "1"), ("shape", ""), ("shape", " "), ("shape", 1),
 ])

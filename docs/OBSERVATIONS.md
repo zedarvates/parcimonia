@@ -16,7 +16,7 @@ longer matches the recorded policy.
 | `schema_version` | Record format version (`1`) |
 | `task` | Task ID, kind, risk class, evidence level and locality |
 | `candidates` | Route ID, capability IDs, estimated cost and latency, confidence |
-| `router` | `policy_version` and `min_confidence` |
+| `router` | `policy_version`, optionally suffixed with the registry version, and `min_confidence` |
 | `decision` | Selected route, mode, rationale, abstention |
 | `baseline_route_id` | The route the real execution used |
 | `cost_unit` | The shared unit of every estimated and measured cost |

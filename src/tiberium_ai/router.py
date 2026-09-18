@@ -1,7 +1,13 @@
 from __future__ import annotations
 from math import isfinite
+from typing import TYPE_CHECKING, Sequence
 
 from .contracts import Task, CandidateRoute, Decision
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from .registry import RouteRegistry
+
+POLICY_VERSION = "shadow-routing/1"
 
 
 def is_nonnegative_number(value: object) -> bool:
@@ -20,12 +26,45 @@ class ShadowRouter:
     Declared confidence is a filtering signal, not verified quality.
     """
 
-    def __init__(self, min_confidence: float = 0.9) -> None:
+    def __init__(
+        self,
+        min_confidence: float = 0.9,
+        registry: "RouteRegistry | None" = None,
+    ) -> None:
         if not is_nonnegative_number(min_confidence) or min_confidence > 1:
             raise ValueError("min_confidence must be a finite number in [0, 1].")
+        if registry is not None and not (
+            callable(getattr(registry, "candidates_for", None))
+            and callable(getattr(registry, "policy_version", None))
+        ):
+            raise TypeError(
+                "registry must provide candidates_for(...) and policy_version(...)."
+            )
         self._min_confidence = min_confidence
+        self._registry = registry
 
-    def propose(self, task: Task, candidates: list[CandidateRoute]) -> Decision:
+    @property
+    def policy_version(self) -> str:
+        """Policy identity, extended with the registry version when present."""
+        if self._registry is None:
+            return POLICY_VERSION
+        return self._registry.policy_version(POLICY_VERSION)
+
+    def propose(
+        self,
+        task: Task,
+        candidates: list[CandidateRoute] | None = None,
+        *,
+        required_capabilities: Sequence[str] = (),
+    ) -> Decision:
+        if candidates is None:
+            if self._registry is None:
+                raise ValueError(
+                    "candidates are required when the router has no registry."
+                )
+            candidates = self._registry.candidates_for(
+                task, required_capabilities=required_capabilities
+            )
         # CandidateRoute has no evidence or locality guarantees yet. Do not
         # silently interpret these requirements as satisfied by confidence.
         if (task.risk_class, task.evidence_level, task.locality) != (
