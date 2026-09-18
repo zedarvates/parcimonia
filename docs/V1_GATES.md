@@ -94,10 +94,16 @@ Objective: decide what to do when confidence, cost or evidence is insufficient.
 
 Deliverables:
 - states `ACCEPT`, `RETRY`, `ESCALATE`, `ABSTAIN`, `FAIL_HARD`
-- budgets: maximum cost per task, maximum escalations, deadline
+- budgets: maximum cost per task, maximum escalations, maximum attempts and a
+  cumulative latency budget (a wall-clock deadline needs the clock that G6 owns)
 - loop guard and error taxonomy (route failure, verifier failure,
   ill-specified task)
 - deterministic hard stops that no learned component can bypass
+
+Status: `escalation.py` implements the five states, the cumulative budgets, the
+loop guard, the fail-closed rule for unknown cost and a reason code on every
+decision; see [Escalation policy](ESCALATION.md). The table below is covered by
+table-driven tests.
 
 Exit criteria:
 - table-driven tests over G1 measurements

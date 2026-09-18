@@ -97,6 +97,11 @@ The suite executes 20 local tasks twice, records 40 measured runs and 20
 attributed observations, and includes one deliberate route failure. Fixture
 results prove provenance and replay, not representative cost.
 
+The third gate is implemented: an escalation policy decides between `ACCEPT`,
+`RETRY`, `ESCALATE`, `ABSTAIN` and `FAIL_HARD` inside cumulative budgets, with a
+loop guard, a fail-closed rule for unknown cost and a reason code on every
+decision. See [Escalation policy](docs/ESCALATION.md).
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,

@@ -6,6 +6,7 @@ from .measurement import (
     write_measurement,
 )
 from .capture import CapturedRun, capture_run
+from .escalation import Budget, EscalationDecision, EscalationPolicy, EscalationState
 from .observations import (
     compare_observation,
     read_observation,
@@ -37,6 +38,10 @@ __all__ = [
     "read_measurement",
     "CapturedRun",
     "capture_run",
+    "Budget",
+    "EscalationPolicy",
+    "EscalationState",
+    "EscalationDecision",
     "Verification",
     "VerifierRegistry",
     "shape_verifier",
