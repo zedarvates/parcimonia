@@ -2,6 +2,11 @@
 
 ## Current checkpoint
 
+The v1 work is sequenced in [V1 gates](docs/V1_GATES.md): real outcomes and
+provenance, deterministic verifiers, escalation budgets, route registry, cost
+vector and benchmarks, then opt-in active mode. A later gate does not start
+while its predecessor's exit criteria are unmet.
+
 Implemented locally: observation-only proposals, finite confidence/cost validation,
 configurable confidence threshold, estimated-cost ordering, deterministic tie
 breaking, and abstention on ambiguous route identities or unsupported task

@@ -73,6 +73,15 @@ Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, uns
 
 Early design / bootstrap. No automatic routing is enabled.
 
+V1 is organised as a sequence of evidence gates rather than a list of modules;
+see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
+explicit non-goals.
+
+The first gate is implemented: `run_baseline` executes a **caller-supplied**
+callable exactly once, measures wall clock through an injected clock, and writes
+a `measurement/1` record carrying the method, environment and outcome. See
+[Baseline measurements](docs/MEASUREMENT.md).
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,
