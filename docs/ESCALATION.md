@@ -45,3 +45,15 @@ Estimates gate the budget while measurements remain the evidence, and a hard sto
 is never overridden by a learned component. The policy does not choose
 candidates, does not execute them and does not decide intent: it only decides
 whether to continue, inside limits the caller declares.
+
+## Active mode
+
+`ActiveRouter` executes a route and reuses this policy after every attempt. It
+refuses to start without a policy, cumulative budgets, a sandbox of pre-declared
+callables and a kill switch, requires an idempotency key per execution, and needs
+a single-use human authorization for any risk class outside the automatic set.
+Cancellation and the kill switch are checked before every attempt, automatic
+retries are impossible because `retry_safe` is always false, and every execution
+returns a replayable observation plus an audit record linking the authorization,
+the attempted routes, the spend ledger and the status. The sandbox is an
+allow-list, not an operating-system sandbox, and the ledgers live in memory.

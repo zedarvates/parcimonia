@@ -113,6 +113,12 @@ front instead of a weighted scalar, and a seeded benchmark splits cases into
 development and held-out sets before any claim is allowed. See the
 [benchmark plan](docs/BENCHMARKS.md).
 
+The sixth gate is implemented: active mode refuses to start without a policy,
+budgets, a sandbox and a kill switch; it requires a single-use human
+authorization for any class outside the automatic set and an idempotency key per
+execution, and it returns an audit trail linking the authorization, the attempts
+and a replayable observation. See [Active mode](docs/ESCALATION.md).
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,

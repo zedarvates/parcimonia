@@ -18,6 +18,14 @@ from .benchmark import (
     run_benchmark,
     split_cases,
 )
+from .active import (
+    ActivePolicy,
+    ActiveRouter,
+    Authorization,
+    ExecutionResult,
+    KillSwitch,
+    Sandbox,
+)
 from .observations import (
     compare_observation,
     read_observation,
@@ -65,6 +73,12 @@ __all__ = [
     "split_cases",
     "build_report",
     "run_benchmark",
+    "ActivePolicy",
+    "ActiveRouter",
+    "Authorization",
+    "ExecutionResult",
+    "KillSwitch",
+    "Sandbox",
     "Verification",
     "VerifierRegistry",
     "shape_verifier",

@@ -176,6 +176,12 @@ Deliverables:
 - audit trail linking authorization, decision and observation
 - documented rollback procedure
 
+Status: `active.py` implements the policy, the budget, the sandbox allow-list,
+the kill switch, single-use authorizations, the required idempotency key, the
+cancellation flag and the bounded execution loop driven by the G3 policy; every
+execution returns a replayable observation plus an audit record. Rollback is the
+kill switch plus cancellation, and a durable ledger remains open.
+
 Exit criteria:
 - active mode refuses to start without policy, budgets and kill switch
 - every execution produces a replayable observation
