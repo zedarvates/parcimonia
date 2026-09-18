@@ -70,6 +70,11 @@ print(result.latency_ms, result.ok, result.error_type)
 
 ## Limits
 
+`adapters.py` parses an OpenAI-compatible response into a validated token count
+and a resource vector, without performing the call itself; latency stays the
+caller's measurement and VRAM and energy stay unknown, because that API does not
+report them.
+
 A measurement proves that a run happened and how long it took. It does not
 prove that the output was correct, which is the verifier gate, and it does not
 compare routes, which is the benchmark gate. `cost` is caller-supplied: a billed
