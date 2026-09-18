@@ -44,6 +44,11 @@ abstained verdict (`null`) is never a success. See
 [deterministic verification](VERIFICATION.md) for the registry that produces
 those blocks.
 
+A verdict cannot be reconstructed later: the verified output is deliberately
+never stored, so only its hash survives inside an observation. Measure and verify
+in the same pass, then write both artefacts, or the verification is lost and the
+measurement stands alone.
+
 ## Validation
 
 A record is rejected when its schema or policy version is unsupported, when a
