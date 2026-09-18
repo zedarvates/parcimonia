@@ -1,5 +1,5 @@
 name: Feature proposal
-description: Propose a bounded Tiberium capability or experiment
+description: Propose a bounded Parcimonia capability or experiment
 title: "[Feature] "
 body:
   - type: textarea

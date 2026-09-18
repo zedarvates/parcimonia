@@ -2,6 +2,8 @@
 
 # Parcimonia
 
+[![tests](https://github.com/zedarvates/parcimonia/actions/workflows/tests.yml/badge.svg)](https://github.com/zedarvates/parcimonia/actions/workflows/tests.yml)
+
 > An open-source adaptive compute router for AI agents, started under the working codename Tiberium AI.
 
 Repository: https://github.com/zedarvates/parcimonia
