@@ -226,6 +226,21 @@ another repository that consumes Parcimonia as a library; that project is
 currently macOS-only and coupled to bb or cmux, so a dependency would be a
 liability rather than a shortcut.
 
+Status: the core continuation arbiter is implemented in
+`src/tiberium_ai/continuation.py` with full unit tests in
+`tests/test_continuation.py`. It provides deterministic arbitration combining
+active quota window metrics (% remaining, resets, tokens), task difficulty
+(deterministic rule vs compact vs heavy reasoning), anti-loop desynchronization
+detection (consecutive stalls), and effector routing (local rule, compact model,
+WebBrain MCP browser delegation, frontier reasoning).
+
+The full supervisory loop adapter is implemented in `src/tiberium_ai/director.py`
+with `AstralDirector`, maintaining four strictly independent counters (proposed,
+delivered, confirmed, overridden), supporting `OFF`, `SEMI_AUTO`, and `AUTO`
+modes, and consuming local-first DAG backlogs parsed via `kanban.py`. All tests
+pass in `tests/test_director.py`, `tests/test_continuation.py`, and
+`tests/test_kanban.py`.
+
 ## Explicit non-goals for v1
 
 - no calibration before labelled outcomes exist

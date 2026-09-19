@@ -1,0 +1,132 @@
+import pytest
+
+from tiberium_ai.contracts import Task
+from tiberium_ai.continuation import (
+    ContinuationAction,
+    ContinuationArbiter,
+    ContinuationVerdict,
+    QuotaMetrics,
+    RouteKind,
+    TaskDifficulty,
+)
+
+
+def test_quota_metrics_validation():
+    with pytest.raises(ValueError, match="remaining_percent must be a finite number"):
+        QuotaMetrics(remaining_percent=-1.0, window_duration_mins=300)
+    with pytest.raises(ValueError, match="remaining_percent must be a finite number"):
+        QuotaMetrics(remaining_percent=101.0, window_duration_mins=300)
+    with pytest.raises(ValueError, match="window_duration_mins must be a positive integer"):
+        QuotaMetrics(remaining_percent=50.0, window_duration_mins=0)
+    with pytest.raises(ValueError, match="tokens_remaining must be null or a nonnegative integer"):
+        QuotaMetrics(remaining_percent=50.0, window_duration_mins=300, tokens_remaining=-10)
+
+    valid = QuotaMetrics(
+        remaining_percent=45.5,
+        window_duration_mins=300,
+        resets_in_seconds=1200.0,
+        tokens_remaining=50000,
+    )
+    assert valid.remaining_percent == 45.5
+    assert valid.window_duration_mins == 300
+
+
+def test_arbiter_deterministic_zero_cost():
+    arbiter = ContinuationArbiter()
+    task = Task(task_id="t1", kind="test_run", inputs={"cmd": "pytest"})
+    # Even under 0% quota, deterministic tasks run on local rule
+    quota = QuotaMetrics(remaining_percent=0.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.DETERMINISTIC)
+
+    assert verdict.action == ContinuationAction.CONTINUE
+    assert verdict.target_route == RouteKind.RULE
+    assert verdict.max_step_tokens == 0
+
+
+def test_arbiter_critical_quota_freeze_reasoning():
+    arbiter = ContinuationArbiter(critical_quota_percent=15.0)
+    task = Task(task_id="t2", kind="refactor", inputs={})
+    quota = QuotaMetrics(remaining_percent=10.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.REASONING)
+
+    assert verdict.action == ContinuationAction.FREEZE_QUOTA
+    assert verdict.target_route == RouteKind.NONE
+    assert "Quota critical" in verdict.reason
+
+
+def test_arbiter_critical_quota_downgrade_compact():
+    arbiter = ContinuationArbiter(critical_quota_percent=15.0)
+    task = Task(task_id="t3", kind="syntax_fix", inputs={})
+    quota = QuotaMetrics(remaining_percent=10.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, allow_local_fallback=True)
+
+    assert verdict.action == ContinuationAction.CONTINUE
+    assert verdict.target_route == RouteKind.LOCAL_SMALL
+    assert verdict.max_step_tokens == 1000
+
+
+def test_arbiter_critical_quota_compact_fallback_disabled():
+    arbiter = ContinuationArbiter(critical_quota_percent=15.0)
+    task = Task(task_id="t4", kind="syntax_fix", inputs={})
+    quota = QuotaMetrics(remaining_percent=10.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, allow_local_fallback=False)
+
+    assert verdict.action == ContinuationAction.FREEZE_QUOTA
+    assert verdict.target_route == RouteKind.NONE
+
+
+def test_arbiter_browser_delegation_to_webbrain():
+    arbiter = ContinuationArbiter()
+    task = Task(task_id="t5", kind="web_fill", inputs={"url": "https://example.com"})
+    quota = QuotaMetrics(remaining_percent=50.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, requires_browser=True)
+
+    assert verdict.action == ContinuationAction.CONTINUE
+    assert verdict.target_route == RouteKind.WEBBRAIN_MCP
+    assert "WebBrain" in verdict.reason
+
+
+def test_arbiter_browser_critical_quota_freeze():
+    arbiter = ContinuationArbiter(critical_quota_percent=15.0)
+    task = Task(task_id="t6", kind="web_fill", inputs={})
+    quota = QuotaMetrics(remaining_percent=5.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, requires_browser=True)
+
+    assert verdict.action == ContinuationAction.FREEZE_QUOTA
+    assert verdict.target_route == RouteKind.NONE
+
+
+def test_arbiter_anti_loop_stall_detection():
+    arbiter = ContinuationArbiter(max_consecutive_stalls=2)
+    task = Task(task_id="t7", kind="code_fix", inputs={})
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    # 2 consecutive stalls without progress -> STOP and require human
+    verdict = arbiter.evaluate(
+        task, quota, TaskDifficulty.REASONING, consecutive_stalls=2
+    )
+
+    assert verdict.action == ContinuationAction.REQUIRE_HUMAN
+    assert verdict.target_route == RouteKind.NONE
+    assert "Desynchronization detected" in verdict.reason
+
+
+def test_arbiter_high_risk_requires_human():
+    arbiter = ContinuationArbiter()
+    task = Task(task_id="t8", kind="deploy", inputs={}, risk_class="critical")
+    quota = QuotaMetrics(remaining_percent=90.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.REASONING)
+
+    assert verdict.action == ContinuationAction.REQUIRE_HUMAN
+    assert verdict.target_route == RouteKind.NONE
+    assert "requires human approval" in verdict.reason
+
+
+def test_arbiter_nominal_reasoning():
+    arbiter = ContinuationArbiter()
+    task = Task(task_id="t9", kind="architecture", inputs={})
+    quota = QuotaMetrics(remaining_percent=75.0, window_duration_mins=300)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.REASONING)
+
+    assert verdict.action == ContinuationAction.CONTINUE
+    assert verdict.target_route == RouteKind.FRONTIER
+    assert verdict.max_step_tokens is None

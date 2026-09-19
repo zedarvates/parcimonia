@@ -40,6 +40,28 @@ from .verification import (
     shape_verifier,
     runner_result_verifier,
 )
+from .continuation import (
+    ContinuationAction,
+    ContinuationArbiter,
+    ContinuationVerdict,
+    QuotaMetrics,
+    RouteKind,
+    TaskDifficulty,
+)
+from .kanban import (
+    KanbanBoard,
+    KanbanStatus,
+    KanbanTask,
+    parse_kanban_markdown,
+    kanban_to_jobs_payload,
+    export_kanban_mirror,
+)
+from .director import (
+    AstralDirector,
+    DirectorCounters,
+    DirectorMode,
+    DirectorProposal,
+)
 
 __all__ = [
     "Task",
@@ -85,5 +107,21 @@ __all__ = [
     "exact_match_verifier",
     "runner_result_verifier",
     "attributed_evidence",
+    "ContinuationAction",
+    "ContinuationArbiter",
+    "ContinuationVerdict",
+    "QuotaMetrics",
+    "RouteKind",
+    "TaskDifficulty",
+    "KanbanBoard",
+    "KanbanStatus",
+    "KanbanTask",
+    "parse_kanban_markdown",
+    "kanban_to_jobs_payload",
+    "export_kanban_mirror",
+    "AstralDirector",
+    "DirectorCounters",
+    "DirectorMode",
+    "DirectorProposal",
 ]
 __version__ = "0.0.1"
