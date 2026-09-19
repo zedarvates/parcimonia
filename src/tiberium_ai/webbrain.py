@@ -19,6 +19,10 @@ __all__ = [
     "WebBrainResponse",
     "build_webbrain_request",
     "parse_webbrain_response",
+    "WebBrainAction",
+    "WebBrainClient",
+    "WebBrainCommand",
+    "WebBrainResult",
 ]
 
 
@@ -139,3 +143,28 @@ def parse_webbrain_response(payload: object) -> WebBrainResponse:
         extracted_data=extracted,
         tokens_used=tokens,
     )
+
+
+# Aliases and Client Interface
+WebBrainAction = WebBrainMode
+WebBrainCommand = WebBrainRequest
+WebBrainResult = WebBrainResponse
+
+
+class WebBrainClient:
+    """Client for constructing and parsing WebBrain MCP calls."""
+
+    def __init__(self, endpoint_url: str = "ws://127.0.0.1:17374/extension") -> None:
+        self.endpoint_url = endpoint_url
+
+    def build_command(
+        self,
+        task: Task,
+        *,
+        mode: WebBrainMode = WebBrainMode.ASK,
+        schema: Mapping[str, Any] | None = None,
+    ) -> WebBrainCommand:
+        return build_webbrain_request(task, mode=mode, schema=schema)
+
+    def parse_result(self, payload: object) -> WebBrainResult:
+        return parse_webbrain_response(payload)

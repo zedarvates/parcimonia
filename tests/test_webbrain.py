@@ -64,3 +64,22 @@ def test_parse_webbrain_response_validation():
 
     with pytest.raises(ValueError, match="steps_taken must be a nonnegative integer"):
         parse_webbrain_response({"run_id": "x", "steps_taken": -1})
+
+
+def test_webbrain_client_convenience():
+    from tiberium_ai.webbrain import WebBrainClient
+    client = WebBrainClient()
+    task = Task("t_client", "query", {"prompt": "Check status"})
+    cmd = client.build_command(task)
+    assert cmd.tool_name == "webbrain_run"
+    assert cmd.arguments["task"] == "Check status"
+
+    resp = client.parse_result({
+        "run_id": "wb_99",
+        "status": "completed",
+        "content": "Done",
+        "steps_taken": 1,
+        "usage": {"total_tokens": 120},
+    })
+    assert resp.run_id == "wb_99"
+    assert resp.tokens_used == 120
