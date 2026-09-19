@@ -64,10 +64,11 @@ from .director import (
     DirectorProposal,
 )
 from .webbrain import (
-    WebBrainAction,
-    WebBrainClient,
-    WebBrainCommand,
-    WebBrainResult,
+    WebBrainMode,
+    WebBrainRequest,
+    WebBrainResponse,
+    build_webbrain_request,
+    parse_webbrain_response,
 )
 
 __all__ = [
@@ -131,9 +132,10 @@ __all__ = [
     "DirectorCounters",
     "DirectorMode",
     "DirectorProposal",
-    "WebBrainAction",
-    "WebBrainClient",
-    "WebBrainCommand",
-    "WebBrainResult",
+    "WebBrainMode",
+    "WebBrainRequest",
+    "WebBrainResponse",
+    "build_webbrain_request",
+    "parse_webbrain_response",
 ]
 __version__ = "0.0.1"

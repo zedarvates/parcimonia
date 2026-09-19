@@ -1,50 +1,66 @@
 import pytest
 
+from tiberium_ai.contracts import Task
+from tiberium_ai.resources import ResourceVector
 from tiberium_ai.webbrain import (
-    WebBrainAction,
-    WebBrainClient,
-    WebBrainCommand,
-    WebBrainResult,
+    WebBrainMode,
+    WebBrainRequest,
+    WebBrainResponse,
+    build_webbrain_request,
+    parse_webbrain_response,
 )
 
 
-def test_command_validation():
-    with pytest.raises(ValueError, match="action must be a valid WebBrainAction"):
-        WebBrainCommand(action="invalid_action")
+def test_build_webbrain_request_ask():
+    task = Task("t_web", "web_query", {"prompt": "Find pricing table on this page"})
+    req = build_webbrain_request(task, mode=WebBrainMode.ASK)
+    assert req.tool_name == "webbrain_run"
+    assert req.arguments["task"] == "Find pricing table on this page"
+    assert req.arguments["mode"] == "ask"
 
-    cmd = WebBrainCommand(
-        action=WebBrainAction.NAVIGATE,
-        target="https://example.com",
-    )
-    assert cmd.action == WebBrainAction.NAVIGATE
-    assert cmd.target == "https://example.com"
-    assert cmd.to_payload() == {
-        "action": "navigate",
-        "target": "https://example.com",
-        "value": None,
+
+def test_build_webbrain_request_extract():
+    task = Task("t_web", "extract", {"prompt": "Extract products"})
+    schema = {"type": "object", "properties": {"price": {"type": "number"}}}
+    req = build_webbrain_request(task, schema=schema)
+    assert req.tool_name == "webbrain_extract"
+    assert req.arguments["schema"] == schema
+
+
+def test_build_webbrain_request_high_risk_act_forbidden():
+    task = Task("t_web", "web_payment", {"prompt": "Click pay"}, risk_class="high")
+    with pytest.raises(ValueError, match="forbidden on risk class 'high'"):
+        build_webbrain_request(task, mode=WebBrainMode.ACT)
+
+
+def test_parse_webbrain_response():
+    payload = {
+        "run_id": "wb_12345",
+        "status": "completed",
+        "content": "Found 3 pricing tiers: Free, Pro, Enterprise.",
+        "steps_taken": 4,
+        "extracted_data": {"tiers": ["Free", "Pro", "Enterprise"]},
+        "usage": {"total_tokens": 850},
     }
+    resp = parse_webbrain_response(payload)
+    assert resp.run_id == "wb_12345"
+    assert resp.status == "completed"
+    assert resp.steps_taken == 4
+    assert resp.tokens_used == 850
+    assert resp.extracted_data == {"tiers": ["Free", "Pro", "Enterprise"]}
+
+    vector = resp.to_resource_vector(latency_ms=1250.0)
+    assert isinstance(vector, ResourceVector)
+    assert vector.tokens == 850
+    assert vector.latency_ms == 1250.0
 
 
-def test_offline_fallback_does_not_crash():
-    client = WebBrainClient(endpoint="ws://127.0.0.1:59998/extension", timeout=0.1)
-    cmd = WebBrainCommand(action=WebBrainAction.NAVIGATE, target="https://example.com")
-    result = client.execute(cmd)
+def test_parse_webbrain_response_validation():
+    with pytest.raises(TypeError, match="payload must be a mapping"):
+        parse_webbrain_response("not-a-mapping")
 
-    assert isinstance(result, WebBrainResult)
-    assert result.ok is False
-    assert result.status == "offline"
-    assert "connection refused" in result.error.lower() or "offline" in result.error.lower() or "error" in result.error.lower()
+    with pytest.raises(ValueError, match="must contain a nonempty string 'run_id'"):
+        parse_webbrain_response({"content": "hello"})
 
-
-def test_simulated_successful_execution():
-    class MockTransport:
-        def send_and_receive(self, payload, timeout):
-            return {"status": "ok", "url": payload["target"], "title": "Example Domain"}
-
-    client = WebBrainClient(transport=MockTransport())
-    cmd = WebBrainCommand(action=WebBrainAction.NAVIGATE, target="https://example.com")
-    result = client.execute(cmd)
-
-    assert result.ok is True
-    assert result.status == "executed"
-    assert result.data["title"] == "Example Domain"
+    with pytest.raises(ValueError, match="steps_taken must be a nonnegative integer"):
+        parse_webbrain_response({"run_id": "x", "steps_taken": -1})
