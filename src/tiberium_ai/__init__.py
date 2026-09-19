@@ -70,6 +70,14 @@ from .webbrain import (
     build_webbrain_request,
     parse_webbrain_response,
 )
+from .world_model import (
+    ActionDescriptor,
+    ActionGateVerdict,
+    GateRecommendation,
+    JEPAActionGate,
+    StateVector,
+    TransitionRecord,
+)
 
 __all__ = [
     "Task",
@@ -137,5 +145,11 @@ __all__ = [
     "WebBrainResponse",
     "build_webbrain_request",
     "parse_webbrain_response",
+    "ActionDescriptor",
+    "ActionGateVerdict",
+    "GateRecommendation",
+    "JEPAActionGate",
+    "StateVector",
+    "TransitionRecord",
 ]
 __version__ = "0.0.1"

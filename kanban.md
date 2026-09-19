@@ -1,6 +1,6 @@
 # Parcimonia Kanban Backlog
 
-Dernière mise à jour : 2026-09-19T15:00:00Z
+Dernière mise à jour : 2026-09-19T15:30:00Z
 Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## Terminé
@@ -41,26 +41,32 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 - [x] TASK-052 [P1] [difficulté: compact]
   - Intitulé : Pont d'ingestion miroir vers Kanboard Neo
-  - Reçu : kanban_to_jobs_payload, export_kanban_mirror (tests/test_kanban.py)
-  - Notes : Synchronisation asynchrone non-bloquante du kanban.md local vers l'API /api/jobs
+  - Reçu : kanban_to_jobs_payload, export_kanban_mirror, sync_kanban_mirror
+  - Preuve : tests/test_kanban.py (8/8 passés)
 
 - [x] TASK-053 [P0] [difficulté: compact]
   - Intitulé : Implémentation complète de l'Astral Resonance Director
   - Reçu : AstralDirector, DirectorCounters, DirectorMode, DirectorProposal
   - Preuve : tests/test_director.py (10/10 passés)
 
-- [x] TASK-054 [P1] [difficulte: compact] [outil: webbrain]
-  - Intitule : Integration adaptateur WebBrain MCP pour actions navigateur
-  - Recu : WebBrainClient, WebBrainCommand, WebBrainAction, offline fallback
-  - Preuve : tests/test_webbrain.py (3/3 passes)
+- [x] TASK-054 [P1] [difficulté: compact] [outil: webbrain]
+  - Intitulé : Intégration adaptateur WebBrain MCP pour actions navigateur
+  - Reçu : WebBrainClient, WebBrainCommand, WebBrainResult, build/parse MCP
+  - Preuve : tests/test_webbrain.py (6/6 passés)
+
+- [x] TASK-055 [P2] [difficulté: raisonnement]
+  - Intitulé : World Model d'interface prédictif (JEPA-like action gate)
+  - Reçu : StateVector, ActionDescriptor, JEPAActionGate, loop & anomaly pruning
+  - Preuve : tests/test_world_model.py (6/6 passés)
 
 ## En cours
 
-- [ ] TASK-055 [P2] [difficulte: raisonnement]
-  - Intitule : World Model d'interface predictif (JEPA-like action gate)
-  - Dependances : TASK-054
-  - Notes : Evaluation latente de faisabilite d'action avant consommation de tokens
-
+- [ ] TASK-056 [P2] [difficulté: compact]
+  - Intitulé : Scénario d'intégration bout-en-bout (Director + Router + WebBrain + WorldModel)
+  - Dépendances : TASK-055
+  - Notes : Valide la décision de reprise complète avec tous les composants
 
 ## À faire (Backlog)
 
+- [ ] TASK-057 [P3] [difficulté: compact]
+  - Intitulé : Documentation synthétique dans docs/INTEGRATIONS.md
