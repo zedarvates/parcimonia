@@ -55,6 +55,7 @@ from .kanban import (
     parse_kanban_markdown,
     kanban_to_jobs_payload,
     export_kanban_mirror,
+    sync_kanban_mirror,
 )
 from .director import (
     AstralDirector,
@@ -119,6 +120,7 @@ __all__ = [
     "parse_kanban_markdown",
     "kanban_to_jobs_payload",
     "export_kanban_mirror",
+    "sync_kanban_mirror",
     "AstralDirector",
     "DirectorCounters",
     "DirectorMode",

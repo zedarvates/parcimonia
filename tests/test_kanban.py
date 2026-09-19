@@ -139,3 +139,47 @@ def test_kanban_to_jobs_payload_and_export(tmp_path):
     assert data["version"] == 1
     assert data["project"] == "TiberiumAI"
     assert data["total_jobs"] == 4
+
+
+def test_sync_kanban_mirror_offline_fallback(tmp_path):
+    from tiberium_ai.kanban import sync_kanban_mirror
+    board = parse_kanban_markdown(SAMPLE_KANBAN)
+    mirror_file = tmp_path / "offline_mirror.json"
+
+    result = sync_kanban_mirror(
+        board,
+        "TiberiumAI",
+        endpoint_url="http://127.0.0.1:59999/api/jobs",
+        mirror_path=mirror_file,
+        timeout=0.1,
+    )
+    assert result["synced"] is False
+    assert result["count"] == 4
+    assert "error" in result
+    assert mirror_file.is_file()
+
+
+def test_sync_kanban_mirror_success(tmp_path, monkeypatch):
+    from tiberium_ai.kanban import sync_kanban_mirror
+    from unittest.mock import MagicMock
+    import urllib.request
+
+    board = parse_kanban_markdown(SAMPLE_KANBAN)
+    mirror_file = tmp_path / "online_mirror.json"
+
+    mock_resp = MagicMock()
+    mock_resp.status = 200
+    mock_resp.__enter__.return_value = mock_resp
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: mock_resp)
+
+    result = sync_kanban_mirror(
+        board,
+        "TiberiumAI",
+        endpoint_url="http://127.0.0.1:8080/api/jobs",
+        mirror_path=mirror_file,
+        timeout=1.0,
+    )
+    assert result["synced"] is True
+    assert result["status_code"] == 200
+    assert result["count"] == 4
+    assert mirror_file.is_file()

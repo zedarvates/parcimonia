@@ -23,6 +23,7 @@ __all__ = [
     "parse_kanban_markdown",
     "kanban_to_jobs_payload",
     "export_kanban_mirror",
+    "sync_kanban_mirror",
 ]
 
 
@@ -249,3 +250,57 @@ def export_kanban_mirror(board: KanbanBoard, project_name: str, target_path: str
             indent=2,
         )
     return path
+
+
+def sync_kanban_mirror(
+    board: KanbanBoard,
+    project_name: str,
+    *,
+    endpoint_url: str = "http://127.0.0.1:8080/api/jobs",
+    mirror_path: str | Path | None = None,
+    timeout: float = 2.0,
+) -> dict[str, Any]:
+    """Export the local board mirror and attempt non-blocking sync to Kanboard Neo.
+
+    Always exports the local mirror file if mirror_path is provided.
+    If the endpoint is unreachable or errors, fails gracefully without raising,
+    preserving local-first offline operation.
+    """
+    import urllib.request
+    import urllib.error
+
+    if mirror_path is not None:
+        export_kanban_mirror(board, project_name, mirror_path)
+
+    payload = kanban_to_jobs_payload(board, project_name)
+    envelope = {
+        "version": 1,
+        "project": project_name.strip(),
+        "total_jobs": len(payload),
+        "jobs": payload,
+    }
+
+    data = json.dumps(envelope).encode("utf-8")
+    req = urllib.request.Request(
+        endpoint_url,
+        data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            status_code = getattr(resp, "status", 200)
+            return {
+                "synced": True,
+                "status_code": status_code,
+                "count": len(payload),
+                "endpoint": endpoint_url,
+            }
+    except Exception as exc:
+        return {
+            "synced": False,
+            "error": f"{type(exc).__name__}: {exc}",
+            "count": len(payload),
+            "endpoint": endpoint_url,
+        }
