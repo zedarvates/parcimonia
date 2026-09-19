@@ -49,16 +49,18 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Reçu : AstralDirector, DirectorCounters, DirectorMode, DirectorProposal
   - Preuve : tests/test_director.py (10/10 passés)
 
+- [x] TASK-054 [P1] [difficulte: compact] [outil: webbrain]
+  - Intitule : Integration adaptateur WebBrain MCP pour actions navigateur
+  - Recu : WebBrainClient, WebBrainCommand, WebBrainAction, offline fallback
+  - Preuve : tests/test_webbrain.py (3/3 passes)
+
 ## En cours
 
-- [ ] TASK-054 [P1] [difficulté: compact] [outil: webbrain]
-  - Intitulé : Intégration adaptateur WebBrain MCP pour actions navigateur
-  - Dépendances : TASK-050
-  - Notes : Pont client vers ws://127.0.0.1:17374/extension pour navigation authentifiée
+- [ ] TASK-055 [P2] [difficulte: raisonnement]
+  - Intitule : World Model d'interface predictif (JEPA-like action gate)
+  - Dependances : TASK-054
+  - Notes : Evaluation latente de faisabilite d'action avant consommation de tokens
+
 
 ## À faire (Backlog)
 
-- [ ] TASK-055 [P2] [difficulté: raisonnement]
-  - Intitulé : World Model d'interface prédictif (JEPA-like action gate)
-  - Dépendances : TASK-054
-  - Notes : Évaluation latente de faisabilité d'action avant consommation de tokens

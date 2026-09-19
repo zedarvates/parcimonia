@@ -63,6 +63,12 @@ from .director import (
     DirectorMode,
     DirectorProposal,
 )
+from .webbrain import (
+    WebBrainAction,
+    WebBrainClient,
+    WebBrainCommand,
+    WebBrainResult,
+)
 
 __all__ = [
     "Task",
@@ -125,5 +131,9 @@ __all__ = [
     "DirectorCounters",
     "DirectorMode",
     "DirectorProposal",
+    "WebBrainAction",
+    "WebBrainClient",
+    "WebBrainCommand",
+    "WebBrainResult",
 ]
 __version__ = "0.0.1"
