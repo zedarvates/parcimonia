@@ -8,7 +8,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
+from urllib.parse import urlparse
 
 from .contracts import Task
 from .resources import ResourceVector
@@ -23,7 +24,25 @@ __all__ = [
     "WebBrainClient",
     "WebBrainCommand",
     "WebBrainResult",
+    "WebBrainRoundTrip",
+    "is_loopback_endpoint",
 ]
+
+_LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
+
+
+def is_loopback_endpoint(endpoint_url: object) -> bool:
+    """Return whether a WebSocket endpoint targets this machine.
+
+    A round-trip never leaves the loopback interface, so a non-loopback host is
+    refused instead of contacted.
+    """
+    if not isinstance(endpoint_url, str) or not endpoint_url.strip():
+        raise ValueError("endpoint_url must be a nonempty string.")
+    parsed = urlparse(endpoint_url.strip())
+    if parsed.scheme not in ("ws", "wss"):
+        raise ValueError("endpoint_url must use the ws or wss scheme.")
+    return (parsed.hostname or "").lower() in _LOOPBACK_HOSTS
 
 
 class WebBrainMode(str, Enum):
@@ -151,6 +170,41 @@ WebBrainCommand = WebBrainRequest
 WebBrainResult = WebBrainResponse
 
 
+@dataclass(frozen=True)
+class WebBrainRoundTrip:
+    """Result of one observation-only ASK round-trip.
+
+    `status` is `ok`, `unavailable` or `error`. Nothing here proves the answer
+    is true, and no action is ever performed on the page.
+    """
+
+    status: str
+    mode: WebBrainMode
+    request: WebBrainRequest
+    response: WebBrainResponse | None
+    detail_code: str
+
+    def __post_init__(self) -> None:
+        if self.status not in ("ok", "unavailable", "error"):
+            raise ValueError("status must be ok, unavailable or error.")
+        if self.status == "ok" and self.response is None:
+            raise ValueError("an ok round-trip must carry a parsed response.")
+        if self.status != "ok" and self.response is not None:
+            raise ValueError("only an ok round-trip may carry a response.")
+        if not isinstance(self.detail_code, str) or not self.detail_code.strip():
+            raise ValueError("detail_code must be a nonempty string.")
+
+    @property
+    def performed(self) -> bool:
+        return self.status == "ok"
+
+    def to_resource_vector(self, latency_ms: float | None = None) -> ResourceVector:
+        """Measure the round-trip. An absent response has nothing to measure."""
+        if self.response is None:
+            raise ValueError("no response was received, so there is no vector.")
+        return self.response.to_resource_vector(latency_ms=latency_ms)
+
+
 class WebBrainClient:
     """Client for constructing and parsing WebBrain MCP calls."""
 
@@ -168,3 +222,55 @@ class WebBrainClient:
 
     def parse_result(self, payload: object) -> WebBrainResult:
         return parse_webbrain_response(payload)
+
+    def round_trip(
+        self,
+        task: Task,
+        *,
+        mode: WebBrainMode = WebBrainMode.ASK,
+        transport: Callable[[str, Mapping[str, Any]], object] | None = None,
+        schema: Mapping[str, Any] | None = None,
+    ) -> WebBrainRoundTrip:
+        """Perform one ASK-only, loopback-only, observation-only round-trip.
+
+        The transport is injected, so the library performs no network I/O: a
+        caller supplies the WebSocket or MCP transport, and its absence is a
+        typed `unavailable` result rather than an exception.
+        """
+        if mode is not WebBrainMode.ASK:
+            raise ValueError(
+                "WebBrain round_trip is ASK only; ACT and DEV require prior "
+                "authorization."
+            )
+        if not is_loopback_endpoint(self.endpoint_url):
+            raise ValueError("WebBrain round_trip requires a loopback endpoint.")
+        command = self.build_command(task, mode=mode, schema=schema)
+        if transport is None:
+            return WebBrainRoundTrip(
+                "unavailable", mode, command, None, "no_transport_configured"
+            )
+        if not callable(transport):
+            raise TypeError("transport must be callable.")
+        envelope = {
+            "tool_name": command.tool_name,
+            "arguments": dict(command.arguments),
+        }
+        try:
+            payload = transport(self.endpoint_url, envelope)
+        except OSError as exc:
+            return WebBrainRoundTrip(
+                "unavailable",
+                mode,
+                command,
+                None,
+                f"transport_unavailable:{type(exc).__name__}",
+            )
+        except Exception as exc:  # noqa: BLE001 - reported as a typed error
+            return WebBrainRoundTrip(
+                "error", mode, command, None, f"transport_error:{type(exc).__name__}"
+            )
+        try:
+            response = self.parse_result(payload)
+        except (TypeError, ValueError):
+            return WebBrainRoundTrip("error", mode, command, None, "invalid_response")
+        return WebBrainRoundTrip("ok", mode, command, response, response.status)
