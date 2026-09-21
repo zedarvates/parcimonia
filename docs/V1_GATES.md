@@ -241,6 +241,34 @@ modes, and consuming local-first DAG backlogs parsed via `kanban.py`. All tests
 pass in `tests/test_director.py`, `tests/test_continuation.py`, and
 `tests/test_kanban.py`.
 
+`TimeBudget` is a first-class input: a zero remainder still allows deterministic
+rules, but compact/reasoning/browser work fail closed. Short interactive windows
+cannot start frontier reasoning or a browser session.
+
+TASK-056 wires those pieces in `src/tiberium_ai/pipeline.py` without network I/O:
+Director proposal, optional typed reflex, continuation verdict, schema emit,
+JEPA-style gate, WebBrain *request construction* only. Reflex and schema emit
+are observation-only until a measured calibration snapshot exists for this
+repository's tasks. See [Integrations](INTEGRATIONS.md).
+
+TASK-058 ran the fixture harness (`calibrate_parcimonia_fixtures`) on 60 authored
+labels. Coverage and Brier are recorded with `data_origin=fixture`. That snapshot
+cannot authorize auto-act. Labelled production outcomes are still absent.
+
+TASK-063 adds a project capability surface and an end-of-turn usage report
+(`src/tiberium_ai/surface.py`). Runtime START/IDLE/STOP proposals are shadow
+only. Using a forbidden tool is a violation, not a reason to keep it running.
+
+TASK-059 probes an optional local reflex backend and never downloads weights.
+TASK-062 adds `LocalCapacity` to the continuation arbiter and the runtime plan.
+Turn usage is ingested from a typed report, not from the chat UI.
+
+TASK-065 adds ranked roadmaps and a daily carry loop (`roadmap.py`). Horizon files
+are generated views of `kanban.md`, not a second backlog.
+
+TASK-066 adds human-authored ultimate goals (`buts.md`, `goals.py`). Missing or
+unknown goals do not become rank 1. The orchestrator will not invent a mission.
+
 ## Explicit non-goals for v1
 
 - no calibration before labelled outcomes exist

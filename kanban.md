@@ -1,6 +1,6 @@
 # Parcimonia Kanban Backlog
 
-Dernière mise à jour : 2026-09-19T15:30:00Z
+Dernière mise à jour : 2026-09-20T12:00:00Z
 Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## Terminé
@@ -32,41 +32,99 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 - [x] TASK-050 [P0] [difficulté: compact]
   - Intitulé : ContinuationArbiter pour Astral Resonance Director
   - Reçu : Arbitrage sur quotas, difficulté, arrêts consécutifs et WebBrain MCP
-  - Preuve : tests/test_continuation.py (10/10 passés)
+  - Preuve : tests/test_continuation.py
 
 - [x] TASK-051 [P1] [difficulté: compact]
   - Intitulé : Parser et ordonnanceur local-first kanban.md
   - Reçu : KanbanBoard, KanbanTask, dépendances DAG sans dépendance externe
-  - Preuve : tests/test_kanban.py (4/4 passés)
+  - Preuve : tests/test_kanban.py
 
 - [x] TASK-052 [P1] [difficulté: compact]
   - Intitulé : Pont d'ingestion miroir vers Kanboard Neo
   - Reçu : kanban_to_jobs_payload, export_kanban_mirror, sync_kanban_mirror
-  - Preuve : tests/test_kanban.py (8/8 passés)
+  - Preuve : tests/test_kanban.py
 
 - [x] TASK-053 [P0] [difficulté: compact]
   - Intitulé : Implémentation complète de l'Astral Resonance Director
   - Reçu : AstralDirector, DirectorCounters, DirectorMode, DirectorProposal
-  - Preuve : tests/test_director.py (10/10 passés)
+  - Preuve : tests/test_director.py
 
 - [x] TASK-054 [P1] [difficulté: compact] [outil: webbrain]
   - Intitulé : Intégration adaptateur WebBrain MCP pour actions navigateur
   - Reçu : WebBrainClient, WebBrainCommand, WebBrainResult, build/parse MCP
-  - Preuve : tests/test_webbrain.py (6/6 passés)
+  - Preuve : tests/test_webbrain.py
 
 - [x] TASK-055 [P2] [difficulté: raisonnement]
   - Intitulé : World Model d'interface prédictif (JEPA-like action gate)
   - Reçu : StateVector, ActionDescriptor, JEPAActionGate, loop & anomaly pruning
-  - Preuve : tests/test_world_model.py (6/6 passés)
+  - Preuve : tests/test_world_model.py
+
+- [x] TASK-056 [P2] [difficulté: compact]
+  - Intitulé : Scénario d'intégration bout-en-bout (Director + Router + WebBrain + WorldModel)
+  - Dépendances : TASK-055
+  - Reçu : ContinuityPipeline, TimeBudget, reflex advisory, schema emit, no network
+  - Preuve : tests/test_pipeline.py
+
+- [x] TASK-057 [P3] [difficulté: compact]
+  - Intitulé : Documentation synthétique dans docs/INTEGRATIONS.md
+  - Dépendances : TASK-056
+  - Reçu : couches Director / reflex / schema emit / WebBrain, ce qui reste hors scope
+
+- [x] TASK-058 [P2] [difficulté: compact]
+  - Intitulé : Calibration mesurée du reflex sur des tâches Parcimonia labellisées
+  - Dépendances : TASK-056
+  - Reçu : corpus fixture, HintReflexBackend, coverage/Brier, data_origin=fixture fail-closed
+  - Preuve : tests/test_reflex_calibrate.py
+
+- [x] TASK-063 [P1] [difficulté: compact]
+  - Intitulé : Surface projet, rapport d'usage fin de tour, plan runtime ombre
+  - Dépendances : TASK-056
+  - Reçu : ProjectSurface, compare_usage, plan_runtime START/IDLE/STOP shadow
+  - Preuve : tests/test_surface.py
+
+- [x] TASK-059 [P3] [difficulté: compact]
+  - Intitulé : Backend reflex local optionnel (sans téléchargement tant que non autorisé)
+  - Dépendances : TASK-058
+  - Reçu : probe_optional_local_backend, never download, available stays false
+  - Preuve : tests/test_reflex_local.py
+
+- [x] TASK-062 [P3] [difficulté: compact]
+  - Intitulé : Capacité locale (VRAM / slots concurrents) dans ContinuationArbiter
+  - Dépendances : TASK-056
+  - Reçu : LocalCapacity, compact/MCP blocked, frontier still allowed, plan START withheld
+  - Preuve : tests/test_continuation.py, tests/test_surface.py
+
+- [x] TASK-064 [P2] [difficulté: compact]
+  - Intitulé : Ingest rapport d'usage fin de tour (skills/tools/MCP) vers UsageEvent
+  - Dépendances : TASK-063
+  - Reçu : ingest_turn_report schema turn_usage, no UI scrape
+  - Preuve : tests/test_surface.py
+
+- [x] TASK-065 [P1] [difficulté: compact] [class: feature] [horizon: near]
+  - Intitulé : Roadmaps classées sécu/bug d'abord, vues court/moyen/long, plan du jour avec report
+  - Dépendances : TASK-051
+  - Reçu : WorkClass/Severity/Horizon, plan_day, close_day, export_roadmap_views
+  - Preuve : tests/test_roadmap.py
+
+- [x] TASK-066 [P1] [difficulty: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitule : Buts ultimes humains pour l orchestration (buts.md)
+  - Dependances : TASK-065
+  - Recu : GoalSet, rank fail-closed, tag [goal:], plan_day goal_ranks
+  - Preuve : tests/test_goals.py
 
 ## En cours
 
-- [ ] TASK-056 [P2] [difficulté: compact]
-  - Intitulé : Scénario d'intégration bout-en-bout (Director + Router + WebBrain + WorldModel)
-  - Dépendances : TASK-055
-  - Notes : Valide la décision de reprise complète avec tous les composants
+- [ ] TASK-060 [P3] [difficulté: compact] [class: feature] [horizon: near]
+  - Intitulé : Round-trip WebBrain MCP réel en ASK only
+  - Dépendances : TASK-054
+  - Notes : observation-only, loopback, pas d'ACT
 
 ## À faire (Backlog)
 
-- [ ] TASK-057 [P3] [difficulté: compact]
-  - Intitulé : Documentation synthétique dans docs/INTEGRATIONS.md
+- [ ] TASK-061 [P3] [difficulté: compact]
+  - Intitulé : Sync live Kanboard Neo si KANBOARD_URL et AGENT_INGEST_TOKEN existent
+  - Dépendances : TASK-052
+
+- [ ] TASK-062 [P3] [difficulté: compact]
+  - Intitulé : Capacité locale (VRAM / slots concurrents) dans ContinuationArbiter
+  - Dépendances : TASK-056
