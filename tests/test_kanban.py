@@ -39,6 +39,14 @@ SAMPLE_KANBAN = """# Local Project Tasks
 
 
 def test_parse_kanban_structure():
+    utf8_board = parse_kanban_markdown(
+        "# Board\n\n## En cours\n\n- [ ] TASK-TITLE [P2] [difficulty: compact]\n"
+        "  - Intitulé : Parser les titres accentués\n"
+    )
+    titled = utf8_board.get_task("TASK-TITLE")
+    assert titled is not None
+    assert titled.title == "Parser les titres accentués"
+
     board = parse_kanban_markdown(SAMPLE_KANBAN)
     assert len(board.tasks) == 5
 

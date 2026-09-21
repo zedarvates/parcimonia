@@ -24,6 +24,10 @@ __all__ = [
     "kanban_to_jobs_payload",
     "export_kanban_mirror",
     "sync_kanban_mirror",
+    "WorkClass",
+    "Severity",
+    "Horizon",
+    "schedule_key",
 ]
 
 
@@ -32,6 +36,29 @@ class KanbanStatus(str, Enum):
     IN_PROGRESS = "IN_PROGRESS"
     DONE = "DONE"
     BLOCKED = "BLOCKED"
+
+
+class WorkClass(str, Enum):
+    SECURITY = "security"
+    BUG = "bug"
+    FEATURE = "feature"
+    CHORE = "chore"
+    UNSPECIFIED = "unspecified"
+
+
+class Severity(str, Enum):
+    CRITICAL = "critical"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    UNSPECIFIED = "unspecified"
+
+
+class Horizon(str, Enum):
+    NEAR = "near"
+    MID = "mid"
+    FAR = "far"
+    UNSPECIFIED = "unspecified"
 
 
 @dataclass(frozen=True)
@@ -44,6 +71,10 @@ class KanbanTask:
     requires_browser: bool = False
     dependencies: tuple[str, ...] = ()
     deadline: str | None = None
+    work_class: WorkClass = WorkClass.UNSPECIFIED
+    severity: Severity = Severity.UNSPECIFIED
+    horizon: Horizon = Horizon.UNSPECIFIED
+    goal_ids: tuple[str, ...] = ()
     metadata: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -55,16 +86,106 @@ class KanbanTask:
             raise TypeError("status must be a KanbanStatus enum.")
         if not isinstance(self.difficulty, TaskDifficulty):
             raise TypeError("difficulty must be a TaskDifficulty enum.")
+        if not isinstance(self.work_class, WorkClass):
+            raise TypeError("work_class must be a WorkClass enum.")
+        if not isinstance(self.severity, Severity):
+            raise TypeError("severity must be a Severity enum.")
+        if not isinstance(self.horizon, Horizon):
+            raise TypeError("horizon must be a Horizon enum.")
 
     def to_task(self) -> Task:
         """Convert to a Parcimonia Task instance."""
         risk = "high" if self.priority.lower() == "p0" else "low"
+        if self.work_class is WorkClass.SECURITY and self.severity is Severity.CRITICAL:
+            risk = "critical"
+        elif self.work_class in (WorkClass.SECURITY, WorkClass.BUG) and self.severity in (
+            Severity.CRITICAL,
+            Severity.HIGH,
+        ):
+            risk = "high"
         return Task(
             task_id=self.task_id,
             kind="kanban_job",
             inputs={"title": self.title, "priority": self.priority},
             risk_class=risk,
         )
+
+
+def _fold(value: str) -> str:
+    table = str.maketrans("éèêëàâäùûüôöîïç", "eeeeaaauuuooiic")
+    return value.casefold().translate(table)
+
+
+def _parse_work_class(raw: str) -> WorkClass:
+    token = _fold(raw).strip()
+    if token in ("securite", "security", "secu", "safety"):
+        return WorkClass.SECURITY
+    if token in ("bug", "defect", "regression", "faille"):
+        return WorkClass.BUG
+    if token in ("chore", "maintenance", "dette"):
+        return WorkClass.CHORE
+    if token in ("feature", "ajout", "enhancement", "fonctionnalite"):
+        return WorkClass.FEATURE
+    return WorkClass.UNSPECIFIED
+
+
+def _parse_severity(raw: str) -> Severity:
+    token = _fold(raw).strip()
+    if token in ("critique", "critical", "crit", "p0-sec"):
+        return Severity.CRITICAL
+    if token in ("haute", "high", "haut", "majeur"):
+        return Severity.HIGH
+    if token in ("moyenne", "medium", "moyen", "modere"):
+        return Severity.MEDIUM
+    if token in ("basse", "low", "bas", "mineur"):
+        return Severity.LOW
+    return Severity.UNSPECIFIED
+
+
+def _parse_horizon(raw: str) -> Horizon:
+    token = _fold(raw).strip()
+    if token in ("court", "near", "short", "jour", "semaine"):
+        return Horizon.NEAR
+    if token in ("moyen", "mid", "medium-term", "trimestre"):
+        return Horizon.MID
+    if token in ("long", "far", "long-term", "annee"):
+        return Horizon.FAR
+    return Horizon.UNSPECIFIED
+
+
+def schedule_key(
+    task: KanbanTask,
+    goal_ranks: Mapping[str, int] | None = None,
+) -> tuple[int, int, int, int, int, str]:
+    """Lower is sooner: safety, in-progress, human goals, prio, horizon."""
+    severity = task.severity
+    if task.work_class is WorkClass.SECURITY and severity is Severity.UNSPECIFIED:
+        severity = Severity.HIGH
+    if task.work_class is WorkClass.BUG and severity is Severity.UNSPECIFIED:
+        severity = Severity.MEDIUM
+    class_rank = {
+        (WorkClass.SECURITY, Severity.CRITICAL): 0,
+        (WorkClass.BUG, Severity.CRITICAL): 1,
+        (WorkClass.SECURITY, Severity.HIGH): 2,
+        (WorkClass.BUG, Severity.HIGH): 3,
+        (WorkClass.SECURITY, Severity.MEDIUM): 4,
+        (WorkClass.BUG, Severity.MEDIUM): 5,
+        (WorkClass.SECURITY, Severity.LOW): 6,
+        (WorkClass.BUG, Severity.LOW): 7,
+    }.get((task.work_class, severity), 8)
+    status_rank = 0 if task.status is KanbanStatus.IN_PROGRESS else 1
+    goal_rank = 999
+    if task.goal_ids:
+        known = [goal_ranks[gid] for gid in task.goal_ids if goal_ranks and gid in goal_ranks]
+        goal_rank = min(known) if known else 998
+    prio_rank = {"p0": 0, "p1": 1, "p2": 2, "p3": 3, "p4": 4}.get(task.priority.lower(), 4)
+    horizon_rank = {
+        Horizon.NEAR: 0,
+        Horizon.UNSPECIFIED: 1,
+        Horizon.MID: 2,
+        Horizon.FAR: 3,
+    }[task.horizon]
+    return (class_rank, status_rank, goal_rank, prio_rank, horizon_rank, task.task_id)
 
 
 def _section_status(heading: str) -> KanbanStatus:
@@ -87,6 +208,10 @@ def parse_kanban_markdown(content: str) -> KanbanBoard:
     tag_prio_re = re.compile(r"\[(p[0-4])\]", re.IGNORECASE)
     tag_diff_re = re.compile(r"\[(?:difficulté|difficulte|difficulty):\s*([^\]]+)\]", re.IGNORECASE)
     tag_tool_re = re.compile(r"\[(?:outil|tool):\s*([a-zA-Z0-9_-]+)\]", re.IGNORECASE)
+    tag_class_re = re.compile(r"\[(?:classe|class|kind):\s*([^\]]+)\]", re.IGNORECASE)
+    tag_sev_re = re.compile(r"\[(?:severite|severity|sev):\s*([^\]]+)\]", re.IGNORECASE)
+    tag_horizon_re = re.compile(r"\[(?:horizon|terme|term):\s*([^\]]+)\]", re.IGNORECASE)
+    tag_goal_re = re.compile(r"\[(?:but|goal|mission):\s*([A-Za-z0-9_-]+)\]", re.IGNORECASE)
     tag_deadline_re = re.compile(r"\[(?:échéance|echeance|deadline):\s*([0-9T:Z-]+)\]", re.IGNORECASE)
     dep_re = re.compile(r"(?:dépendances|dependances|dependencies)\s*:\s*[`]?(.*?)[`]?$", re.IGNORECASE)
 
@@ -126,6 +251,15 @@ def parse_kanban_markdown(content: str) -> KanbanBoard:
             deadline_m = tag_deadline_re.search(rest)
             deadline = deadline_m.group(1) if deadline_m else None
 
+            folded_rest = _fold(rest)
+            class_m = tag_class_re.search(rest) or tag_class_re.search(folded_rest)
+            work_class = _parse_work_class(class_m.group(1)) if class_m else WorkClass.UNSPECIFIED
+            sev_m = tag_sev_re.search(rest) or tag_sev_re.search(folded_rest)
+            severity = _parse_severity(sev_m.group(1)) if sev_m else Severity.UNSPECIFIED
+            horizon_m = tag_horizon_re.search(rest) or tag_horizon_re.search(folded_rest)
+            horizon = _parse_horizon(horizon_m.group(1)) if horizon_m else Horizon.UNSPECIFIED
+            goal_ids = tuple(dict.fromkeys(tag_goal_re.findall(rest)))
+
             title = re.sub(r"\[[^\]]+\]", "", rest).strip(" :-")
             if not title:
                 title = task_id
@@ -138,7 +272,7 @@ def parse_kanban_markdown(content: str) -> KanbanBoard:
                 sub = lines[j].strip()
                 if sub.startswith("-"):
                     sub_clean = sub.lstrip("- ").strip()
-                    if re.match(r"^(?:intitulé|intitule|title)s*:", sub_clean, re.IGNORECASE):
+                    if re.match(r"^(?:intitulé|intitule|title)\s*:", sub_clean, re.IGNORECASE):
                         title = sub_clean.split(":", 1)[1].strip()
                     dep_match = dep_re.search(sub_clean)
                     if dep_match:
@@ -160,6 +294,10 @@ def parse_kanban_markdown(content: str) -> KanbanBoard:
                     requires_browser=requires_browser,
                     dependencies=tuple(dependencies),
                     deadline=deadline,
+                    work_class=work_class,
+                    severity=severity,
+                    horizon=horizon,
+                    goal_ids=goal_ids,
                     metadata=metadata,
                 )
             )
@@ -178,34 +316,18 @@ class KanbanBoard:
                 return t
         return None
 
-    def get_next_eligible_task(self) -> KanbanTask | None:
-        """Return the highest priority uncompleted task whose dependencies are done."""
+    def eligible_tasks(self, goal_ranks: Mapping[str, int] | None = None) -> tuple[KanbanTask, ...]:
         completed_ids = {t.task_id for t in self.tasks if t.status == KanbanStatus.DONE}
-
-        candidates = [
+        open_tasks = [
             t for t in self.tasks if t.status in (KanbanStatus.TODO, KanbanStatus.IN_PROGRESS)
         ]
+        eligible = [t for t in open_tasks if all(dep in completed_ids for dep in t.dependencies)]
+        return tuple(sorted(eligible, key=lambda task: schedule_key(task, goal_ranks)))
 
-        eligible = [
-            t for t in candidates if all(dep in completed_ids for dep in t.dependencies)
-        ]
-
-        if not eligible:
-            return None
-
-        def prio_key(task: KanbanTask) -> int:
-            # IN_PROGRESS takes precedence over TODO (finish active work before pulling new)
-            status_penalty = 0 if task.status == KanbanStatus.IN_PROGRESS else 10
-            p = task.priority.lower()
-            if p == "p0":
-                return status_penalty + 0
-            if p == "p1":
-                return status_penalty + 1
-            if p == "p2":
-                return status_penalty + 2
-            return status_penalty + 3
-
-        return min(eligible, key=prio_key)
+    def get_next_eligible_task(self, goal_ranks: Mapping[str, int] | None = None) -> KanbanTask | None:
+        """Return the highest priority uncompleted task whose dependencies are done."""
+        eligible = self.eligible_tasks(goal_ranks)
+        return eligible[0] if eligible else None
 
 
 def kanban_to_jobs_payload(board: KanbanBoard, project_name: str) -> list[dict[str, Any]]:
@@ -228,6 +350,10 @@ def kanban_to_jobs_payload(board: KanbanBoard, project_name: str) -> list[dict[s
                 "requires_browser": t.requires_browser,
                 "dependencies": list(t.dependencies),
                 "deadline": t.deadline,
+                "work_class": t.work_class.value,
+                "severity": t.severity.value,
+                "horizon": t.horizon.value,
+                "goal_ids": list(t.goal_ids),
                 "risk_class": "high" if t.priority.lower() == "p0" else "low",
             })
     return payload
