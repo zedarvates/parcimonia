@@ -142,6 +142,43 @@ from .surface import (
     plan_runtime,
 )
 from .reflex_local import OptionalLocalBackendStatus, probe_optional_local_backend
+from .source_scan import SourceScan, SourceScanError, scan_source
+from .source_role import (
+    ROLE_SUPPRESSIONS,
+    RoleProfile,
+    SourceRole,
+    classify_source_role,
+    classify_source_text,
+    suppressions_for,
+)
+from .pattern_rules import (
+    Rule,
+    RuleAxis,
+    RuleFinding,
+    RuleRegistry,
+    RuleSeverity,
+    builtin_rule_registry,
+)
+from .audit_score import (
+    AuditBand,
+    AuditScore,
+    DimensionValue,
+    ScoreWeights,
+    compute_audit_score,
+)
+from .audit_store import AuditRecord, SqliteAuditStore
+from .audit import (
+    AUDIT_CAPABILITY,
+    AUDIT_VERIFIER_ID,
+    AUDIT_VERIFIER_VERSION,
+    AuditOutcome,
+    AuditRequest,
+    audit_policy_version,
+    audit_route_entry,
+    audit_source,
+    recompute_verifier,
+    register_audit_verifiers,
+)
 
 __all__ = [
     "Task",
@@ -270,5 +307,37 @@ __all__ = [
     "plan_runtime",
     "OptionalLocalBackendStatus",
     "probe_optional_local_backend",
+    "SourceScan",
+    "SourceScanError",
+    "scan_source",
+    "SourceRole",
+    "RoleProfile",
+    "ROLE_SUPPRESSIONS",
+    "classify_source_role",
+    "classify_source_text",
+    "suppressions_for",
+    "Rule",
+    "RuleAxis",
+    "RuleFinding",
+    "RuleRegistry",
+    "RuleSeverity",
+    "builtin_rule_registry",
+    "AuditBand",
+    "AuditScore",
+    "DimensionValue",
+    "ScoreWeights",
+    "compute_audit_score",
+    "AuditRecord",
+    "SqliteAuditStore",
+    "AuditOutcome",
+    "AuditRequest",
+    "AUDIT_CAPABILITY",
+    "AUDIT_VERIFIER_ID",
+    "AUDIT_VERIFIER_VERSION",
+    "audit_policy_version",
+    "audit_route_entry",
+    "audit_source",
+    "recompute_verifier",
+    "register_audit_verifiers",
 ]
 __version__ = "0.0.1"
