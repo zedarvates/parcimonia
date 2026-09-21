@@ -8,6 +8,8 @@ from tiberium_ai.continuation import (
     QuotaMetrics,
     RouteKind,
     TaskDifficulty,
+    TimeBudget,
+    LocalCapacity,
 )
 
 
@@ -63,6 +65,38 @@ def test_arbiter_critical_quota_downgrade_compact():
     assert verdict.action == ContinuationAction.CONTINUE
     assert verdict.target_route == RouteKind.LOCAL_SMALL
     assert verdict.max_step_tokens == 1000
+
+
+def test_zero_slots_block_compact_and_browser_not_rules():
+    arbiter = ContinuationArbiter()
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    empty = LocalCapacity(concurrent_slots=0)
+    task = Task(task_id="t12", kind="code", inputs={})
+
+    rule = arbiter.evaluate(task, quota, TaskDifficulty.DETERMINISTIC, capacity=empty)
+    assert rule.action == ContinuationAction.CONTINUE
+    assert rule.target_route == RouteKind.RULE
+
+    compact = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, capacity=empty)
+    assert compact.action == ContinuationAction.REQUIRE_HUMAN
+
+    browser = arbiter.evaluate(
+        task, quota, TaskDifficulty.COMPACT, requires_browser=True, capacity=empty
+    )
+    assert browser.action == ContinuationAction.REQUIRE_HUMAN
+
+    reasoning = arbiter.evaluate(task, quota, TaskDifficulty.REASONING, capacity=empty)
+    assert reasoning.action == ContinuationAction.CONTINUE
+    assert reasoning.target_route == RouteKind.FRONTIER
+
+
+def test_low_vram_blocks_local_models():
+    arbiter = ContinuationArbiter()
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    task = Task(task_id="t13", kind="code", inputs={})
+    low = LocalCapacity(vram_free_mb=64.0, concurrent_slots=2, min_vram_for_local_mb=256.0)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, capacity=low)
+    assert verdict.action == ContinuationAction.REQUIRE_HUMAN
 
 
 def test_arbiter_critical_quota_compact_fallback_disabled():
@@ -130,3 +164,28 @@ def test_arbiter_nominal_reasoning():
     assert verdict.action == ContinuationAction.CONTINUE
     assert verdict.target_route == RouteKind.FRONTIER
     assert verdict.max_step_tokens is None
+
+
+def test_time_budget_zero_allows_deterministic_only():
+    arbiter = ContinuationArbiter()
+    task = Task(task_id="t10", kind="lint", inputs={})
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    budget = TimeBudget(remaining_seconds=0.0, interactive=True)
+
+    rule = arbiter.evaluate(task, quota, TaskDifficulty.DETERMINISTIC, time_budget=budget)
+    assert rule.action == ContinuationAction.CONTINUE
+    assert rule.target_route == RouteKind.RULE
+
+    compact = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, time_budget=budget)
+    assert compact.action == ContinuationAction.REQUIRE_HUMAN
+
+
+def test_short_interactive_window_downgrades_reasoning():
+    arbiter = ContinuationArbiter()
+    task = Task(task_id="t11", kind="architecture", inputs={})
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    budget = TimeBudget(remaining_seconds=20.0, interactive=True)
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.REASONING, time_budget=budget)
+    assert verdict.action == ContinuationAction.CONTINUE
+    assert verdict.target_route == RouteKind.LOCAL_SMALL
+    assert verdict.max_step_tokens == 1000

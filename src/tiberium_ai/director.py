@@ -23,6 +23,8 @@ from .continuation import (
     QuotaMetrics,
     RouteKind,
     TaskDifficulty,
+    TimeBudget,
+    LocalCapacity,
 )
 from .kanban import KanbanBoard, KanbanTask
 
@@ -96,6 +98,8 @@ class AstralDirector:
         *,
         consecutive_stalls: int = 0,
         requires_browser: bool = False,
+        time_budget: TimeBudget | None = None,
+        capacity: LocalCapacity | None = None,
     ) -> DirectorProposal:
         verdict = self.arbiter.evaluate(
             task,
@@ -103,6 +107,8 @@ class AstralDirector:
             difficulty,
             consecutive_stalls=consecutive_stalls,
             requires_browser=requires_browser,
+            time_budget=time_budget,
+            capacity=capacity,
         )
         proposal_id = f"prop_{uuid.uuid4().hex[:12]}"
         proposal = DirectorProposal(
@@ -121,6 +127,8 @@ class AstralDirector:
         quota: QuotaMetrics,
         *,
         consecutive_stalls: int = 0,
+        time_budget: TimeBudget | None = None,
+        capacity: LocalCapacity | None = None,
     ) -> DirectorProposal | None:
         eligible = board.get_next_eligible_task()
         if eligible is None:
@@ -132,6 +140,8 @@ class AstralDirector:
             difficulty=eligible.difficulty,
             consecutive_stalls=consecutive_stalls,
             requires_browser=eligible.requires_browser,
+            time_budget=time_budget,
+            capacity=capacity,
         )
 
     def approve(self, proposal_id: str, approved_by: str = "operator") -> None:

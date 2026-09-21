@@ -19,6 +19,8 @@ __all__ = [
     "QuotaMetrics",
     "RouteKind",
     "TaskDifficulty",
+    "TimeBudget",
+    "LocalCapacity",
 ]
 
 
@@ -63,6 +65,50 @@ class QuotaMetrics:
             type(self.tokens_remaining) is not int or self.tokens_remaining < 0
         ):
             raise ValueError("tokens_remaining must be null or a nonnegative integer.")
+
+
+@dataclass(frozen=True)
+class TimeBudget:
+    """Wall-clock remaining for one continuation step.
+
+    Interactive windows refuse long frontier or browser work; a zero remainder
+    still allows deterministic local rules because they cost no tokens.
+    """
+
+    remaining_seconds: float
+    interactive: bool = False
+
+    def __post_init__(self) -> None:
+        if not is_nonnegative_number(self.remaining_seconds):
+            raise ValueError("remaining_seconds must be a finite nonnegative number.")
+
+
+@dataclass(frozen=True)
+class LocalCapacity:
+    """Local GPU/process budget for one continuation step.
+
+    Missing VRAM is unknown, not zero. Zero concurrent slots block local models
+    and MCP, not deterministic rules or frontier cloud routes.
+    """
+
+    vram_free_mb: float | None = None
+    concurrent_slots: int = 1
+    min_vram_for_local_mb: float = 256.0
+
+    def __post_init__(self) -> None:
+        if self.vram_free_mb is not None and not is_nonnegative_number(self.vram_free_mb):
+            raise ValueError("vram_free_mb must be null or a finite nonnegative number.")
+        if type(self.concurrent_slots) is not int or self.concurrent_slots < 0:
+            raise ValueError("concurrent_slots must be a nonnegative integer.")
+        if not is_nonnegative_number(self.min_vram_for_local_mb):
+            raise ValueError("min_vram_for_local_mb must be a finite nonnegative number.")
+
+    def can_start_local(self) -> bool:
+        if self.concurrent_slots <= 0:
+            return False
+        if self.vram_free_mb is not None and self.vram_free_mb < self.min_vram_for_local_mb:
+            return False
+        return True
 
 
 @dataclass(frozen=True)
@@ -113,6 +159,8 @@ class ContinuationArbiter:
         consecutive_stalls: int = 0,
         requires_browser: bool = False,
         allow_local_fallback: bool = True,
+        time_budget: TimeBudget | None = None,
+        capacity: LocalCapacity | None = None,
     ) -> ContinuationVerdict:
         if not isinstance(task, Task):
             raise TypeError("task must be a Task instance.")
@@ -122,6 +170,10 @@ class ContinuationArbiter:
             raise TypeError("difficulty must be a TaskDifficulty enum.")
         if type(consecutive_stalls) is not int or consecutive_stalls < 0:
             raise ValueError("consecutive_stalls must be a nonnegative integer.")
+        if time_budget is not None and not isinstance(time_budget, TimeBudget):
+            raise TypeError("time_budget must be a TimeBudget instance or null.")
+        if capacity is not None and not isinstance(capacity, LocalCapacity):
+            raise TypeError("capacity must be a LocalCapacity instance or null.")
 
         if task.risk_class in ("high", "critical"):
             return ContinuationVerdict(
@@ -137,7 +189,34 @@ class ContinuationArbiter:
                 reason=f"Desynchronization detected: {consecutive_stalls} consecutive stalls without verified progress.",
             )
 
+        short_interactive = (
+            time_budget is not None
+            and time_budget.interactive
+            and time_budget.remaining_seconds < 30.0
+        )
+        no_time_left = time_budget is not None and time_budget.remaining_seconds <= 0.0
+        local_blocked = capacity is not None and not capacity.can_start_local()
+
+        if no_time_left and difficulty != TaskDifficulty.DETERMINISTIC:
+            return ContinuationVerdict(
+                action=ContinuationAction.REQUIRE_HUMAN,
+                target_route=RouteKind.NONE,
+                reason="No wall-clock remaining for a non-deterministic step.",
+            )
+
         if requires_browser:
+            if local_blocked:
+                return ContinuationVerdict(
+                    action=ContinuationAction.REQUIRE_HUMAN,
+                    target_route=RouteKind.NONE,
+                    reason="No local slot or VRAM remaining for a browser MCP session.",
+                )
+            if no_time_left or short_interactive:
+                return ContinuationVerdict(
+                    action=ContinuationAction.REQUIRE_HUMAN,
+                    target_route=RouteKind.NONE,
+                    reason="Browser work needs more wall-clock than the current window allows.",
+                )
             if quota.remaining_percent <= self.critical_quota_percent:
                 return ContinuationVerdict(
                     action=ContinuationAction.FREEZE_QUOTA,
@@ -157,6 +236,33 @@ class ContinuationArbiter:
                 target_route=RouteKind.RULE,
                 reason="Deterministic task executed via local rule (0 token cost).",
                 max_step_tokens=0,
+            )
+
+        if local_blocked and difficulty == TaskDifficulty.COMPACT:
+            return ContinuationVerdict(
+                action=ContinuationAction.REQUIRE_HUMAN,
+                target_route=RouteKind.NONE,
+                reason="No local slot or VRAM remaining for a compact local model.",
+            )
+
+        if short_interactive and difficulty == TaskDifficulty.REASONING:
+            if local_blocked:
+                return ContinuationVerdict(
+                    action=ContinuationAction.REQUIRE_HUMAN,
+                    target_route=RouteKind.NONE,
+                    reason="Interactive window needs a local fallback, but no slot or VRAM remains.",
+                )
+            if quota.remaining_percent <= self.critical_quota_percent or not allow_local_fallback:
+                return ContinuationVerdict(
+                    action=ContinuationAction.REQUIRE_HUMAN,
+                    target_route=RouteKind.NONE,
+                    reason="Interactive window too short for reasoning and local fallback is unavailable.",
+                )
+            return ContinuationVerdict(
+                action=ContinuationAction.CONTINUE,
+                target_route=RouteKind.LOCAL_SMALL,
+                reason="Interactive window too short for frontier reasoning; compact local step only.",
+                max_step_tokens=1000,
             )
 
         if quota.remaining_percent <= self.critical_quota_percent:
