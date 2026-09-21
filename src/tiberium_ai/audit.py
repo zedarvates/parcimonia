@@ -32,7 +32,12 @@ from .audit_score import (
     compute_audit_score,
 )
 from .audit_store import AuditRecord, SqliteAuditStore
-from .pattern_rules import RuleFinding, RuleRegistry, builtin_rule_registry
+from .pattern_rules import (
+    GOD_FUNCTION_DECISION_POINTS,
+    RuleFinding,
+    RuleRegistry,
+    builtin_rule_registry,
+)
 from .source_role import SUPPRESS_ALL, RoleProfile, SourceRole, classify_source_role
 from .source_scan import SourceScanError, scan_source
 from .verification import VerifierRegistry, hash_input
@@ -63,8 +68,9 @@ AUDIT_VERIFIER_VERSION = "1"
 #: Version of the measurement rules, independent of the rule registry.
 AUDIT_TOOL_VERSION = "1"
 
-#: Decision points allowed in one function before its structure is penalised.
-COMPLEXITY_THRESHOLD = 12
+#: Decision points allowed in one function. The rule registry publishes the same
+#: bound, so the ratio dimension and the discrete rule never disagree about it.
+COMPLEXITY_THRESHOLD = GOD_FUNCTION_DECISION_POINTS
 
 _REASON_UNPARSABLE = "source_unparsable"
 _REASON_SUPPRESSED = "role_suppresses_all_checks"
@@ -315,8 +321,9 @@ def measure_dimensions(scan: Any, profile: RoleProfile) -> tuple[DimensionValue,
         raise TypeError("profile must be a RoleProfile instance.")
     function_count = len(scan.functions)
     filled = scan.filled_functions
-    over_complex = sum(
-        1 for function in scan.functions if function.decision_points > COMPLEXITY_THRESHOLD
+    excess = sum(
+        max(0, function.decision_points - COMPLEXITY_THRESHOLD)
+        for function in scan.functions
     )
     import_count = len(scan.imports)
     used_imports = len(scan.used_imports)
@@ -333,11 +340,11 @@ def measure_dimensions(scan: Any, profile: RoleProfile) -> tuple[DimensionValue,
         ),
         DimensionValue(
             "structure_integrity",
-            1.0 if function_count == 0 else 1.0 - over_complex / function_count,
+            1.0 if excess == 0 else 1.0 / (1.0 + excess / (COMPLEXITY_THRESHOLD * function_count)),
             "no function body to judge"
             if function_count == 0
-            else f"{over_complex}/{function_count} functions exceed "
-            f"{COMPLEXITY_THRESHOLD} decision points",
+            else f"{excess} decision point(s) beyond the bound of "
+            f"{COMPLEXITY_THRESHOLD} across {function_count} function(s)",
         ),
         DimensionValue(
             "documentation_balance",

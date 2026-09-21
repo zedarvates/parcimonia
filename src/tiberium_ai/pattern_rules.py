@@ -27,6 +27,7 @@ from .source_scan import SourceScan
 
 __all__ = [
     "MACHINE_RULES",
+    "GOD_FUNCTION_DECISION_POINTS",
     "Rule",
     "RuleAxis",
     "RuleFinding",
@@ -41,6 +42,17 @@ __all__ = [
 FINDING_CAP = 5
 
 RULE_REGISTRY_SCHEMA = 1
+
+#: Decision points allowed in one function before it is reported as oversized.
+#: The audit dimensions read the same constant, so a rule and a dimension never
+#: disagree about where the bound is.
+#:
+#: This is a declared default, not a calibrated value. A decision-point count
+#: measures length, and a long flat sequence of independent checks is not the
+#: same defect as deeply nested logic, so the bound is deliberately loose and the
+#: authored corpus records both a function that must fire and a long flat one
+#: that must not. A measured calibration is what could tighten it.
+GOD_FUNCTION_DECISION_POINTS = 25
 
 
 class RuleAxis(str, Enum):
@@ -115,12 +127,26 @@ class Rule(ABC):
     def is_applicable(self, role: SourceRole) -> bool:
         return role in self.applies_to
 
-    def finding(self, *, line: int, column: int = 0, detail_code: str, message: str) -> RuleFinding:
-        """Build a finding carrying this rule's identity and severity."""
+    def finding(
+        self,
+        *,
+        line: int,
+        column: int = 0,
+        detail_code: str,
+        message: str,
+        severity_override: RuleSeverity | None = None,
+    ) -> RuleFinding:
+        """Build a finding carrying this rule's identity and severity.
+
+        ``severity_override`` exists for the cases where one rule has a benign and
+        a dangerous form: a bare handler is not the same defect as a typed handler
+        with an empty body, and the rule that knows the difference should say so
+        rather than push that judgement into the scorer.
+        """
         return RuleFinding(
             rule_id=self.rule_id,
             axis=self.axis,
-            severity=self.severity,
+            severity=severity_override if severity_override is not None else self.severity,
             line=line,
             column=column,
             detail_code=detail_code,
@@ -216,6 +242,7 @@ class SilentExceptRule(Rule):
                         column=node.col_offset,
                         detail_code="except.bare",
                         message="bare except catches every exception, including exit signals",
+                        severity_override=RuleSeverity.BLOCKER,
                     )
                 )
             if _swallows(node.body):
@@ -323,6 +350,33 @@ class InflatedClaimRule(Rule):
                     column=match.start(),
                     detail_code=f"claim.{phrase.replace(' ', '-')}",
                     message=f"unverified quality claim {phrase!r} in comment or docstring",
+                )
+            )
+        return _cap(findings)
+
+
+class GodFunctionRule(Rule):
+    """A single function holding more decisions than one unit should."""
+
+    rule_id = "rule.god-function"
+    axis = RuleAxis.STRUCTURE
+    severity = RuleSeverity.MEDIUM
+    description = "A function concentrates decisions that belong in separate units."
+    applies_to = frozenset({SourceRole.MODULE, SourceRole.PACKAGE_INIT})
+
+    def check(self, scan: SourceScan) -> tuple[RuleFinding, ...]:
+        findings = []
+        for function in scan.functions:
+            if function.decision_points <= GOD_FUNCTION_DECISION_POINTS:
+                continue
+            findings.append(
+                self.finding(
+                    line=function.line,
+                    detail_code="structure.god-function",
+                    message=(
+                        f"{function.qualname} holds {function.decision_points} decision "
+                        f"points, above the bound of {GOD_FUNCTION_DECISION_POINTS}"
+                    ),
                 )
             )
         return _cap(findings)
@@ -446,6 +500,7 @@ MACHINE_RULES: tuple[Rule, ...] = (
     SilentExceptRule(),
     DebugEmitRule(),
     InflatedClaimRule(),
+    GodFunctionRule(),
 )
 
 

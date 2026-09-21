@@ -179,6 +179,13 @@ from .audit import (
     recompute_verifier,
     register_audit_verifiers,
 )
+from .audit_corpus import BAND_CLASSES, LabelledAuditCase, audit_corpus
+from .audit_calibrate import (
+    AuditCalibrationReport,
+    CaseObservation,
+    RuleScore,
+    calibrate_static_audit,
+ )
 
 __all__ = [
     "Task",
@@ -339,5 +346,12 @@ __all__ = [
     "audit_source",
     "recompute_verifier",
     "register_audit_verifiers",
+    "BAND_CLASSES",
+    "LabelledAuditCase",
+    "audit_corpus",
+    "AuditCalibrationReport",
+    "CaseObservation",
+    "RuleScore",
+    "calibrate_static_audit",
 ]
 __version__ = "0.0.1"
