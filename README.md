@@ -119,6 +119,15 @@ authorization for any class outside the automatic set and an idempotency key per
 execution, and it returns an audit trail linking the authorization, the attempts
 and a replayable observation. See [Active mode](docs/ESCALATION.md).
 
+The first System-1 route is implemented: a deterministic static audit that
+classifies a file's structural role, runs named pattern rules, scores a deficit
+from four ratio dimensions, and stores the verdict in a local, content-addressed
+database. It needs no model, no network and no clock, and a second pass over the
+same text reuses a measured verdict instead of recomputing it. Every verdict can
+be recomputed by a named verifier before it is accepted as evidence. It is shadow
+only, its weights are declared defaults rather than calibrated values, and it
+claims no saving. See the [static audit](docs/STATIC_AUDIT.md).
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,

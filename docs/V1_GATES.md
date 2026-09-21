@@ -33,6 +33,8 @@ belong to the consumer.
 | G5 cost vector, constraints and benchmarks | #2 |
 | G6 opt-in active mode | #7 |
 | Astral Resonance Director | #6 |
+| G7 deterministic static audit route | not opened yet |
+| Static audit calibration | TASK-068 |
 
 ## G1 - Real outcomes and provenance
 
@@ -268,6 +270,52 @@ are generated views of `kanban.md`, not a second backlog.
 
 TASK-066 adds human-authored ultimate goals (`buts.md`, `goals.py`). Missing or
 unknown goals do not become rank 1. The orchestrator will not invent a mission.
+
+## G7 - Deterministic static audit route
+
+Objective: express the cheapest mechanism Parcimonia can offer as a real route,
+with a verdict that can be reused and recomputed instead of trusted.
+
+Deliverables:
+- a structural role classifier that names what a file is and which checks that
+  role suppresses, with an explicit reason code and no silent skipping
+- a versioned registry of named pattern rules whose fingerprint is part of the
+  policy version
+- a deficit score built from four ratio dimensions and a capped rule penalty,
+  with the deficit attributed back to its sources
+- a local content-addressed verdict store that keeps ratios, not source text,
+  refuses a conflicting second verdict and never reads a clock
+- a deterministic verifier that recomputes the verdict before accepting it, and
+  a manifest entry with no invented cost
+
+Status: implemented in `source_scan.py`, `source_role.py`, `pattern_rules.py`,
+`audit_score.py`, `audit_store.py` and `audit.py`, with unit tests across six
+test files and an end-to-end runner in `examples/audit_suite.py`. On this
+repository the runner audits 33 files, reuses 33 stored verdicts on the second
+pass and accepts 33 recomputed verifications.
+
+The analyser is also measured against an authored corpus: 32 labelled files in
+`audit_corpus.py`, scored by `audit_calibrate.py` and reported by
+`examples/audit_calibration.py`, with role, band and rule agreement at 1.0 and
+precision and recall at 1.0 for all five rules. That snapshot is `fixture` and
+explicitly unauthorized, because authored examples say what the analyser does,
+not what real code needs. See [static audit](STATIC_AUDIT.md).
+
+That run also measures the analyser on this repository: 35 source files in
+`src/tiberium_ai`, all `sound`, with eight `rule.god-function` findings on long
+validation and orchestration functions. Those findings are recorded as the
+current state, not as a verdict on the code.
+
+Exit criteria:
+- the same text and policy version always produce the same verdict
+- a rule edit changes the policy version and invalidates reuse
+- an unauditable file is undetermined and never verifies as accepted
+- a suppression that names no check is refused instead of ignored
+
+Forbidden until the calibration gate: using the deficit to gate execution,
+presenting a declared weight as a measured one, and any saving claim without a
+measured baseline on the same tasks.
+
 
 ## Explicit non-goals for v1
 

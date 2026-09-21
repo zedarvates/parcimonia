@@ -1,6 +1,6 @@
 # Parcimonia Kanban Backlog
 
-Dernière mise à jour : 2026-09-20T12:00:00Z
+Dernière mise à jour : 2026-09-21T00:00:00Z
 Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## Terminé
@@ -112,6 +112,20 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Recu : GoalSet, rank fail-closed, tag [goal:], plan_day goal_ranks
   - Preuve : tests/test_goals.py
 
+- [x] TASK-067 [P1] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Route System-1 d'audit statique (rôles de fichier, règles nommées, score, store local)
+  - Dépendances : TASK-065
+  - Reçu : source_scan / source_role / pattern_rules / audit_score / audit_store / audit, vérificateur audit.recompute, entrée de manifeste sans coût inventé
+  - Preuve : tests/test_source_scan.py, tests/test_source_role.py, tests/test_pattern_rules.py, tests/test_audit_score.py, tests/test_audit_store.py, tests/test_audit.py, examples/audit_suite.py
+  - Notes : shadow only, aucun modèle appelé ; poids et seuils non calibrés, aucun routage gaté par ce score
+
+- [x] TASK-070 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Corpus labellisé et harnais de calibration de l'audit statique
+  - Dépendances : TASK-067
+  - Reçu : audit_corpus.py (31 cas, rôles/bandes/règles attendus), audit_calibrate.py (défauts par règle, precision/recall, accord rôle/bande/règle), examples/audit_calibration.py
+  - Preuve : tests/test_audit_calibrate.py ; 31 cas, accords 1.0, precision/recall 1.0 pour les 5 règles
+  - Notes : provenance fixture ; threshold_authorized=false et impossible à forcer hors données mesurées ; les 3 faux positifs de développement ont des contrôles négatifs dédiés
+
 ## En cours
 
 - [ ] TASK-060 [P3] [difficulté: compact] [class: feature] [horizon: near]
@@ -120,6 +134,16 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Notes : observation-only, loopback, pas d'ACT
 
 ## À faire (Backlog)
+
+- [ ] TASK-068 [P1] [difficulté: raisonnement] [class: feature] [horizon: near]
+  - Intitulé : Calibration mesurée de l'audit statique sur fichiers réels (labels humains)
+  - Dépendances : TASK-070
+  - Notes : la partie corpus fixture est faite (TASK-070) ; il reste des labels humains sur du code réel ; snapshot data_origin mesuré seulement ; aucun seuil ne gate l'exécution avant ce snapshot
+
+- [ ] TASK-069 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Route baseline modèle sur la même question (comparaison de coût honnête)
+  - Dépendances : TASK-067, TASK-068
+  - Notes : sans baseline mesurée, aucune économie n'est déclarable ; la comparaison se fait sur le vecteur de ressources, pas sur un score scalaire
 
 - [ ] TASK-061 [P3] [difficulté: compact]
   - Intitulé : Sync live Kanboard Neo si KANBOARD_URL et AGENT_INGEST_TOKEN existent

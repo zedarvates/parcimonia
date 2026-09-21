@@ -1,0 +1,480 @@
+"""Authored labelled corpus for the static audit.
+
+Each case declares what the audit is expected to observe: the structural role,
+the band class, and exactly which pattern rules fire. The corpus exists to
+measure two things that a threshold would otherwise assume: how often each rule
+is right, and whether a role suppression actually suppresses.
+
+The cases are authored, not collected, so their provenance is ``fixture``: they
+can falsify a rule and they cannot authorise a threshold. Several cases are
+explicit negative controls for false positives found during development, so
+loosening a rule breaks the corpus instead of passing silently.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+__all__ = ["BAND_CLASSES", "LabelledAuditCase", "audit_corpus"]
+
+#: A band class groups the bands a case is allowed to land in. Declaring an exact
+#: band would make the corpus a mirror of the current weights instead of a test of
+#: the rules.
+BAND_CLASSES: dict[str, frozenset[str]] = {
+    "sound": frozenset({"sound"}),
+    "noted": frozenset({"noted"}),
+    "degraded": frozenset({"questionable", "inflated", "critical"}),
+    "unjudged": frozenset({"undetermined"}),
+}
+
+
+@dataclass(frozen=True)
+class LabelledAuditCase:
+    """One authored file with its expected audit observation."""
+
+    case_id: str
+    path: str
+    source: str
+    role: str
+    band_class: str
+    rules: tuple[str, ...]
+    rationale: str
+
+    def __post_init__(self) -> None:
+        for name in ("case_id", "role", "band_class", "rationale"):
+            value = getattr(self, name)
+            if not isinstance(value, str) or not value or value != value.strip():
+                raise ValueError(f"{name} must be a nonempty, trimmed string.")
+        if self.band_class not in BAND_CLASSES:
+            raise ValueError(f"unknown band class {self.band_class!r}.")
+        if not isinstance(self.source, str):
+            raise TypeError("source must be a string.")
+        if len(set(self.rules)) != len(self.rules):
+            raise ValueError("expected rule ids must not repeat.")
+
+
+def lines(*rows: str) -> str:
+    return "\n".join(rows)
+
+
+CLEAN_MODULE = lines(
+    "'A complete module.'",
+    '',
+    'from __future__ import annotations',
+    '',
+    'import math',
+    '',
+    '',
+    'def area(radius: float) -> float:',
+    "    'Return the area of a circle.'",
+    '    if radius < 0:',
+    '        raise ValueError(neg_radius)',
+    '    return math.pi * radius ** 2',
+)
+
+
+QUOTED_ANNOTATION = lines(
+    'from __future__ import annotations',
+    '',
+    'from .registry import RoutePort',
+    '',
+    '',
+    'def pick(port: "RoutePort | None" = None) -> str:',
+    '    return none_text if port is None else port.route_id',
+)
+
+STAR_IMPORT = lines(
+    'from math import *',
+    '',
+    '',
+    'def circle_area(radius: float) -> float:',
+    '    return pi * radius ** 2',
+)
+
+PROTOCOL_INTERFACE = lines(
+    'from typing import Protocol',
+    '',
+    '',
+    'class Port(Protocol):',
+    '    def run(self) -> None: ...',
+)
+
+ABC_INTERFACE = lines(
+    'from abc import ABC, abstractmethod',
+    '',
+    '',
+    'class Store(ABC):',
+    '    @abstractmethod',
+    '    def get(self, key: str) -> str:',
+    '        raise NotImplementedError',
+    '',
+    '    @abstractmethod',
+    '    def put(self, key: str, value: str) -> None:',
+    '        raise NotImplementedError',
+)
+
+PACKAGE_INIT = lines(
+    "'Package initialiser for the sample package.'",
+    '',
+    'from .thing import Thing',
+    '',
+    '__all__ = [Thing]',
+)
+
+RE_EXPORT = lines(
+    'from .alpha import Alpha',
+    'from .beta import Beta',
+    '',
+    '__all__ = [Alpha, Beta]',
+)
+
+
+SCRIPT = lines(
+    "'A command-line tool.'",
+    '',
+    '',
+    'def main() -> int:',
+    '    print(running)',
+    '    return 0',
+    '',
+    '',
+    "if __name__ == '__main__':",
+    '    raise SystemExit(main())',
+)
+
+TEST_MODULE = lines(
+    'from .thing import Thing',
+    '',
+    '',
+    'def test_thing() -> None:',
+    '    print(checking)',
+    '    assert Thing() is not None',
+)
+
+TYPED_EXCEPT_CONTINUE = lines(
+    'def parse_all(rows):',
+    '    parsed = []',
+    '    for row in rows:',
+    '        try:',
+    '            parsed.append(int(row))',
+    '        except ValueError:',
+    '            continue',
+    '    return parsed',
+)
+
+DATACLASS_MODULE = lines(
+    'from dataclasses import dataclass',
+    '',
+    '',
+    '@dataclass(frozen=True)',
+    'class Reading:',
+    '    sensor: str',
+    '    value: float',
+    '',
+    '    def label(self) -> str:',
+    '        return self.sensor',
+)
+
+COMMENTED_MODULE = lines(
+    'def scale(value, factor):',
+    '    # Multiply by the factor.',
+    '    scaled = value * factor',
+    '    # Clamp at zero.',
+    '    return max(0.0, scaled)',
+)
+
+GENERATED_FILE = lines(
+    '# Code generated by protoc. Do not edit.',
+    'import os',
+)
+
+BROKEN_FILE = lines(
+    'def f(:',
+)
+
+
+PLACEHOLDER_TODO = lines(
+    '# TODO: implement the retry policy.',
+    'def retry(attempts: int) -> int:',
+    '    return max(1, attempts)',
+)
+
+PLACEHOLDER_CAP = lines(
+    '# TODO: item one',
+    '# TODO: item two',
+    '# TODO: item three',
+    '# TODO: item four',
+    '# TODO: item five',
+    '# TODO: item six',
+    '# TODO: item seven',
+    '',
+    'def count() -> int:',
+    '    return 7',
+)
+
+DEBUG_PRINT = lines(
+    'def report(value):',
+    '    print(value)',
+    '    print(value + 1)',
+    '    return value',
+)
+
+DEBUG_TRACE = lines(
+    'import pdb',
+    '',
+    '',
+    'def inspect(value):',
+    '    breakpoint()',
+    '    pdb.set_trace()',
+    '    return value',
+)
+
+SILENT_BARE = lines(
+    'def load(text):',
+    '    try:',
+    '        return int(text)',
+    '    except:',
+    '        pass',
+)
+
+
+def case(
+    case_id: str,
+    path: str,
+    source: str,
+    role: str,
+    band_class: str,
+    rules: tuple[str, ...],
+    rationale: str,
+) -> LabelledAuditCase:
+    """Shorten the corpus table: every field still goes through the dataclass."""
+    return LabelledAuditCase(case_id, path, source, role, band_class, rules, rationale)
+
+
+MARKER = 'rule.placeholder-marker'
+EXCEPT = 'rule.silent-except'
+EMIT = 'rule.debug-emit'
+CLAIM = 'rule.inflated-claim'
+GOD = 'rule.god-function'
+
+
+LONG_FLAT_FUNCTION = lines(
+    'def dispatch(kind):',
+    '    if kind == 1: return 1',
+    '    if kind == 2: return 2',
+    '    if kind == 3: return 3',
+    '    if kind == 4: return 4',
+    '    if kind == 5: return 5',
+    '    if kind == 6: return 6',
+    '    if kind == 7: return 7',
+    '    if kind == 8: return 8',
+    '    if kind == 9: return 9',
+    '    if kind == 10: return 10',
+    '    if kind == 11: return 11',
+    '    if kind == 12: return 12',
+    '    if kind == 13: return 13',
+    '    if kind == 14: return 14',
+    '    return 0',
+)
+
+
+def audit_corpus() -> tuple[LabelledAuditCase, ...]:
+    """Return the authored corpus in a stable order."""
+    return (
+        case('clean-module', 'src/sample/clean.py', CLEAN_MODULE, 'module', 'sound', (),
+             'a complete module is the negative control for every rule'),
+        case('clean-docstring-prose', 'src/sample/prose.py', PROSE_DOCSTRING, 'module',
+             'sound', (), 'prose about deferred work is not a marker'),
+        case('clean-exception-name-comment', 'src/sample/exc.py', EXCEPTION_NAME_COMMENT,
+             'module', 'sound', (), 'word boundaries keep the class name out of the lexicon'),
+        case('clean-forward-reference', 'src/sample/fwd.py', FORWARD_REFERENCE, 'module',
+             'sound', (), 'a __future__ import is never an unused import'),
+        case('clean-quoted-annotation', 'src/sample/quoted.py', QUOTED_ANNOTATION, 'module',
+             'sound', (), 'a quoted forward reference counts as a use'),
+        case('clean-star-import', 'src/sample/star.py', STAR_IMPORT, 'module', 'sound', (),
+             'a star import binds names this scan cannot enumerate'),
+        case('clean-protocol', 'src/sample/ports.py', PROTOCOL_INTERFACE, 'interface',
+             'sound', (), 'an ellipsis body is the intended content of a protocol'),
+        case('clean-abc-interface', 'src/sample/base.py', ABC_INTERFACE, 'interface',
+             'sound', (), 'abstract bodies raise by design, so substance is not judged'),
+        case('clean-package-init', 'src/sample/__init__.py', PACKAGE_INIT, 'package_init',
+             'sound', (), 'a package marker re-exports instead of consuming names'),
+        case('clean-reexport', 'src/sample/api.py', RE_EXPORT, 're_export', 'sound', (),
+             'a re-export module binds names for its importers'),
+        case('clean-script', 'examples/tool.py', SCRIPT, 'script', 'sound', (),
+             'the stdout of a program entry point is its interface'),
+        case('clean-test-module', 'tests/test_sample.py', TEST_MODULE, 'test', 'sound', (),
+             'a test module prints on purpose and asserts'),
+        case('clean-typed-except-continue', 'src/sample/loop.py', TYPED_EXCEPT_CONTINUE,
+             'module', 'sound', (), 'continue is deliberate control flow, not a swallow'),
+        case('clean-dataclass', 'src/sample/model.py', DATACLASS_MODULE, 'module', 'sound', (),
+             'a dataclass with one method is a complete module'),
+        case('clean-commented', 'src/sample/documented.py', COMMENTED_MODULE, 'module',
+             'sound', (), 'comments balanced with code do not inflate a file'),
+        case('generated-file', 'src/generated/schema_pb2.py', GENERATED_FILE, 'generated',
+             'unjudged', (), 'generated code is not authored here'),
+        case('corpus-file', 'tests/corpus/sloppy.py', CLEAN_MODULE, 'corpus', 'unjudged', (),
+             'an intentional negative corpus exists to be wrong'),
+        case('unparsable-file', 'src/sample/broken.py', BROKEN_FILE, 'module', 'unjudged', (),
+             'text that cannot be parsed keeps no suppression and no verdict'),
+        case('placeholder-todo', 'src/sample/todo.py', PLACEHOLDER_TODO, 'module', 'sound',
+             (MARKER,), 'one deferred-work comment is reported once'),
+        case('placeholder-cap', 'src/sample/todos.py', PLACEHOLDER_CAP, 'module', 'noted',
+             (MARKER,), 'a repeated marker is capped and the comment weight is scored'),
+        case('debug-print', 'src/sample/prints.py', DEBUG_PRINT, 'module', 'sound', (EMIT,),
+             'leftover print calls are reported as low severity'),
+        case('debug-trace', 'src/sample/debug.py', DEBUG_TRACE, 'module', 'sound', (EMIT,),
+             'a breakpoint left in a module is reported'),
+        case('silent-bare-except', 'src/sample/bare.py', SILENT_BARE, 'module', 'degraded',
+             (EXCEPT,), 'a bare handler is a blocker and the empty body is reported too'),
+        case('silent-typed-except', 'src/sample/typed.py', SILENT_TYPED, 'module', 'sound',
+             (EXCEPT,), 'a typed handler with an empty body loses the failure silently'),
+        case('claim-comment', 'src/sample/hype.py', CLAIM_COMMENT, 'module', 'sound', (CLAIM,),
+             'marketing register in a comment is reported as an unverified claim'),
+        case('claim-docstring', 'src/sample/hype2.py', CLAIM_DOCSTRING, 'module', 'sound',
+             (CLAIM,), 'the same lexicon reads docstrings, where claims usually live'),
+        case('empty-declaration', 'src/sample/declared.py', EMPTY_DECLARATION, 'module',
+             'degraded', (), 'no body implements anything, so substance collapses'),
+        case('dead-import', 'src/sample/dead.py', DEAD_IMPORT, 'module', 'sound', (),
+             'an unused import lowers a ratio without firing a rule'),
+        case('god-function', 'src/sample/complex.py', GOD_FUNCTION, 'module', 'sound', (GOD,),
+             'one oversized function is a finding, not a degraded verdict by itself'),
+        case('long-flat-function', 'src/sample/dispatch.py', LONG_FLAT_FUNCTION, 'module',
+             'sound', (), 'length is not complexity: a flat dispatch below the bound is not flagged'),
+        case('doc-inflation', 'src/sample/inflated_docs.py', DOC_INFLATION, 'module', 'noted',
+             (), 'prose outweighs the code it describes'),
+        case('mixed-slop', 'src/sample/mixed.py', MIXED_SLOP, 'module', 'degraded',
+             (MARKER, CLAIM, EXCEPT), 'several defects compose into a degraded verdict'),
+    )
+
+SILENT_TYPED = lines(
+    'def load(text):',
+    '    try:',
+    '        return int(text)',
+    '    except ValueError:',
+    '        pass',
+)
+
+
+CLAIM_COMMENT = lines(
+    '# This module is production-ready and battle tested.',
+    'def identity(value):',
+    '    return value',
+)
+
+CLAIM_DOCSTRING = lines(
+    "'A blazing fast and flawless implementation.'",
+    '',
+    '',
+    'def identity(value):',
+    '    return value',
+)
+
+EMPTY_DECLARATION = lines(
+    'def declared():',
+    "    'Declared but never written.'",
+    '    pass',
+    '',
+    '',
+    'def other():',
+    "    'Also declared.'",
+    '    ...',
+)
+
+DEAD_IMPORT = lines(
+    'import json',
+    'import os',
+    '',
+    '',
+    'def current_dir() -> str:',
+    '    return os.curdir',
+)
+
+
+GOD_FUNCTION = lines(
+    'def classify(value):',
+    '    if value > 1 and value < 2: return 1',
+    '    if value > 2 and value < 3: return 2',
+    '    if value > 3 and value < 4: return 3',
+    '    if value > 4 and value < 5: return 4',
+    '    if value > 5 and value < 6: return 5',
+    '    if value > 6 and value < 7: return 6',
+    '    if value > 7 and value < 8: return 7',
+    '    if value > 8 and value < 9: return 8',
+    '    if value > 9 and value < 10: return 9',
+    '    if value > 10 and value < 11: return 10',
+    '    if value > 11 and value < 12: return 11',
+    '    if value > 12 and value < 13: return 12',
+    '    if value > 13 and value < 14: return 13',
+    '    if value > 14 and value < 15: return 14',
+    '    return 0',
+)
+
+DOC_INFLATION = lines(
+    "class Reader:",
+    "    '''A reader for one format.",
+    "",
+    "    It reads the file, validates the header, keeps the cursor, and exposes",
+    "    the remaining rows. The cursor advances one row at a time so a caller can",
+    "    stop early without losing its place. The header check is deliberately",
+    "    strict, because a mismatched version means the caller holds the wrong",
+    "    file, which is worth failing loudly for. Reading twice is cheap, since",
+    "    the cursor is the only state this object owns.'''",
+    "",
+    "    def read(self):",
+    "        return 1",
+)
+
+
+MIXED_SLOP = lines(
+    '# TODO: finish this module.',
+    '# A production-ready and fully tested implementation.',
+    'import json',
+    '',
+    '',
+    'def declared():',
+    "    'Declared but never written.'",
+    '    pass',
+    '',
+    '',
+    'def other():',
+    "    'Also declared.'",
+    '    pass',
+    '',
+    '',
+    'def loaded():',
+    '    try:',
+    '        return json.loads(empty_object)',
+    '    except Exception:',
+    '        pass',
+)
+
+PROSE_DOCSTRING = lines(
+    "'Typed decisions over a closed answer space.'",
+    '',
+    "'Two-stage scoring is not implemented, and no vendor code is vendored here.'",
+    "'A backend that cannot answer must refuse rather than guess.'",
+    '',
+    'def decide(options: int) -> int:',
+    '    if options <= 0:',
+    '        raise ValueError(empty_options)',
+    '    return options',
+)
+
+EXCEPTION_NAME_COMMENT = lines(
+    '# The contract is documented on NotImplementedError below.',
+    '',
+    '',
+    'def unimplemented() -> None:',
+    '    return None',
+)
+
+FORWARD_REFERENCE = lines(
+    'from __future__ import annotations',
+    '',
+    'from .registry import RoutePort',
+    '',
+    '',
+    'def pick(port: RoutePort | None = None) -> str:',
+    '    return none_text if port is None else port.route_id',
+)
