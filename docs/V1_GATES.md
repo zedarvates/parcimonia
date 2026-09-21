@@ -289,11 +289,22 @@ Deliverables:
   a manifest entry with no invented cost
 
 Status: implemented in `source_scan.py`, `source_role.py`, `pattern_rules.py`,
-`audit_score.py`, `audit_store.py` and `audit.py`, with 90 unit tests across six
+`audit_score.py`, `audit_store.py` and `audit.py`, with unit tests across six
 test files and an end-to-end runner in `examples/audit_suite.py`. On this
 repository the runner audits 33 files, reuses 33 stored verdicts on the second
-pass and accepts 33 recomputed verifications. See
-[static audit](STATIC_AUDIT.md).
+pass and accepts 33 recomputed verifications.
+
+The analyser is also measured against an authored corpus: 32 labelled files in
+`audit_corpus.py`, scored by `audit_calibrate.py` and reported by
+`examples/audit_calibration.py`, with role, band and rule agreement at 1.0 and
+precision and recall at 1.0 for all five rules. That snapshot is `fixture` and
+explicitly unauthorized, because authored examples say what the analyser does,
+not what real code needs. See [static audit](STATIC_AUDIT.md).
+
+That run also measures the analyser on this repository: 35 source files in
+`src/tiberium_ai`, all `sound`, with eight `rule.god-function` findings on long
+validation and orchestration functions. Those findings are recorded as the
+current state, not as a verdict on the code.
 
 Exit criteria:
 - the same text and policy version always produce the same verdict

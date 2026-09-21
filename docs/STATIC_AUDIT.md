@@ -59,7 +59,7 @@ produced the number travels with it, so a report can be argued with.
 | Dimension | Weight | Measured as |
 | --- | --- | --- |
 | `substance` | 0.35 | function bodies that do more than declare themselves |
-| `structure_integrity` | 0.25 | functions at or below 12 decision points |
+| `structure_integrity` | 0.25 | decision points beyond a bound of 25, as a decaying ratio |
 | `documentation_balance` | 0.20 | code lines against comment plus docstring lines |
 | `import_hygiene` | 0.20 | imported names consumed or re-exported |
 
@@ -106,6 +106,7 @@ a caller acts on always names where it came from.
 | `rule.silent-except` | structure | high | module, package marker, interface, test |
 | `rule.debug-emit` | hygiene | low | module, package marker |
 | `rule.inflated-claim` | claim | medium | module, package marker, re-export, interface |
+| `rule.god-function` | structure | medium | module, package marker |
 
 `rule.placeholder-marker` reads comments only. A docstring describes behaviour,
 and a sentence such as "two-stage scoring is not implemented" is accurate prose
@@ -127,6 +128,13 @@ labelled examples before any threshold built on it is used to decide anything.
 
 Every rule caps at five findings per file. The cap bounds what one repeated
 defect can contribute and keeps a report readable.
+
+`rule.god-function` reads the same bound as the ratio dimension, so the two never
+disagree about it. The bound is a declared default and a decision-point count
+measures length rather than complexity, so it is deliberately loose: a long flat
+sequence of independent checks is not the same defect as deeply nested logic.
+The corpus pins both sides of that trade-off with a function that must fire and a
+long flat dispatch that must not.
 
 
 ## The local verdict store
@@ -196,12 +204,14 @@ each determined verdict by recomputation, and writes `summary.json` plus a
 Vendored, cached and build trees are skipped, so widening the root does not widen
 what counts as authored code.
 
-On this repository, `--root src/tiberium_ai` reports 33 files, all `sound`, a mean
-deficit around 5.4, no rule findings, 33 reused verdicts on the second pass and
-33 accepted verifications. `--root .` reports 68 authored files with 873 vendored
-files skipped, a mean deficit around 3.2 and still no rule findings. Those
-numbers describe a local audit; no model was called, so there is no baseline and
-no saving claim.
+On this repository, `--root src/tiberium_ai` reports 35 files, all `sound`, a mean
+deficit around 3.5, eight `rule.god-function` findings, 35 reused verdicts on the
+second pass and 35 accepted verifications. `--root .` reports 72 authored files
+with 873 vendored files skipped, a mean deficit around 2.3 and the same eight
+findings. Those eight are long validation and orchestration functions in this
+repository, which is the rule doing its job on a loose bound rather than a
+measurement of quality. No model was called anywhere in that run, so there is no
+baseline and no saving claim.
 
 ## What this is not
 
@@ -216,10 +226,35 @@ no saving claim.
 
 ## Next gate
 
-Calibration comes before any threshold is trusted. The work is to label a set of
-files, measure per-rule false positives on that set, and publish the resulting
-weights and thresholds as a recorded snapshot with `data_origin` set honestly.
-Until that snapshot exists, the deficit is a reported measurement and nothing
-more. A model-backed route over the same question is the natural baseline for
-the cost comparison, and it cannot be claimed before that baseline has been run
-on the same tasks.
+## Calibration of the analyser
+
+`audit_corpus.py` holds 32 authored files with declared labels: the structural
+role, the band class, and exactly which rules fire. Several are deliberate
+negative controls for the false positives found during development, so loosening
+a rule breaks the corpus instead of passing quietly.
+
+`audit_calibrate.py` runs the audit over that corpus and reports per-rule true
+positives, false positives, missed detections, precision and recall, plus role,
+band and rule agreement. Run it with:
+
+```powershell
+python examples/audit_calibration.py --out runs/audit-calibration
+```
+
+Current result: 32 cases, role agreement 1.0, band agreement 1.0, rule
+agreement 1.0, and precision 1.0 with recall 1.0 for all five rules. Those
+numbers mean the analyser does what its author intended on authored examples.
+They do not mean it is right about real code, and the snapshot says so: its
+provenance is `fixture` and `threshold_authorized` is `false`, with the reason
+attached. `AuditCalibrationReport` refuses to be constructed as authorized
+unless its origin is `measured`, and only an operator with measured, human-
+labelled outcomes can produce that.
+
+## Next gate
+
+The remaining work is measured calibration: label real files, measure per-rule
+false positives on them, and record the resulting weights and thresholds with
+`data_origin` set honestly. Until that snapshot exists, the deficit stays a
+reported measurement and may not gate execution. A model-backed route over the
+same question is the natural baseline for the cost comparison, and no saving can
+be claimed before that baseline has been run on the same tasks.
