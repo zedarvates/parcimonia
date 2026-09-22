@@ -204,11 +204,11 @@ each determined verdict by recomputation, and writes `summary.json` plus a
 Vendored, cached and build trees are skipped, so widening the root does not widen
 what counts as authored code.
 
-On this repository, `--root src/tiberium_ai` reports 35 files, all `sound`, a mean
-deficit around 3.5, eight `rule.god-function` findings, 35 reused verdicts on the
-second pass and 35 accepted verifications. `--root .` reports 72 authored files
-with 873 vendored files skipped, a mean deficit around 2.3 and the same eight
-findings. Those eight are long validation and orchestration functions in this
+On this repository, `--root src/tiberium_ai` reports 45 files, all `sound`, a mean
+deficit around 4.2, eleven `rule.god-function` findings, 45 reused verdicts on the
+second pass and 45 accepted verifications. `--root .` reports 100 authored files
+with 873 vendored files skipped, a mean deficit around 2.6 and the same eleven
+findings. Those eleven are long validation and orchestration functions in this
 repository, which is the rule doing its job on a loose bound rather than a
 measurement of quality. No model was called anywhere in that run, so there is no
 baseline and no saving claim.

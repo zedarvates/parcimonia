@@ -123,7 +123,7 @@ The first System-1 route is implemented: a deterministic static audit that
 classifies a file's structural role, runs named pattern rules, scores a deficit
 from four ratio dimensions, and stores the verdict in a local, content-addressed
 database. It needs no model, no network and no clock, and a second pass over the
-same text reuses a measured verdict instead of recomputing it. Every verdict can
+same text reuses the stored verdict instead of recomputing it. Every verdict can
 be recomputed by a named verifier before it is accepted as evidence. It is shadow
 only, its weights are declared defaults rather than calibrated values, and it
 claims no saving. See the [static audit](docs/STATIC_AUDIT.md).
@@ -136,6 +136,20 @@ instead of being trusted. A decision clock keeps a missed deadline and a stale
 snapshot apart from decision quality. No model is called, the library provides no
 transport of its own and no cost is claimed. See
 [Typed-decision adapters](docs/DECISION_ADAPTER.md).
+
+A prompt-signature predictor is implemented: it reads an input and names what that
+input is about, the kind of task, the capabilities it needs, the fields worth
+reading and which declared goal it serves. A keyword rule, a KNN over labelled
+cases and a micro-NN sit behind one protocol, so the rule stays the baseline a
+learner has to beat on the same corpus. The vocabulary is caller-declared,
+abstention is a value rather than an exception, and strictness stays
+caller-declared because a prompt is weak evidence for it. The candidates are
+measured apart on an authored corpus, on a held-out public slice whose labels were
+written by strangers, and on the prompts already on disk, which the ingest lane
+turns into a content-addressed corpus revision without writing anything into this
+repository. A public corpus can measure a mechanism and never opens the
+authorization gate, and no accuracy is claimable while the labels are not
+outcomes. See [Task signatures](docs/INTEGRATIONS.md).
 
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
@@ -151,6 +165,16 @@ capability matching and real baseline comparisons remain roadmap work;
 the prototype does not yet demonstrate cost savings.
 
 See the [routing policy](docs/SHADOW_ROUTING.md) for exact rules and limitations.
+
+## One command
+
+```powershell
+python examples/flagship.py
+```
+
+Six fragments of an ordinary development day, each one proposed or refused in
+shadow mode with its reason, and nothing executed. See the
+[flagship walkthrough](docs/FLAGSHIP.md).
 
 ## Local development
 
