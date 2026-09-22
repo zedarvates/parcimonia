@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-22",
+  "repository": "zedarvates/parcimonia",
+  "scope": "Releve de la session du 22 septembre 2026. Chaque bloc cite la commande qui l'a produit; les origines fixture, public et mesure ne sont pas interchangeables.",
+  "tests": {
+    "command": ".venv/Scripts/python.exe -m pytest -q",
+    "passed": 795,
+    "failed": 0,
+    "python": ["3.10", "3.14"],
+    "continuous_integration": "green on pull request #10"
+  },
+  "corpus": {
+    "location": "runs/signature-corpus, local only, git-ignored, never published",
+    "revision_id": "cb6f2f39dd25b06878505fe40490fb614d2d1f57af100b7fef3013f13cbba446",
+    "generated_at": "2026-09-22T03:22:00Z",
+    "messages_seen": 6819,
+    "distinct_prompts": 1890,
+    "harness_stripped": 1083,
+    "redactions": 206,
+    "first_revision": {
+      "revision_id": "68c3f498ba4c4158",
+      "messages_seen": 7657,
+      "distinct_prompts": 2338,
+      "harness_stripped": 1460,
+      "redactions": 6863,
+      "correction": "the 6863 redaction count was carried by harness text; on a cleaned revision the honest count is 206"
+    }
+  },
+  "real_asks": {
+    "command": ".venv/Scripts/python.exe examples/real_asks_lane.py --corpus runs/signature-corpus/latest.json --out runs/signature-corpus/real-lane-cb6f2f39.json",
+    "corpus_revision": "cb6f2f39",
+    "asks_distinct": 1769,
+    "ask_volume": 3127,
+    "candidates": [
+      {"predictor": "rule.keyword", "coverage_distinct": 0.326, "coverage_volume": 0.403, "answered_volume": 1070},
+      {"predictor": "frame.control", "coverage_distinct": 0.748, "coverage_volume": 0.565, "answered_volume": 1502},
+      {"predictor": "frame.interrogative", "coverage_distinct": 0.755, "coverage_volume": 0.570, "answered_volume": 1514}
+    ],
+    "triage": {
+      "unanimous": {"distinct": 1310, "volume": 1488},
+      "majority": {"distinct": 14, "volume": 14},
+      "split": {"distinct": 4, "volume": 5},
+      "insufficient": {"distinct": 441, "volume": 1151},
+      "unanimous_share_of_volume": 0.5598,
+      "share_needing_one_label": 0.0071
+    },
+    "caveats": [
+      "no outcome label exists, so accuracy is not measurable",
+      "coverage is in-sample: the declared vocabulary was written after reading a census of the same traffic",
+      "the written artefact does not record the corpus revision it read; the file name is a workaround, not a fix"
+    ]
+  },
+  "earlier_real_asks_run": {
+    "artefact": "runs/signature-corpus/real-lane.json",
+    "written_at": "2026-09-22T05:00:24",
+    "corpus_revision": "6a82e0bc, inferred from ingestion timestamps because the artefact does not record it",
+    "candidates": [
+      {"predictor": "rule.keyword", "coverage_volume": 0.1685},
+      {"predictor": "frame.control", "coverage_volume": 0.2721},
+      {"predictor": "frame.interrogative", "coverage_volume": 0.2881}
+    ],
+    "reading": "same denominators, different numerators: the declared vocabulary changed between the two runs, which is exactly why a revision-less artefact cannot be compared"
+  },
+  "static_audit": {
+    "command": ".venv/Scripts/python.exe examples/audit_suite.py --root src/tiberium_ai --out runs/audit",
+    "by_root": [
+      {"root": "src/tiberium_ai", "files": 45, "bands": {"sound": 45}, "mean_deficit": 4.1818, "rule_findings": {"rule.god-function": 11}, "reused_verdicts": 45, "verified": 45},
+      {"root": ".", "files": 100, "skipped": 873, "mean_deficit": 2.576, "rule_findings": {"rule.god-function": 11}, "reused_verdicts": 100, "verified": 100}
+    ],
+    "caveat": "declared weights and thresholds, not calibrated values; no model call and no saving claim"
+  },
+  "fixture_chain": {
+    "command": ".venv/Scripts/python.exe examples/fixture_suite.py --out runs/fixtures",
+    "cases": 20,
+    "measurements": 40,
+    "measurements_failed": 1,
+    "statuses": {"verified_without_measurements": 18, "insufficient_evidence": 1, "verification_failed": 1}
+  },
+  "end_to_end": {
+    "reading": "with a declared budget of one escalation, every ask gets a typed decision instead of silence",
+    "accept": 0.570,
+    "escalate": 0.43,
+    "abstain": 0,
+    "caveat": "the zero abstention is a consequence of the declared budget, not of the corpus; budget, cost and latency are declared for the exercise and not measured"
+  },
+  "published_elsewhere": {
+    "public_lane": "docs/INTEGRATIONS.md carries the public-slice numbers with their own dates; they are not repeated here",
+    "refresh": "the audit figures in docs/STATIC_AUDIT.md and docs/V1_GATES.md were refreshed on this date from the run above, replacing stale 33/35 file counts and eight findings"
+  }
+}

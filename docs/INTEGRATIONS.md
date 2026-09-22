@@ -308,10 +308,12 @@ corpus it read. The store is discovered generically under the current home, the
 configuration is the caller's, and nothing is written into this repository.
 
 The first run over 824 rollout files took 41 seconds and produced 2338 distinct
-prompts from 7657 user messages. It stripped assistant-injected text from 1460 of
-them and redacted 6863 matches of credential and address patterns, and the second
-run reported a delta of zero with the same identifier, so the update path is
-idempotent.
+prompts from 7657 user messages, stripping assistant-injected text from 1460 of
+them. Its redaction counter read 6863, and that number was the harness talking: on
+a cleaned revision the same store yields 1890 distinct prompts from 6819 messages
+with 206 redactions, and a second run reports a delta of zero with the same
+identifier, so the update path is idempotent. The current figures are carried by
+revision `cb6f2f39`.
 
 Two numbers correct earlier work. Only 83 of the 135 prompts of the hand-extracted
 corpus survive verbatim here, so 38 per cent of that corpus was not what the person

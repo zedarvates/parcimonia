@@ -8,6 +8,10 @@
 
 Repository: https://github.com/zedarvates/parcimonia
 
+Where the project stands, what was decided and what was learned — including the
+negative results — lives in [the wiki](wiki/WIKI.md). Mechanism documentation stays
+in [docs](docs/).
+
 Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.
 
 It is not intended to be another general-purpose LLM. It sits between an agent/LLM and its execution mechanisms:
