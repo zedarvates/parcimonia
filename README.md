@@ -128,6 +128,15 @@ be recomputed by a named verifier before it is accepted as evidence. It is shado
 only, its weights are declared defaults rather than calibrated values, and it
 claims no saving. See the [static audit](docs/STATIC_AUDIT.md).
 
+An adapter boundary for typed-decision routes is implemented: an option set
+wider than one call offers is either cut into balanced stages or scored option by
+option before one explicit choice, one response is recorded with the provenance
+that replays it offline, and the recomposed decision is verified by recomputation
+instead of being trusted. A decision clock keeps a missed deadline and a stale
+snapshot apart from decision quality. No model is called, the library provides no
+transport of its own and no cost is claimed. See
+[Typed-decision adapters](docs/DECISION_ADAPTER.md).
+
 The current `ShadowRouter` validates confidence and cost estimates, applies a
 configurable confidence threshold (default `0.9`), and proposes the lowest known
 estimated cost among eligible candidates. Equal costs use higher confidence,
