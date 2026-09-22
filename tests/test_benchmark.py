@@ -236,3 +236,232 @@ def test_benchmark_suite_script_produces_a_report(tmp_path):
     assert report["claim"]["reason_code"] in {
         "quality_regression", "insufficient_evidence", "no_dominance", "verified_dominance",
     }
+
+
+# --- N-way comparison on every measured dimension -------------------------
+
+
+def multi_case():
+    expected = {"total": 45}
+    return BenchmarkCase(
+        task=Task("case-multi", "arithmetic", {}),
+        routes=(
+            BenchmarkRoute(
+                "baseline",
+                lambda: {"total": sum(range(10))},
+                estimated_cost=1.0,
+                confidence=0.99,
+            ),
+            BenchmarkRoute("rule", lambda: {"total": 45}, estimated_cost=0.01),
+            BenchmarkRoute("cache", lambda: {"total": 45}, estimated_cost=0.001),
+        ),
+        verifier_id="arithmetic/exact",
+        verifier_version="size=10",
+        verifier=exact_match_verifier(expected),
+        baseline_route_id="baseline",
+    )
+
+
+def multi_result(task_id, split, vectors, *, verdicts=None, ok=None):
+    return CaseResult(
+        task_id=task_id,
+        split=split,
+        status="measured",
+        verdicts=verdicts or {"baseline": True, "rule": True, "cache": True},
+        vectors=vectors,
+        ok=ok or {"baseline": True, "rule": True, "cache": True},
+    )
+
+
+def multi_report(results, *, split=BenchmarkSplit(("a",), ("b", "c"))):
+    return build_report(
+        results,
+        seed=7,
+        split=split,
+        environment=Environment("test-machine", {"python": "3.14.0"}),
+        corpus="fixture",
+        baseline_route_id="baseline",
+    )
+
+
+def test_a_case_compares_more_than_two_routes():
+    case = multi_case()
+    assert case.candidate_route_ids == ("rule", "cache")
+    with pytest.raises(ValueError, match="candidate_route_ids"):
+        case.candidate_route_id
+
+
+def test_the_harness_runs_every_route_of_a_multi_route_case(tmp_path):
+    def case(index):
+        return BenchmarkCase(
+            task=Task(f"multi-{index:02d}", "arithmetic", {}),
+            routes=multi_case().routes,
+            verifier_id="arithmetic/exact",
+            verifier_version=f"multi={index}",
+            verifier=exact_match_verifier({"total": 45}),
+            baseline_route_id="baseline",
+        )
+
+    built = run_benchmark(
+        [case(index) for index in range(1, 5)],
+        out_dir=tmp_path,
+        seed=5,
+        environment=Environment("bench-machine", {"python": "3.14.0"}),
+        clock=__import__("time").perf_counter,
+        cost_unit="synthetic-unit/task",
+        corpus="fixture",
+    )
+    assert len(sorted((tmp_path / "measurements").glob("*.json"))) == 12
+    assert set(built["routes"]) == {"baseline", "rule", "cache"}
+    assert len(built["claim"]["evaluated"]) == 2
+
+
+def test_a_token_saving_is_claimable_against_an_equal_latency_baseline():
+    vectors = {
+        "baseline": ResourceVector(tokens=1000, latency_ms=100.0),
+        "rule": ResourceVector(tokens=100, latency_ms=100.0),
+        "cache": ResourceVector(tokens=1000, latency_ms=100.0),
+    }
+    built = multi_report([multi_result("b", "heldout", vectors)])
+    claim = built["claim"]
+    assert claim["status"] == "allowed"
+    assert claim["candidate"] == "rule"
+    assert claim["allowed"] == ["rule"]
+    assert built["routes"]["rule"]["heldout_median"]["tokens"] == 100
+    assert built["routes"]["rule"]["heldout_median_latency_ms"] == 100.0
+
+
+def test_an_unknown_dimension_is_not_treated_as_better():
+    vectors = {
+        "baseline": ResourceVector(latency_ms=100.0),
+        "rule": ResourceVector(tokens=10, latency_ms=100.0),
+        "cache": ResourceVector(latency_ms=100.0),
+    }
+    built = multi_report([multi_result("b", "heldout", vectors)])
+    claim = built["claim"]
+    assert claim["status"] == "refused"
+    assert claim["reason_code"] == "no_dominance"
+    assert built["pareto"] == ["baseline", "cache", "rule"]
+
+
+def test_the_token_median_of_an_even_sample_is_a_whole_count():
+    first = {
+        "baseline": ResourceVector(tokens=1000, latency_ms=100.0),
+        "rule": ResourceVector(tokens=10, latency_ms=100.0),
+        "cache": ResourceVector(tokens=1, latency_ms=100.0),
+    }
+    second = {
+        "baseline": ResourceVector(tokens=1000, latency_ms=100.0),
+        "rule": ResourceVector(tokens=15, latency_ms=100.0),
+        "cache": ResourceVector(tokens=1, latency_ms=100.0),
+    }
+    built = multi_report(
+        [
+            multi_result("b", "heldout", first),
+            multi_result("c", "heldout", second),
+        ]
+    )
+    assert built["routes"]["rule"]["heldout_median"]["tokens"] == 12
+    assert isinstance(built["routes"]["rule"]["heldout_median"]["tokens"], int)
+
+
+def test_each_candidate_carries_its_own_reason_and_the_front_is_reported():
+    vectors = {
+        "baseline": ResourceVector(tokens=1000, latency_ms=100.0),
+        "rule": ResourceVector(tokens=10, latency_ms=100.0),
+        "cache": ResourceVector(tokens=5, latency_ms=100.0),
+    }
+    verdicts = {"baseline": True, "rule": False, "cache": True}
+    built = multi_report([multi_result("b", "heldout", vectors, verdicts=verdicts)])
+    claim = built["claim"]
+    assert claim["status"] == "allowed"
+    assert claim["allowed"] == ["cache"]
+    assert claim["front"] == ["cache"]
+    assert claim["candidate"] == "cache"
+    by_route = {entry["route_id"]: entry for entry in claim["evaluated"]}
+    assert by_route["rule"]["status"] == "refused"
+    assert by_route["rule"]["reason_code"] == "quality_regression"
+    assert by_route["cache"]["status"] == "allowed"
+
+
+def test_a_real_trade_off_yields_a_front_instead_of_one_winner():
+    vectors = {
+        "baseline": ResourceVector(tokens=1000, latency_ms=200.0),
+        "rule": ResourceVector(tokens=100, latency_ms=100.0),
+        "cache": ResourceVector(tokens=10, latency_ms=150.0),
+    }
+    built = multi_report([multi_result("b", "heldout", vectors)])
+    claim = built["claim"]
+    assert claim["status"] == "allowed"
+    assert claim["allowed"] == ["cache", "rule"]
+    assert claim["front"] == ["cache", "rule"]
+    assert "no single cheapest one exists" in claim["detail"]
+
+
+def test_no_candidate_qualifying_reports_the_least_severe_refusal():
+    vectors = {
+        "baseline": ResourceVector(tokens=1000, latency_ms=100.0),
+        "rule": ResourceVector(tokens=1000, latency_ms=100.0),
+        "cache": ResourceVector(tokens=1000, latency_ms=100.0),
+    }
+    built = multi_report([multi_result("b", "heldout", vectors)])
+    claim = built["claim"]
+    assert claim["status"] == "refused"
+    assert claim["reason_code"] == "no_dominance"
+    assert claim["allowed"] == []
+    assert claim["front"] == []
+    assert len(claim["evaluated"]) == 2
+
+
+def test_route_resources_can_be_declared_or_computed():
+    constant = BenchmarkRoute("rule", lambda: None, resources=ResourceVector(tokens=5))
+    assert constant.resolve_resources() == ResourceVector(tokens=5)
+    computed = BenchmarkRoute("rule", lambda: None, resources=lambda: ResourceVector(tokens=7))
+    assert computed.resolve_resources() == ResourceVector(tokens=7)
+    assert BenchmarkRoute("rule", lambda: None).resolve_resources() is None
+    with pytest.raises(TypeError, match="resources must be"):
+        BenchmarkRoute("rule", lambda: None, resources=7)
+    with pytest.raises(TypeError, match="must return a ResourceVector"):
+        BenchmarkRoute("rule", lambda: None, resources=lambda: 7).resolve_resources()
+
+
+def test_declared_resources_reach_the_measurement_and_the_report(tmp_path):
+    def case(index):
+        return BenchmarkCase(
+            task=Task(f"instrumented-{index:02d}", "arithmetic", {}),
+            routes=(
+                BenchmarkRoute(
+                    "baseline",
+                    lambda size=10 * index: {"total": sum(range(size))},
+                    estimated_cost=1.0,
+                    confidence=0.99,
+                ),
+                BenchmarkRoute(
+                    "rule",
+                    lambda size=10 * index: {"total": size * (size - 1) // 2},
+                    estimated_cost=0.01,
+                    confidence=0.95,
+                    resources=ResourceVector(tokens=10 * index),
+                ),
+            ),
+            verifier_id="arithmetic/exact",
+            verifier_version=f"size={10 * index}",
+            verifier=exact_match_verifier({"total": (10 * index) * (10 * index - 1) // 2}),
+            baseline_route_id="baseline",
+        )
+
+    built = run_benchmark(
+        [case(index) for index in range(1, 7)],
+        out_dir=tmp_path,
+        seed=11,
+        environment=Environment("bench-machine", {"python": "3.14.0"}),
+        clock=__import__("time").perf_counter,
+        cost_unit="synthetic-unit/task",
+        corpus="fixture",
+    )
+    instrumented = sorted((tmp_path / "measurements").glob("*.rule.json"))
+    assert len(instrumented) == 6
+    payload = json.loads(instrumented[0].read_text(encoding="utf-8"))
+    assert payload["resources"]["tokens"] is not None
+    assert built["routes"]["rule"]["heldout_median"]["tokens"] is not None
+    assert built["routes"]["baseline"]["heldout_median"]["tokens"] is None

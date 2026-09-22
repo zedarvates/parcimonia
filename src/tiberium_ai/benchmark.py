@@ -32,7 +32,7 @@ __all__ = [
     "split_cases",
 ]
 
-REPORT_SCHEMA_VERSION = 1
+REPORT_SCHEMA_VERSION = 2
 _CLAIM_SEVERITY = {
     "quality_regression": 0,
     "insufficient_evidence": 1,
@@ -50,6 +50,10 @@ class BenchmarkRoute:
     run: Callable[[], Any]
     estimated_cost: float | None = None
     confidence: float | None = None
+    #: Resources this route reports after a run. A callable is the general form,
+    #: because a token count depends on the input; a constant is accepted for
+    #: work whose consumption does not vary.
+    resources: "ResourceVector | Callable[[], ResourceVector] | None" = None
 
     def __post_init__(self) -> None:
         if not _is_trimmed_nonempty(self.route_id):
@@ -64,6 +68,22 @@ class BenchmarkRoute:
             not is_nonnegative_number(self.confidence) or self.confidence > 1
         ):
             raise ValueError("confidence must be null or in [0, 1].")
+        if self.resources is not None and not (
+            isinstance(self.resources, ResourceVector) or callable(self.resources)
+        ):
+            raise TypeError(
+                "resources must be null, a ResourceVector or a callable returning one."
+            )
+
+    def resolve_resources(self) -> ResourceVector | None:
+        """Return the vector this route reports for the run about to happen."""
+        declared = self.resources
+        if declared is None:
+            return None
+        resolved = declared() if callable(declared) else declared
+        if not isinstance(resolved, ResourceVector):
+            raise TypeError("the resources callable must return a ResourceVector.")
+        return resolved
 
 
 @dataclass(frozen=True)
@@ -80,8 +100,8 @@ class BenchmarkCase:
     def __post_init__(self) -> None:
         if not isinstance(self.task, Task):
             raise TypeError("task must be a Task instance.")
-        if not isinstance(self.routes, tuple) or len(self.routes) != 2:
-            raise ValueError("a benchmark case compares exactly two routes.")
+        if not isinstance(self.routes, tuple) or len(self.routes) < 2:
+            raise ValueError("a benchmark case compares at least two routes.")
         if not all(isinstance(route, BenchmarkRoute) for route in self.routes):
             raise TypeError("routes must contain BenchmarkRoute instances.")
         identifiers = [route.route_id for route in self.routes]
@@ -97,12 +117,28 @@ class BenchmarkCase:
             raise TypeError("verifier must be callable.")
 
     @property
-    def candidate_route_id(self) -> str:
-        return next(
+    def candidate_route_ids(self) -> tuple[str, ...]:
+        """Return every non-baseline route id, in declared order."""
+        return tuple(
             route.route_id
             for route in self.routes
             if route.route_id != self.baseline_route_id
         )
+
+    @property
+    def candidate_route_id(self) -> str:
+        """Return the single non-baseline route id.
+
+        Kept for callers that compare exactly two routes. A case with several
+        candidates has no single one and says so instead of picking one.
+        """
+        candidates = self.candidate_route_ids
+        if len(candidates) != 1:
+            raise ValueError(
+                f"this case has {len(candidates)} candidate routes; use "
+                "candidate_route_ids."
+            )
+        return candidates[0]
 
 
 @dataclass(frozen=True)
@@ -174,19 +210,7 @@ def build_report(
     if baseline_route_id not in route_ids:
         raise ValueError("baseline_route_id must appear in the results.")
     heldout = [result for result in results if result.split == "heldout"]
-    vectors = {
-        route_id: ResourceVector(
-            latency_ms=_median(
-                [
-                    result.vectors[route_id].latency_ms
-                    for result in heldout
-                    if route_id in result.vectors
-                    and result.vectors[route_id].latency_ms is not None
-                ]
-            )
-        )
-        for route_id in route_ids
-    }
+    vectors = {route_id: _median_vector(heldout, route_id) for route_id in route_ids}
     routes = {
         route_id: {
             "runs": sum(1 for result in results if route_id in result.verdicts),
@@ -200,6 +224,7 @@ def build_report(
                 if route_id in result.verdicts and result.verdicts.get(route_id) is None
             ),
             "heldout_median_latency_ms": vectors[route_id].latency_ms,
+            "heldout_median": vectors[route_id].to_record(),
         }
         for route_id in route_ids
     }
@@ -273,6 +298,7 @@ def run_benchmark(
                 environment=environment,
                 clock=clock,
                 now=now,
+                resources=route.resolve_resources(),
             )
             write_measurement(
                 measurements_dir / f"{case_id}.{route.route_id}.json",
@@ -360,10 +386,15 @@ def _claim(
             "status": "refused",
             "reason_code": "insufficient_evidence",
             "candidate": None,
+            "allowed": [],
+            "front": [],
+            "evaluated": [],
             "baseline": baseline_route_id,
             "detail": "No held-out case was measured, so no claim can be made.",
         }
 
+    evaluated: list[dict[str, Any]] = []
+    allowed: list[str] = []
     refused: tuple[str, str] | None = None
     for candidate in candidates:
         reasons: set[str] = set()
@@ -377,29 +408,54 @@ def _claim(
                 reasons.add("insufficient_evidence")
         if not reasons and not vectors[candidate].dominates(vectors[baseline_route_id]):
             reasons.add("no_dominance")
-        if not reasons:
-            return {
-                "status": "allowed",
-                "reason_code": "verified_dominance",
-                "candidate": candidate,
-                "baseline": baseline_route_id,
-                "detail": (
-                    f"{candidate} was verified on every held-out case and dominates "
-                    f"{baseline_route_id} on the median measured vector."
-                ),
-            }
-        reason = min(reasons, key=lambda item: _CLAIM_SEVERITY[item])
-        if refused is None or _CLAIM_SEVERITY[reason] < _CLAIM_SEVERITY[refused[0]]:
+        reason = (
+            None if not reasons else min(reasons, key=lambda item: _CLAIM_SEVERITY[item])
+        )
+        evaluated.append(_candidate_verdict(candidate, reason, baseline_route_id))
+        if reason is None:
+            allowed.append(candidate)
+        elif refused is None or _CLAIM_SEVERITY[reason] < _CLAIM_SEVERITY[refused[0]]:
             refused = (reason, candidate)
 
-    if refused is None:
+    if not candidates:
         return {
             "status": "refused",
             "reason_code": "no_candidate",
             "candidate": None,
+            "allowed": [],
+            "front": [],
+            "evaluated": [],
             "baseline": baseline_route_id,
             "detail": "No candidate route was declared.",
         }
+    if allowed:
+        front = list(
+            pareto_front({candidate: vectors[candidate] for candidate in allowed})
+        )
+        headline = front[0]
+        detail = (
+            f"{headline} was verified on every held-out case and dominates "
+            f"{baseline_route_id} on the median measured vector."
+        )
+        if len(allowed) > 1:
+            detail = (
+                f"{detail} {len(front)} of {len(candidates)} candidates are not "
+                "dominated by another candidate, so no single cheapest one exists."
+            )
+        return {
+            "status": "allowed",
+            "reason_code": "verified_dominance",
+            "candidate": headline,
+            "allowed": allowed,
+            "front": front,
+            "evaluated": evaluated,
+            "baseline": baseline_route_id,
+            "detail": detail,
+        }
+    if refused is None:  # pragma: no cover - a candidate list always decides
+        raise RuntimeError(
+            "a non-empty candidate list must allow or refuse at least one candidate."
+        )
     reason, candidate = refused
     details = {
         "quality_regression": "a held-out case failed verification",
@@ -410,6 +466,9 @@ def _claim(
         "status": "refused",
         "reason_code": reason,
         "candidate": candidate,
+        "allowed": [],
+        "front": [],
+        "evaluated": evaluated,
         "baseline": baseline_route_id,
         "detail": f"Claim refused for {candidate}: {details[reason]}.",
     }
@@ -423,3 +482,77 @@ def _median(values: Sequence[float]) -> float | None:
     if len(ordered) % 2 == 1:
         return ordered[middle]
     return (ordered[middle - 1] + ordered[middle]) / 2
+
+
+def _candidate_verdict(
+    candidate: str, reason: str | None, baseline_route_id: str
+) -> dict[str, Any]:
+    """Describe one candidate's claim verdict and the rule that decided it."""
+    if reason is None:
+        return {
+            "route_id": candidate,
+            "status": "allowed",
+            "reason_code": "verified_dominance",
+            "detail": (
+                f"{candidate} was verified on every held-out case and dominates "
+                f"{baseline_route_id} on the median measured vector."
+            ),
+        }
+    details = {
+        "quality_regression": "a held-out case failed verification",
+        "insufficient_evidence": "a held-out case carries no verdict",
+        "no_dominance": "the median measured vector does not dominate the baseline",
+    }
+    return {
+        "route_id": candidate,
+        "status": "refused",
+        "reason_code": reason,
+        "detail": f"Claim refused for {candidate}: {details[reason]}.",
+    }
+
+
+def _median_dimension(
+    values: Sequence[float], *, integer: bool = False
+) -> int | float | None:
+    """Return the median of the measured values, or null when none exist.
+
+    An integral dimension is rounded to the nearest whole value, because half a
+    token is not a token count.
+    """
+    if not values:
+        return None
+    value = _median(values)
+    if value is None:  # pragma: no cover - unreachable for a non-empty sample
+        return None
+    return int(round(value)) if integer else value
+
+
+def _median_vector(results: Sequence[CaseResult], route_id: str) -> ResourceVector:
+    """Aggregate one route's vectors, one median per measured dimension.
+
+    A dimension is null only when no run in the sample measured it, and a
+    dimension measured on some runs only is aggregated over those runs. Unknown
+    dimensions stay unknown instead of becoming zero.
+    """
+    vectors = [
+        result.vectors[route_id] for result in results if route_id in result.vectors
+    ]
+    return ResourceVector(
+        tokens=_median_dimension(
+            [vector.tokens for vector in vectors if vector.tokens is not None],
+            integer=True,
+        ),
+        latency_ms=_median_dimension(
+            [vector.latency_ms for vector in vectors if vector.latency_ms is not None]
+        ),
+        vram_mb=_median_dimension(
+            [vector.vram_mb for vector in vectors if vector.vram_mb is not None]
+        ),
+        energy_joules=_median_dimension(
+            [
+                vector.energy_joules
+                for vector in vectors
+                if vector.energy_joules is not None
+            ]
+        ),
+    )
