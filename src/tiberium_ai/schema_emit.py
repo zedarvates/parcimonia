@@ -1,8 +1,9 @@
-"""Schema-constrained tool emission with act / confirm / refuse bands.
+"""Post-generation schema checking for tool calls with act / confirm / refuse bands.
 
-Original adapter inspired by tiny on-device tool-calling models: a call is
-either grammar-valid and grounded, withheld, or refused. Empty function_calls
-is a refusal, never a guess. No Needle weights are loaded.
+Original adapter inspired by tiny on-device tool-calling models: a proposed
+call is either schema-valid and grounded, withheld, or refused. It does not
+constrain the decoder token by token. Empty function_calls is a refusal, never
+a guess. No Needle weights are loaded.
 
 Confidence, when present, is the minimum of a declared head score and a decode
 probability. Fine-tuned or unmeasured heads report confidence as None, which
