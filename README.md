@@ -69,6 +69,14 @@ Planned adapters include:
 - ShardJEPA experiments
 - protobuf/ID based capability manifests
 
+[NVIDIA Personal AI Router (PAIR)](https://github.com/NVIDIA/Personal-AI-Router)
+fits this architecture: PAIR exposes OpenAI-compatible and Ollama-compatible
+local endpoints and routes each independent inference request to an eligible
+node. Parcimonia can treat a PAIR endpoint as a candidate for local LLM
+execution while retaining its own cost, evidence and escalation decisions.
+This is an integration path through planned adapters, not an implemented or
+end-to-end validated PAIR adapter.
+
 ## Success metrics
 
 Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, unsafe false positives, abstention, escalation, model calls, evidence completeness and reproducibility.

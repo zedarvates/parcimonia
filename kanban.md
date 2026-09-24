@@ -156,6 +156,16 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## À faire (Backlog)
 
+- [ ] TASK-109 [P2] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Comparaison contrôlée des routes Astra/LLM, jugement Jev-like, Needle-like, règle et KNN sur les mêmes tâches
+  - Dépendances : TASK-075, TASK-102
+  - Notes : protocole et matrice dans docs/ASTRA_JEV_NEEDLE_RESEARCH.md ; mesurer séparément mécanisme, vérification, temps, coût total et abstentions ; aucun appel quota-bearing ni téléchargement de poids n'est compris dans cette carte
+
+- [ ] TASK-110 [P3] [difficulté: raisonnement] [class: feature] [horizon: long] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Évaluer une piste géométrique sur des représentations accessibles et un test de perturbation apparié
+  - Dépendances : TASK-109
+  - Notes : distinguer étude des activations publiée et revendication Sophontic ; pas de modèle ou d'activation accessible confirmé pour notre stack ; cette carte est une hypothèse de recherche, pas une route admise
+
 - [ ] TASK-068 [P1] [difficulté: raisonnement] [class: feature] [horizon: near]
   - Intitulé : Calibration mesurée de l'audit statique sur fichiers réels (labels humains)
   - Dépendances : TASK-070
@@ -381,15 +391,13 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Preuve : tests/test_signature_taxonomy.py (13 tests au total), dont la frontière qui suit la classification (« continuer », « oui ! », « et la suite » vers le directeur ; « summarise the report », « extraire les colonnes » vers Parcimonia) et la vérification qu'une continuation ne demande ni signature ni vérificateur ; démonstration réelle : l'arbitre alimenté par le quota effectif (fenêtre hebdomadaire à 0 %, réinitialisation à 12 h 23 UTC) autorise une tâche déterministe via une règle locale à coût nul de jeton, dégrade une tâche compacte en modèle local à 1000 jetons, gèle le raisonnement lourd et demande un humain quand il ne reste pas d'horloge
   - Notes : c'est une frontière, pas un routeur — aucune couche ne prend silencieusement la décision de l'autre, et le directeur a besoin d'état, jamais de texte ; environ 55 % du volume réel de messages appartient à cette famille, donc le chemin état est le chemin majoritaire
 
-- [ ] TASK-096 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+- [x] TASK-096 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Branchement consommateur : une continuation alimente l'état du directeur, jamais le chemin de signature
   - Dépendances : TASK-095
-  - Notes : la partition mesure la famille et la frontière nomme son propriétaire, mais rien ne branche encore au niveau du consommateur ; le geste est un appel conditionnel dans la boucle de tour de l'appelant (famille continuation vers AstralDirector.propose avec quota, difficulté, horloge, stalls et capacité ; famille demande vers le chemin de signature), et il appartient au consommateur parce que le directeur détient l'intention et l'autorisation ; invariant à tenir : une continuation ne devient jamais un Task, et un prélèvement de quota observé devient une contrainte FREEZE_QUOTA, pas une prévision
+  - Reçu : dispatch_turn en observation, avec continuation exacte vers AstralDirector et demande vers signature_escalation ; les messages courts ambigus restent unresolved
+  - Preuve : tests/test_turn_dispatch.py ; ni la signature ni le vérificateur ne sont créés par une continuation
+  - Notes : la boucle de tour de l'application peut appeler ce pont ; le Director conserve intention et autorisation. Le quota observé reste une contrainte de ContinuationArbiter
 
 - [ ] TASK-061 [P3] [difficulté: compact]
   - Intitulé : Sync live Kanboard Neo si KANBOARD_URL et AGENT_INGEST_TOKEN existent
   - Dépendances : TASK-052
-
-- [ ] TASK-062 [P3] [difficulté: compact]
-  - Intitulé : Capacité locale (VRAM / slots concurrents) dans ContinuationArbiter
-  - Dépendances : TASK-056
