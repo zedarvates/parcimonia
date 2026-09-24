@@ -84,6 +84,8 @@ from .route_experiment import (
 )
 from .turn_dispatch import TurnDispatch, TurnFamily, dispatch_turn
 from .heldout_asks import HeldoutCoverage, measure_new_ask_coverage
+from .label_review import LabelOption, LabelReview, review_label_options
+from .span_retrieval import SpanKnnSignatureBackend, frame_parts
 from .goals import Goal, GoalSet, load_goals, parse_goals_markdown
 from .director import (
     AstralDirector,
@@ -402,6 +404,11 @@ __all__ = [
     "dispatch_turn",
     "HeldoutCoverage",
     "measure_new_ask_coverage",
+    "LabelOption",
+    "LabelReview",
+    "review_label_options",
+    "SpanKnnSignatureBackend",
+    "frame_parts",
     "Goal",
     "GoalSet",
     "load_goals",

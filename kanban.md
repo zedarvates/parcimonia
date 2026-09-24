@@ -220,12 +220,15 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 - [ ] TASK-081 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Alimenter le backend de récupération avec les spans du cadre au lieu des tokens bruts
   - Dépendances : TASK-080
-  - Notes : la dilution d'un auto-appariement à 0.625 vient d'une similarité par tokens qui ne distingue pas « même tâche » de « même sujet » ; les spans (action, objet, adjoints) sont déjà la bonne représentation, donc la métrique devrait porter dessus ; à mesurer contre le KNN par tokens sur les mêmes cas tenus à l'écart
+  - Reçu partiel : span_retrieval.py compare action et tokens d'objet, avec le même moyennage des réponses que le KNN par tokens ; auto-appariement exact non dilué
+  - Preuve négative : sur 9 paraphrases non contestées de la fixture, couverture spans 0/9 contre KNN tokens 1/9 ; tests/test_span_retrieval.py
+  - Notes : la dilution d'un auto-appariement à 0.625 est corrigée, mais le changement de métrique perd la seule réponse hors mémoire sur cette tranche. Pas de promotion. Les labels TASK-082 restent exclus jusqu'à ratification ; prochaine hypothèse à tester sur un jeu tenu à l'écart : conserver le signal de l'action tout en récupérant des objets paraphrasés, sans ajuster sur ces 9 réponses
 
 - [ ] TASK-082 [P3] [difficulté: compact] [class: bug] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Revoir les 3 étiquettes discutables du corpus de paraphrases
   - Dépendances : TASK-080
-  - Notes : « check the spelling » étiqueté format, « reformat the options before deciding » étiqueté decide, « tidy the report then confirm it » étiqueté verify : le cadre donne respectivement verify, format, format, ce qui est défendable ; à trancher à la main, et à ne pas « corriger » pour faire gagner un candidat
+  - Reçu partiel : label_review.py compare les trois interprétations candidates sans changer signature_corpus.py ; accord du cadre sur les cas répondus 0.667 puis 0.778 si l'une des trois étiquettes change isolément
+  - Notes : chaque changement possible ferait gagner le cadre sur cette fixture, ce qui rend la ratification humaine indispensable. Les étiquettes actuelles restent format, decide, verify ; la carte reste ouverte jusqu'à décision de l'auteur
 
 - [x] TASK-083 [P1] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Voie publique : mesurer les trois candidats sur des instructions bien formées à étiquettes extérieures
