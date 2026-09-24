@@ -55,6 +55,26 @@ répondent sept à huit fois sur dix et se trompent plus. Le champ (« quel text
 attaché ») est bien mieux atteint par similarité à des cas étiquetés que par
 n'importe quel mot-clé : quelques dizaines d'exemples suffisent à le gagner.
 
+## Vérification sur des demandes arrivées après la déclaration
+
+Les verbes manquants avaient été déclarés après lecture du recensement. La porte
+TASK-102 fixe donc la révision de référence `3244946e` et ne mesure que des
+textes absents de celle-ci, avec un seuil annoncé avant la mesure : couverture en
+volume du cadre supérieure à `0.50`.
+
+Sur la révision `22de4af5`, le cadre atteint `0.7128` en volume sur `154`
+demandes nouvelles (`195` occurrences), contre `0.1590` pour la règle. Le seuil
+est franchi. La composition du groupe limite cependant la portée de ce résultat :
+`92` des `154` textes dépassent 1000 caractères et le cadre répond à tous les
+`92`. Sur la bande de 30 à 99 caractères, il répond à `10` occurrences sur `44`.
+Le test établit la couverture sur ce groupe nouveau ; il ne mesure ni la justesse
+des signatures ni la couverture future des demandes courtes.
+
+Un premier essai avait trouvé cinq messages supplémentaires mais aucun texte
+nouveau. La révision, adressée par contenu, restait identique et le groupe à
+mesurer était vide. Des répétitions nouvelles ne remplacent pas des situations
+nouvelles dans un test tenu à l'écart.
+
 ## Erreurs corrigées, à ne pas refaire
 
 - **Nommer une action n'est pas vérifier un résultat.** Le pont d'escalade
