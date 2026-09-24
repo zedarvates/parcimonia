@@ -83,6 +83,7 @@ from .route_experiment import (
     assess_experiment,
 )
 from .turn_dispatch import TurnDispatch, TurnFamily, dispatch_turn
+from .heldout_asks import HeldoutCoverage, measure_new_ask_coverage
 from .goals import Goal, GoalSet, load_goals, parse_goals_markdown
 from .director import (
     AstralDirector,
@@ -399,6 +400,8 @@ __all__ = [
     "TurnDispatch",
     "TurnFamily",
     "dispatch_turn",
+    "HeldoutCoverage",
+    "measure_new_ask_coverage",
     "Goal",
     "GoalSet",
     "load_goals",
