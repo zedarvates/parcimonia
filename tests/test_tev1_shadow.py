@@ -37,7 +37,7 @@ def authored_response(payload, *, missing=False, no_usage=False):
             },
         }
     result = {
-        "model": IDENTITY.model,
+        "model": payload["model"],
         "answers": {} if missing else {"decision": answer},
     }
     if not no_usage:

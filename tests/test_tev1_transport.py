@@ -85,6 +85,7 @@ def server(
     content_type="application/json",
     slow_headers=False,
     model_identity=IDENTITY,
+    installed_models=None,
 ):
     calls = []
     tags_read = 0
@@ -103,10 +104,23 @@ def server(
                 self.send_json({"version": model_identity.ollama_version})
             elif self.path == "/api/tags":
                 tags_read += 1
-                digest = "b" * 64 if drift and tags_read > 1 else "a" * 64
-                self.send_json(
-                    {"models": [{"name": model_identity.model, "digest": digest}]}
+                digest = (
+                    "b" * 64
+                    if drift and tags_read > 1
+                    else model_identity.model_digest.removeprefix("sha256:")
                 )
+                models = (
+                    [{"name": model_identity.model, "digest": digest}]
+                    if installed_models is None
+                    else [
+                        {
+                            "name": identity.model,
+                            "digest": identity.model_digest.removeprefix("sha256:"),
+                        }
+                        for identity in installed_models
+                    ]
+                )
+                self.send_json({"models": models})
             else:
                 self.send_error(404)
 

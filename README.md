@@ -146,6 +146,9 @@ It is explicitly invoked, pins runtime and model identity, bounds the HTTP call,
 and keeps every decision advisory. A 24-case French corpus compares rules and
 captured decisions, with offline replay and no saving claim. No real model was
 evaluated for this integration. See [Tev1 local shadow](docs/TEV1_SHADOW.md).
+The paired comparator revalidates both captures, counts every failure and keeps
+total cost unknown. A [local run guide](docs/TEV1_LOCAL_RUN.md) prepares execution
+on an existing model server.
 
 A prompt-signature predictor is implemented: it reads an input and names what that
 input is about, the kind of task, the capabilities it needs, the fields worth

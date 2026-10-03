@@ -3,6 +3,7 @@
 python examples/tev1_shadow.py plan
 python examples/tev1_shadow.py capture --model tev1:0.8b --out runs/tev1-small
 python examples/tev1_shadow.py replay --run runs/tev1-small
+python examples/tev1_shadow.py compare --small runs/tev1-small --large runs/tev1-large
 """
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ import argparse
 import http.client
 import json
 import math
+import platform
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -24,8 +26,10 @@ from tiberium_ai.decision_adapter import (
     write_decision_record,
 )
 from tiberium_ai.decision_clock import DecisionBudget, DecisionTiming
+from tiberium_ai.measurement import Environment
 from tiberium_ai.reflex import ReflexKind
 from tiberium_ai.tev1_cases import agrees, corpus_revision, rule_baseline, tev1_cases
+from tiberium_ai.tev1_comparison import compare_tev1_runs
 from tiberium_ai.tev1_transport import (
     DEFAULT_BASE_URL,
     SUPPORTED_MODELS,
@@ -60,7 +64,7 @@ def observed_value(case, replay):
     return answer.score
 
 
-def comparison(rows, *, identity, capture_origin):
+def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=None):
     cases = tev1_cases()
     output = []
     baseline_times = []
@@ -101,6 +105,8 @@ def comparison(rows, *, identity, capture_origin):
         "label_origin": "fixture",
         "capture_origin": capture_origin,
         "identity": asdict(identity),
+        "budget_ms": budget_ms,
+        "environment": environment,
         "attempted": len(cases),
         "rules": {
             "correct": sum(row["rules_agree"] for row in output),
@@ -137,7 +143,7 @@ def _write_json(path, value):
         stream.write("\n")
 
 
-def capture_run(*, model, base_url, budget_ms, out):
+def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
     if (
         type(budget_ms) not in (int, float)
         or not math.isfinite(budget_ms)
@@ -146,7 +152,13 @@ def capture_run(*, model, base_url, budget_ms, out):
         raise ValueError("budget_ms must be in (0, 120000].")
     if out.exists():
         raise ValueError("output_directory_already_exists")
+    environment = None if machine_id is None else asdict(Environment(machine_id))
     identity = probe_tev1_model(model=model, base_url=base_url)
+    if environment is not None:
+        environment["runtime_versions"] = {
+            "python": platform.python_version(),
+            "ollama": identity.ollama_version,
+        }
     transport = OllamaTev1Transport(identity, base_url=base_url, timeout_ms=budget_ms)
     out.mkdir(parents=True)
     (out / "records").mkdir()
@@ -187,14 +199,21 @@ def capture_run(*, model, base_url, budget_ms, out):
             }
         )
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "corpus_revision": corpus_revision(),
         "identity": asdict(identity),
         "budget_ms": budget_ms,
+        "environment": environment,
         "capture_origin": "recorded",
         "cases": manifest_rows,
     }
-    report = comparison(rows, identity=identity, capture_origin="recorded")
+    report = comparison(
+        rows,
+        identity=identity,
+        capture_origin="recorded",
+        budget_ms=budget_ms,
+        environment=environment,
+    )
     _write_json(out / "run.json", manifest)
     _write_json(out / "comparison.json", report)
     return report
@@ -231,11 +250,14 @@ def replay_run(run):
         "capture_origin",
         "cases",
     }
+    version = manifest.get("schema_version") if isinstance(manifest, dict) else None
+    if version == 2:
+        fields.add("environment")
     if (
         not isinstance(manifest, dict)
         or set(manifest) != fields
         or type(manifest["schema_version"]) is not int
-        or manifest["schema_version"] != 1
+        or manifest["schema_version"] not in (1, 2)
     ):
         raise ValueError("invalid_run_manifest")
     if manifest["corpus_revision"] != corpus_revision():
@@ -250,6 +272,16 @@ def replay_run(run):
     ):
         raise ValueError("invalid_run_budget")
     identity = Tev1Identity(**manifest["identity"])
+    environment = manifest.get("environment")
+    if environment is not None:
+        if not isinstance(environment, dict) or set(environment) != {
+            "machine_id",
+            "runtime_versions",
+        }:
+            raise ValueError("invalid_run_environment")
+        environment = asdict(Environment(**environment))
+        if environment["runtime_versions"].get("ollama") != identity.ollama_version:
+            raise ValueError("environment_runtime_mismatch")
     cases = tev1_cases()
     if not isinstance(manifest["cases"], list) or len(manifest["cases"]) != len(cases):
         raise ValueError("all_cases_must_be_counted")
@@ -318,23 +350,62 @@ def replay_run(run):
             }
         )
     return comparison(
-        rows, identity=identity, capture_origin=manifest["capture_origin"]
+        rows,
+        identity=identity,
+        capture_origin=manifest["capture_origin"],
+        budget_ms=budget,
+        environment=environment,
     )
+
+
+def compare_runs(small, large):
+    """Revalidate both sets of records before building a paired offline report."""
+    return compare_tev1_runs(replay_run(small), replay_run(large))
+
+
+def preflight(base_url):
+    identities = [
+        probe_tev1_model(model=model, base_url=base_url) for model in SUPPORTED_MODELS
+    ]
+    if identities[0].ollama_version != identities[1].ollama_version:
+        raise ValueError("pair_runtime_mismatch")
+    if identities[0].model_digest == identities[1].model_digest:
+        raise ValueError("pair_models_share_digest")
+    return {
+        "models": [asdict(identity) for identity in identities],
+        "inference_performed": False,
+        "models_downloaded": False,
+    }
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("plan", help="Show the authored corpus without any I/O.")
+    probe = commands.add_parser(
+        "preflight", help="Inspect both installed models without inference."
+    )
+    probe.add_argument("--base-url", default=DEFAULT_BASE_URL)
     capture = commands.add_parser(
         "capture", help="Explicitly call an already installed local model."
     )
     capture.add_argument("--model", choices=SUPPORTED_MODELS, required=True)
     capture.add_argument("--base-url", default=DEFAULT_BASE_URL)
     capture.add_argument("--budget-ms", type=float, default=5000)
+    capture.add_argument(
+        "--machine-id", help="Caller-declared label for this execution environment."
+    )
     capture.add_argument("--out", type=Path, required=True)
     replay = commands.add_parser("replay", help="Replay saved records offline.")
     replay.add_argument("--run", type=Path, required=True)
+    compare = commands.add_parser(
+        "compare", help="Compare the two pinned captures offline."
+    )
+    compare.add_argument("--small", type=Path, required=True)
+    compare.add_argument("--large", type=Path, required=True)
+    compare.add_argument(
+        "--out", type=Path, help="New JSON file; existing files are refused."
+    )
     args = parser.parse_args()
     try:
         if args.command == "plan":
@@ -344,15 +415,22 @@ def main():
                 "model_called": False,
                 "cases": [asdict(case) for case in tev1_cases()],
             }
+        elif args.command == "preflight":
+            report = preflight(args.base_url)
         elif args.command == "capture":
             report = capture_run(
                 model=args.model,
                 base_url=args.base_url,
                 budget_ms=args.budget_ms,
                 out=args.out,
+                machine_id=args.machine_id,
             )
-        else:
+        elif args.command == "replay":
             report = replay_run(args.run)
+        else:
+            report = compare_runs(args.small, args.large)
+            if args.out is not None:
+                _write_json(args.out, report)
     except (OSError, TypeError, ValueError, http.client.HTTPException) as exc:
         print(f"{args.command}_failed: {exc}", file=sys.stderr)
         return 1

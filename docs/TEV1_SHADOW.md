@@ -86,10 +86,12 @@ Avec l'environnement Python du dépôt installé :
 
 ```console
 python examples/tev1_shadow.py plan
+python examples/tev1_shadow.py preflight
 python examples/tev1_shadow.py capture --model tev1:0.8b --out runs/tev1-small
 python examples/tev1_shadow.py capture --model tev1:4b --out runs/tev1-large
 python examples/tev1_shadow.py replay --run runs/tev1-small
 python examples/tev1_shadow.py replay --run runs/tev1-large
+python examples/tev1_shadow.py compare --small runs/tev1-small --large runs/tev1-large --out runs/tev1-paired.json
 ```
 
 `plan` ne contacte aucun serveur. `capture` est l'appel explicite : il exige un
@@ -98,12 +100,45 @@ par défaut est 5 000 ms par cas, configurable par `--budget-ms` ; il comprend l
 contrôles d'identité. Le premier appel peut inclure le chargement du modèle :
 conserver et distinguer cette observation dans une mesure à froid/à chaud.
 
+`preflight` contrôle les deux modèles déjà installés par des GET de métadonnées,
+sans inférence ni téléchargement. Il refuse des versions de runtime différentes
+ou deux tags pointant sur le même digest, avant de lancer une comparaison.
+
 Le dossier contient `run.json` (corpus, identité, budget et chaque tentative),
 `records/fr-XX.json` pour chaque capture effectuée et `comparison.json`.
 Un run interrompu avant son manifeste final ne constitue pas un run complet.
 La relecture reconstruit les requêtes depuis la révision du corpus et refuse
 les changements de budget, d'identité, d'origine ou de cas. Elle n'appelle aucun
 modèle et ne réécrit pas les fichiers de la capture.
+
+Les nouveaux manifestes sont en version 2 et peuvent enregistrer une étiquette
+d'environnement choisie par l'appelant (`--machine-id`) ainsi que les versions
+Python du client et Ollama du serveur. Les anciens manifestes version 1 restent
+rejouables avec environnement inconnu. L'étiquette ne certifie ni le matériel,
+ni la charge GPU, ni l'isolation ; ne pas y mettre de secret.
+
+## Comparaison appariée des deux tailles
+
+`compare` relit les deux jeux de records et recalcule les réponses et accords ;
+il ignore les totaux précalculés de `comparison.json`. Les rôles doivent être
+0.8B et 4B, avec digests distincts, même runtime, même corpus, même budget et même
+origine. Deux environnements déclarés différents sont refusés ; un environnement
+absent conserve la qualité descriptive mais laisse les deltas de temps inconnus.
+
+Le rapport conserve tous les cas, y compris les échecs, et donne les réussites
+communes, celles propres à chaque modèle, les échecs communs et les résultats
+par famille. Il sépare la première tentative des suivantes, avec médiane et
+p95 des tentatives complètes (méthode du rang le plus proche). La charge du
+modèle reste `unobserved` : « après la première tentative » ne veut pas dire
+« modèle chaud ». Les deltas par cas exigent deux réponses utilisables et des
+environnements déclarés identiques.
+
+Aucun gagnant de coût ni modèle à activer n'est désigné : `selected_model=null`,
+`total_cost_comparison=unavailable`, `auto_act_allowed=false`,
+`saving_claim=false`. Les labels restent des fixtures et le coût des tâches
+routées, des vérifications et des fallbacks n'est pas mesuré par ce harnais.
+La [procédure d'exécution locale](TEV1_LOCAL_RUN.md) prépare le relais vers
+l'agent du poste connecté au serveur, sans nouveau service ni changement du routage.
 
 ## Ce qui est mesuré, ce qui reste à faire
 
