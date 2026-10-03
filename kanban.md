@@ -174,6 +174,7 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 - [ ] TASK-074 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
   - Intitulé : Backend de décision local documenté (endpoint de décision llama.cpp ou petit modèle ouvert) derrière autorisation explicite
   - Dépendances : TASK-072
+  - Préparation Tev1 (2026-10-03) : transport Ollama loopback opt-in, version/digest épinglés, timeout global, capture/relecture et 24 cas français authorés ; tests HTTP simulés seulement, pas de modèle réel ni calibration ; voir docs/TEV1_SHADOW.md. La tâche reste ouverte jusqu'à la preuve réelle.
   - Notes : toutes les pistes sont tierces et non vérifiées ici (licences annoncées Apache-2.0 et MIT) ; aucun poids téléchargé et aucune branche compilée sans décision explicite ; le point d'injection, le format de capture et le lecteur de record existent déjà, donc l'appel se convertit mécaniquement en fixture rejouable ; la calibration locale resterait à mesurer avant tout auto-act
 
 - [ ] TASK-076 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
