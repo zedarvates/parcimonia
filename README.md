@@ -79,7 +79,8 @@ Early design / bootstrap. No automatic routing is enabled.
 
 An opt-in bounded-context experiment retrieves exact versioned facts and compares
 full history, compact context and limited temporal persistence on 14 authored
-sequences. It preserves missing-proof abstentions and reports context bytes
+sequences. [Explicit capture](docs/MEMORY_CAPTURE.md) exports bounded observed
+episodes and separate usage receipts. Replay preserves missing-proof abstentions and reports context bytes
 separately from unmeasured tokens/cost. See [Bounded context](docs/COMPACT_MEMORY.md).
 
 V1 is organised as a sequence of evidence gates rather than a list of modules;

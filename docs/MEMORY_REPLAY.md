@@ -30,6 +30,11 @@ Retrieval returns detached values and the named `memory.archive_integrity/1`
 verifier checks exact membership of that supplied snapshot. This proves snapshot
 integrity, not whether the supplied facts are true or still applicable.
 
+An empty fact archive represents an episode whose requested facts are all
+missing; it produces abstention rather than an invented value. For new episodes,
+use the [explicit capture API/exporter](MEMORY_CAPTURE.md), which also pins
+observed absences and preserves optional usage receipts in a separate sidecar.
+
 `sequence_hash` is `hash_input(sequence_record)` and `archive_revision` is
 `VersionedFactArchive(fact_records).revision`. Labels must match both fingerprints.
 Their own hash is part of the outcome verifier version. Labels marked `outcomes`

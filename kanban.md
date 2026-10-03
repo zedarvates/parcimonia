@@ -166,6 +166,7 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Intitulé : Évaluer la mémoire compacte sur des traces séquentielles versionnées et des issues indépendantes
   - Dépendances : TASK-109
   - Avancement du 03/10 : import/rejeu JSONL prêt (`docs/MEMORY_REPLAY.md`), archive immuable et labels liés aux empreintes exactes ; absence de labels ou auto-évaluation conservées comme « sans verdict ». Trois traces publiques Botte rejetées car sans contrat séquentiel. Exemples authorés vérifiés ; corpus réel et mesures d'usage encore nécessaires.
+  - Collecte du 03/10 : `MemorySequenceCapture` et exporteur explicite prêts (`docs/MEMORY_CAPTURE.md`) ; faits et absences figés par version, épisodes bornés, reçus d'usage distincts liés aux empreintes finales. Aucun journal privé ou hook actif modifié ; prochains épisodes réels et comparaison appariée à collecter, issues indépendantes toujours nécessaires.
   - Notes : Les traces publiques consultées de Botte sont des tâches isolées, sans faits versionnés. Préparer l'adaptateur du comparateur existant lorsqu'un corpus séquentiel autorisé est disponible ; compter recherche, tokens réels, reprises, coût et latence répétée. Le banc authoré ne prouve pas d'économie réelle et reste en observation.
 
 

@@ -1,0 +1,71 @@
+{
+  "code_sha256": {
+    "docs/MEMORY_CAPTURE.md": "05f1de447e22f6fa37c350745583c4f2f1c19a9c996085a65c7fc11206b23288",
+    "examples/memory_capture.py": "fce59ba91eaf68aea65c423fe00082b754f4c02b8eea1887724c1f6ba4ec380e",
+    "examples/memory_replay.py": "3df5ce6b57feb0adcb0d1ddd3c2fd1a655fd33584c2626dc032661ee7d7e4f5e",
+    "src/tiberium_ai/memory_capture.py": "20cdab799696bbb902747acefd628da825d27dec0a15fdc800a1860be7b3afeb",
+    "src/tiberium_ai/memory_replay.py": "985ac03705f6577d03779a3c0057f1e0a8cccccd02ed5265f9d2b34263894f9b",
+    "tests/test_memory_capture.py": "da9d59ea3d19cbf76f565fa37314a1cfad37e88ae04a2ad323f768a819c6a7e1"
+  },
+  "date": "2026-10-03",
+  "deployment_performed": false,
+  "inspected_integration": {
+    "files": {
+      "skills/auto_memory/hook.py": "3482835a05203d81654b2bf8516b4d9ca73538c5",
+      "skills/trajectory/agent_run.py": "9e2860f35c180db254f19fed8f2180c35808abb6",
+      "skills/trajectory/outcome.py": "d271276a7b6fbcad277a61b75a19d8bcf956a210"
+    },
+    "finding": "QA envelopes report execution metrics without replayable immutable fact scopes; memory hook has no immutable source-version contract.",
+    "hooks_changed": false,
+    "private_logs_read": false,
+    "repository": "zedarvates/botte-secrete",
+    "revision": "f5b95459624e5e3d74ca14cd2fe065c290a8f2bc"
+  },
+  "outputs": {
+    "default_max_capture_bytes": 33554432,
+    "default_max_turns": 256,
+    "files": [
+      "sequences.jsonl",
+      "facts.jsonl",
+      "usage.jsonl",
+      "manifest.json"
+    ],
+    "outcome_generation": false,
+    "raw_inputs_present": true,
+    "usage_origin": "caller-declared; no authentication",
+    "usage_scope": "Sidecar receipts; never substituted into offline measurements"
+  },
+  "parent_revision": "65e8a336e6ca08c247a0d6ead3b1e56e5052aeff",
+  "production_saving_claim": {
+    "reason": "Capture is not an experiment; real paired usage and independent quality outcomes remain absent.",
+    "status": "refused"
+  },
+  "promotion_allowed": false,
+  "remaining": [
+    "Authorized real sequential episodes.",
+    "Separately attributed final-hash-bound retrieval/route outcomes.",
+    "Paired real calls for each arm, answer-quality evaluation, repeated latency and complete cost accounting."
+  ],
+  "schema": "memory-capture-evidence/1",
+  "scope": "Explicit caller-owned sequential capture and private export; no real project episode collected.",
+  "task_110": "open",
+  "validation": {
+    "command": "PYTHONPATH=src:/workspace/scratch/6bca395b11bc/.test-deps python -m pytest -q",
+    "contracts": [
+      "Capture/export/replay round-trip retains exact source versions without outcome labels.",
+      "Mutable inputs and returned snapshots cannot alter captured facts.",
+      "Value and absence changes under one version are rejected atomically.",
+      "Null fact and absent fact remain distinct.",
+      "Byte/turn/receipt limits preserve prior state; no truncation.",
+      "Partial tokens and unknown costs stay unknown; total consistency and cost units checked.",
+      "Duplicate tasks/receipt IDs and unsupported tokens_saved fields are rejected.",
+      "All-missing episodes export an empty archive and replay as abstentions.",
+      "Exclusive private-file writes preserve existing evidence and clean failed new writes.",
+      "CLI keeps source content out of stdout/errors and does not create outcomes."
+    ],
+    "fixture_origin": "authored",
+    "new_tests": 26,
+    "passed": 881,
+    "python": "3.12.14"
+  }
+}

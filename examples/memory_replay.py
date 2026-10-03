@@ -34,7 +34,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     outputs = {}
     try:
-        archive = VersionedFactArchive(read_jsonl(args.archive))
+        archive = VersionedFactArchive(read_jsonl(args.archive, allow_empty=True))
         cases, provenance = build_memory_replay_cases(
             read_jsonl(args.sequences), archive,
             outcomes=() if args.outcomes is None else read_jsonl(args.outcomes),

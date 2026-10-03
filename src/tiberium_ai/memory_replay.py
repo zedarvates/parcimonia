@@ -64,7 +64,7 @@ def _nonfinite(value):
     raise ValueError("non-finite JSON number.")
 
 
-def read_jsonl(path: str | Path) -> tuple[dict[str, Any], ...]:
+def read_jsonl(path: str | Path, *, allow_empty: bool = False) -> tuple[dict[str, Any], ...]:
     """Read one explicit file, with no private data copied into error messages."""
     with Path(path).open("rb") as stream:
         data = stream.read(MAX_FILE_BYTES + 1)
@@ -82,7 +82,7 @@ def read_jsonl(path: str | Path) -> tuple[dict[str, Any], ...]:
         except (ValueError, TypeError) as exc:
             raise ValueError(f"invalid JSON object at line {number}.") from exc
         rows.append(row)
-    if not rows:
+    if not rows and not allow_empty:
         raise ValueError("at least one JSONL row is required.")
     return tuple(rows)
 
@@ -105,8 +105,6 @@ class VersionedFactArchive:
             if scope in self._facts and self._facts[scope] != encoded:
                 raise ValueError("immutable source-version conflict.")
             self._facts[scope] = encoded
-        if not self._facts:
-            raise ValueError("at least one archived fact is required.")
         self._encoded = _encode([json.loads(v) for _, v in sorted(self._facts.items())])
         self.revision = hash_input(json.loads(self._encoded))
         self.registry = VerifierRegistry()
