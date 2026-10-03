@@ -12,6 +12,7 @@ ne remplace pas `docs/`, qui documente chaque mécanisme ; il relie, et il date.
 | [SOURCES.md](SOURCES.md) | d'où vient la ligne technique, avec licences et frontières |
 | [RELEVE_2026-09-22.json](RELEVE_2026-09-22.json) | le relevé chiffré de cette date, citable |
 | [COMPACT_MEMORY_2026-10-03.json](COMPACT_MEMORY_2026-10-03.json) | essai authoré A/B/C de contexte borné ; preuves, tailles et limites |
+| [MEMORY_REPLAY_2026-10-03.json](MEMORY_REPLAY_2026-10-03.json) | import/rejeu séquentiel : versions figées, labels séparés et absence de verdict respectée |
 
 Trois règles de lecture, les mêmes que partout ailleurs dans ce dépôt :
 

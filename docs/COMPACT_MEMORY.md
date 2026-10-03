@@ -109,6 +109,11 @@ negative results: [3 October 2026](../wiki/COMPACT_MEMORY_2026-10-03.json).
 
 ## Source and scope
 
+An explicit local trace/archive/outcome importer now drives the same comparison
+without hardcoded fixture facts: [Offline sequence replay](MEMORY_REPLAY.md).
+It preserves absent outcome labels as no verdict. Its schema samples remain
+authored; the real sequential-trace and provider-usage gate is still open.
+
 The SwiLA paper, [Switching Linear Attention](https://arxiv.org/html/2609.39034v1),
 motivated the analogy of bounded state and temporal persistence. This application
 code implements no attention kernel, trained recurrent memory or SwiLA model.
