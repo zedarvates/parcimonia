@@ -1,0 +1,1347 @@
+{
+  "baseline_commit": "09a3154429adfef29e44134e3bf9e47f910d19a9",
+  "branch": "codex/compact-memory-shadow",
+  "case_metrics": {
+    "cheap_deterministic": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10048
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 10048,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19899,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "critical_change": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10048
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 10048,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19899,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "homonyms": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          619,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10919,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 974,
+        "prepared_context_utf8_bytes": 1865,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 6,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          619,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10919,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 974,
+        "prepared_context_utf8_bytes": 1865,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 6,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10262,
+          10459
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10919,
+        "peak_context_utf8_bytes": 10459,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 30572,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 6,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "jitter": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623,
+          623,
+          623,
+          623,
+          623,
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 11690,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 4984,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 7,
+        "source_retrievals": 16,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623,
+          623,
+          623,
+          623,
+          623,
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 11690,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 4984,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 16,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10048,
+          10245,
+          10442,
+          10639,
+          10836,
+          11033,
+          11230
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 11690,
+        "peak_context_utf8_bytes": 11230,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 84324,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 7,
+        "source_retrievals": 16,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "long_history": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 72068,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 72068,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          71411,
+          71608
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 72068,
+        "peak_context_utf8_bytes": 71608,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 143019,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "missing_fact": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          444
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1067,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          444
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1067,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10043
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 10043,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19894,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "rejected_fact": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          451
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1074,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          451
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1074,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10043
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 10043,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19894,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "restart": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10048
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 10048,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19899,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "short": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 881,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 623,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 2,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 881,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 623,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 2,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          421
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 881,
+        "peak_context_utf8_bytes": 421,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 421,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 2,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "small_history": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 1548,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 1548,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 0,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          891,
+          1088
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 1548,
+        "peak_context_utf8_bytes": 1088,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 1979,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "task_change": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          628
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10513,
+        "peak_context_utf8_bytes": 628,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1251,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          628
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10513,
+        "peak_context_utf8_bytes": 628,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1251,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10053
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10513,
+        "peak_context_utf8_bytes": 10053,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19904,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "tool_change": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          623
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1246,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10048
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10508,
+        "peak_context_utf8_bytes": 10048,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19899,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "unknown_verifier": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          451
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1074,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          451
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1074,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10043
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10503,
+        "peak_context_utf8_bytes": 10043,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 19894,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    },
+    "version_change": {
+      "compact": {
+        "context_utf8_bytes_by_step": [
+          623,
+          622
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10728,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1245,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "compact_persistent": {
+        "context_utf8_bytes_by_step": [
+          623,
+          622
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10728,
+        "peak_context_utf8_bytes": 623,
+        "peak_working_reference_utf8_bytes": 598,
+        "prepared_context_utf8_bytes": 1245,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      },
+      "full_history": {
+        "context_utf8_bytes_by_step": [
+          9851,
+          10268
+        ],
+        "energy_joules": null,
+        "external_archive_utf8_bytes": 10728,
+        "peak_context_utf8_bytes": 10268,
+        "peak_working_reference_utf8_bytes": null,
+        "prepared_context_utf8_bytes": 20119,
+        "provider_cost": null,
+        "route_switches_including_abstentions": 1,
+        "source_retrievals": 4,
+        "tokens": null,
+        "vram_mb": null
+      }
+    }
+  },
+  "claim_scope": "Prepared UTF-8 JSON and local Python execution only; no model or production saving claim.",
+  "commands": [
+    "PYTHONPATH=src python examples/compact_memory_suite.py --out runs/compact-memory-2026-10-03-final",
+    "PYTHONPATH=src python -m pytest -q"
+  ],
+  "corpus": "authored-memory-fixture-v1",
+  "date": "2026-10-03",
+  "local_single_pass_report": {
+    "cases": [
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "cheap_deterministic"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "homonyms"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "long_history"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "missing_fact"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "rejected_fact"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "restart"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "short"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "small_history"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "tool_change"
+      },
+      {
+        "split": "development",
+        "status": "verified_without_measurements",
+        "task_id": "version_change"
+      },
+      {
+        "split": "heldout",
+        "status": "verified_without_measurements",
+        "task_id": "critical_change"
+      },
+      {
+        "split": "heldout",
+        "status": "verified_without_measurements",
+        "task_id": "jitter"
+      },
+      {
+        "split": "heldout",
+        "status": "verified_without_measurements",
+        "task_id": "task_change"
+      },
+      {
+        "split": "heldout",
+        "status": "verified_without_measurements",
+        "task_id": "unknown_verifier"
+      }
+    ],
+    "claim": {
+      "allowed": [
+        "compact"
+      ],
+      "baseline": "full_history",
+      "candidate": "compact",
+      "detail": "compact was verified on every held-out case and dominates full_history on the median measured vector.",
+      "evaluated": [
+        {
+          "detail": "compact was verified on every held-out case and dominates full_history on the median measured vector.",
+          "reason_code": "verified_dominance",
+          "route_id": "compact",
+          "status": "allowed"
+        },
+        {
+          "detail": "Claim refused for compact_persistent: the median measured vector does not dominate the baseline.",
+          "reason_code": "no_dominance",
+          "route_id": "compact_persistent",
+          "status": "refused"
+        }
+      ],
+      "front": [
+        "compact"
+      ],
+      "reason_code": "verified_dominance",
+      "status": "allowed"
+    },
+    "claim_scope": "Prepared UTF-8 JSON and local Python execution only; no model or production saving claim.",
+    "corpus": "authored-memory-fixture-v1",
+    "environment": {
+      "machine_id": "authored-memory-runner",
+      "runtime_versions": {
+        "python": "3.12.14"
+      }
+    },
+    "origin": "authored fixture; all cases public; no private held-out usage data",
+    "pareto": [
+      "compact"
+    ],
+    "production_saving_claim": {
+      "reason": "no model or real usage measurement",
+      "status": "refused"
+    },
+    "provenance": {
+      "files_sha256": {
+        "compact_memory_suite": "2078df00fde03056520bb9564cc8a85ebb258094696bc920fd780036c63839c6",
+        "tiberium_ai.benchmark": "23b811ec1701b9a2f4cd548c586ad641b7502211b70bc0330a7a8c390d288289",
+        "tiberium_ai.capture": "ba62635d16aaae2ec70738fc3934dd703833584ec483c890f92a89a2a501152f",
+        "tiberium_ai.compact_memory": "e652c783ff3535990f7d7143f3ef02b5d377a4f4a72ad2b7c392527a4d2d589a",
+        "tiberium_ai.context_router": "a55e4ddc4e478b1691a2eba2ffb2447b9ab73f47f21eca23c2693ebde71730ec",
+        "tiberium_ai.contracts": "9809b1cd6ab0e82f4b99868d1db5830e9ad4b6ce5cd18748fd18ce873667f911",
+        "tiberium_ai.measurement": "c5596f34633ec2a5033d46bf153d424cce86f90230228bfd63eb03325a6357fa",
+        "tiberium_ai.observations": "a03ce48cfc2ddc7e0b997127272575d5075799085aee1b95a249c5260c391337",
+        "tiberium_ai.resources": "42e9352d566f92ecd9974a075962f840ddd4c880c674ea2e118c681fee2e52e1",
+        "tiberium_ai.router": "1c69fb84d9003f6ecf8744dbbaa027b9b0f2c82d51564981af3837f25b61a652",
+        "tiberium_ai.verification": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440"
+      },
+      "fixture_sha256": "41629115210bc75c61a59fe54e99d2ff0cd4bb014e4d7e0e6128e52a1eaaebaf",
+      "implementation_sha256": "5df5f8f165e6f4022636933e9b50a6cea95ebf0720fd86abdf6fc4e9f5875a39"
+    },
+    "routes": {
+      "compact": {
+        "accepted": 14,
+        "failed": 0,
+        "heldout_median": {
+          "energy_joules": null,
+          "latency_ms": 0.39703850052319467,
+          "tokens": null,
+          "vram_mb": null
+        },
+        "heldout_median_latency_ms": 0.39703850052319467,
+        "no_verdict": 0,
+        "ok": 14,
+        "rejected": 0,
+        "runs": 14
+      },
+      "compact_persistent": {
+        "accepted": 14,
+        "failed": 0,
+        "heldout_median": {
+          "energy_joules": null,
+          "latency_ms": 0.5092574974696618,
+          "tokens": null,
+          "vram_mb": null
+        },
+        "heldout_median_latency_ms": 0.5092574974696618,
+        "no_verdict": 0,
+        "ok": 14,
+        "rejected": 0,
+        "runs": 14
+      },
+      "full_history": {
+        "accepted": 14,
+        "failed": 0,
+        "heldout_median": {
+          "energy_joules": null,
+          "latency_ms": 0.4193170025246218,
+          "tokens": null,
+          "vram_mb": null
+        },
+        "heldout_median_latency_ms": 0.4193170025246218,
+        "no_verdict": 0,
+        "ok": 14,
+        "rejected": 0,
+        "runs": 14
+      }
+    },
+    "schema_version": 2,
+    "seed": 20261003,
+    "split": {
+      "development": [
+        "cheap_deterministic",
+        "homonyms",
+        "long_history",
+        "missing_fact",
+        "rejected_fact",
+        "restart",
+        "short",
+        "small_history",
+        "tool_change",
+        "version_change"
+      ],
+      "heldout": [
+        "critical_change",
+        "jitter",
+        "task_change",
+        "unknown_verifier"
+      ]
+    }
+  },
+  "measured_runs": 42,
+  "negative_results": [
+    "Short context: full history 421 bytes, compact 623 bytes; proof metadata costs space.",
+    "Every variant retrieves 68 facts; no source lookup reduction is demonstrated.",
+    "External archive size is identical across variants and remains outside bounded working state.",
+    "Single-pass local CPU medians are noisy; persistence adds work and no general speed gain is established.",
+    "No model inference, provider usage, token count, private heldout, P95 or answer quality was measured."
+  ],
+  "next_gate": "Real versioned sequential traces with independent outcome labels, actual token/cost accounting and repeated timing; remain observation-only.",
+  "observations": 14,
+  "origin": "authored fixture; all cases public; no private held-out usage data",
+  "production_saving_claim": {
+    "reason": "no model or real usage measurement",
+    "status": "refused"
+  },
+  "provenance": {
+    "files_sha256": {
+      "compact_memory_suite": "2078df00fde03056520bb9564cc8a85ebb258094696bc920fd780036c63839c6",
+      "tiberium_ai.benchmark": "23b811ec1701b9a2f4cd548c586ad641b7502211b70bc0330a7a8c390d288289",
+      "tiberium_ai.capture": "ba62635d16aaae2ec70738fc3934dd703833584ec483c890f92a89a2a501152f",
+      "tiberium_ai.compact_memory": "e652c783ff3535990f7d7143f3ef02b5d377a4f4a72ad2b7c392527a4d2d589a",
+      "tiberium_ai.context_router": "a55e4ddc4e478b1691a2eba2ffb2447b9ab73f47f21eca23c2693ebde71730ec",
+      "tiberium_ai.contracts": "9809b1cd6ab0e82f4b99868d1db5830e9ad4b6ce5cd18748fd18ce873667f911",
+      "tiberium_ai.measurement": "c5596f34633ec2a5033d46bf153d424cce86f90230228bfd63eb03325a6357fa",
+      "tiberium_ai.observations": "a03ce48cfc2ddc7e0b997127272575d5075799085aee1b95a249c5260c391337",
+      "tiberium_ai.resources": "42e9352d566f92ecd9974a075962f840ddd4c880c674ea2e118c681fee2e52e1",
+      "tiberium_ai.router": "1c69fb84d9003f6ecf8744dbbaa027b9b0f2c82d51564981af3837f25b61a652",
+      "tiberium_ai.verification": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440"
+    },
+    "fixture_sha256": "41629115210bc75c61a59fe54e99d2ff0cd4bb014e4d7e0e6128e52a1eaaebaf",
+    "implementation_sha256": "5df5f8f165e6f4022636933e9b50a6cea95ebf0720fd86abdf6fc4e9f5875a39"
+  },
+  "schema": "compact-memory-evidence/1",
+  "seed": 20261003,
+  "sequences": 14,
+  "split": {
+    "development": [
+      "cheap_deterministic",
+      "homonyms",
+      "long_history",
+      "missing_fact",
+      "rejected_fact",
+      "restart",
+      "short",
+      "small_history",
+      "tool_change",
+      "version_change"
+    ],
+    "heldout": [
+      "critical_change",
+      "jitter",
+      "task_change",
+      "unknown_verifier"
+    ]
+  },
+  "status": "implemented_and_verified_on_authored_fixture; no production promotion",
+  "tests": {
+    "new": 39,
+    "passed": 834,
+    "python_3_10_grammar": "checked; not executed locally",
+    "runtime": "Python 3.12.14"
+  },
+  "turns_per_variant": 34,
+  "variants": {
+    "compact": {
+      "accepted": 14,
+      "peak_context_utf8_bytes": 628,
+      "peak_working_reference_utf8_bytes": 974,
+      "prepared_context_utf8_bytes": 20659,
+      "route_switches_including_abstentions": 18,
+      "source_retrievals": 68
+    },
+    "compact_persistent": {
+      "accepted": 14,
+      "peak_context_utf8_bytes": 628,
+      "peak_working_reference_utf8_bytes": 974,
+      "prepared_context_utf8_bytes": 20659,
+      "route_switches_including_abstentions": 9,
+      "source_retrievals": 68
+    },
+    "full_history": {
+      "accepted": 14,
+      "peak_context_utf8_bytes": 71608,
+      "peak_working_reference_utf8_bytes": null,
+      "prepared_context_utf8_bytes": 439616,
+      "route_switches_including_abstentions": 18,
+      "source_retrievals": 68
+    }
+  },
+  "verifications": {
+    "cheap_deterministic": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "fe4558b226ee94cdd4a10d4a26c90d861f510a55655e2b175308ac497503be18",
+        "verdict": true,
+        "verifier_id": "authored-sequence-cheap_deterministic",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "fe4558b226ee94cdd4a10d4a26c90d861f510a55655e2b175308ac497503be18",
+        "verdict": true,
+        "verifier_id": "authored-sequence-cheap_deterministic",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "8ba13aec0c4905a9ca6ed93bb5a92253909fb5b0de6bebe05b0675db1fcdb316",
+        "verdict": true,
+        "verifier_id": "authored-sequence-cheap_deterministic",
+        "verifier_version": "1"
+      }
+    },
+    "critical_change": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "9fd4e9bc3852077f76ce4b73e06c24187aac441299c8a1afbcb73cb4f4999afb",
+        "verdict": true,
+        "verifier_id": "authored-sequence-critical_change",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "9fd4e9bc3852077f76ce4b73e06c24187aac441299c8a1afbcb73cb4f4999afb",
+        "verdict": true,
+        "verifier_id": "authored-sequence-critical_change",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "54e3458c928b45f4919e94e96ead714bb9d79a7b19bda0450b0f16188d724a8a",
+        "verdict": true,
+        "verifier_id": "authored-sequence-critical_change",
+        "verifier_version": "1"
+      }
+    },
+    "homonyms": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "20459312d3facaf49f780e38f2c186abd8b4938a1d5d2314dbb40612cdd46eca",
+        "verdict": true,
+        "verifier_id": "authored-sequence-homonyms",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "20459312d3facaf49f780e38f2c186abd8b4938a1d5d2314dbb40612cdd46eca",
+        "verdict": true,
+        "verifier_id": "authored-sequence-homonyms",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "2ab2ca407e456ed0ec20ff7fc5d0cb7b9785dcc5c475a95899f0f66d3bce2dd8",
+        "verdict": true,
+        "verifier_id": "authored-sequence-homonyms",
+        "verifier_version": "1"
+      }
+    },
+    "jitter": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "536c020cc4370ab0b4ea92dca872edd8d24a85582399949b1413ea7107980d18",
+        "verdict": true,
+        "verifier_id": "authored-sequence-jitter",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "c3b3fb0441f31e72c8ae5b49aac13027ec50ed0146ba4596b33cc97eeaa7f8eb",
+        "verdict": true,
+        "verifier_id": "authored-sequence-jitter",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "3f28dcc84962c430c48ed0569d7e61ca20a807b11271fa10d757e3a1de0c2ca0",
+        "verdict": true,
+        "verifier_id": "authored-sequence-jitter",
+        "verifier_version": "1"
+      }
+    },
+    "long_history": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "69baee98d1a8d61df6f58e900844df44a805650a57d0247d0d7fd264e77255ae",
+        "verdict": true,
+        "verifier_id": "authored-sequence-long_history",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "c7360926db4ceb1b2ab30836b8b23a638a371c542b239f9a4230a770e0e2739a",
+        "verdict": true,
+        "verifier_id": "authored-sequence-long_history",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "0d765c0d1e1f6411c552eaa2435329160f39147225b56cf5bff90c01338bcec9",
+        "verdict": true,
+        "verifier_id": "authored-sequence-long_history",
+        "verifier_version": "1"
+      }
+    },
+    "missing_fact": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "40de0de05cf9688a571c91bff06503b3f50be0fa5362209c7f5dd4749ae334a6",
+        "verdict": true,
+        "verifier_id": "authored-sequence-missing_fact",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "40de0de05cf9688a571c91bff06503b3f50be0fa5362209c7f5dd4749ae334a6",
+        "verdict": true,
+        "verifier_id": "authored-sequence-missing_fact",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "20fe93dc61dea319d926bb57bc8b0c90637a3717441580a5bc5892a01557f920",
+        "verdict": true,
+        "verifier_id": "authored-sequence-missing_fact",
+        "verifier_version": "1"
+      }
+    },
+    "rejected_fact": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "8a4d24d64f86972fa1b449a1accc3aa970e368dc4c28c72c3b6cb4ccf8b3aa00",
+        "verdict": true,
+        "verifier_id": "authored-sequence-rejected_fact",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "8a4d24d64f86972fa1b449a1accc3aa970e368dc4c28c72c3b6cb4ccf8b3aa00",
+        "verdict": true,
+        "verifier_id": "authored-sequence-rejected_fact",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "20fe93dc61dea319d926bb57bc8b0c90637a3717441580a5bc5892a01557f920",
+        "verdict": true,
+        "verifier_id": "authored-sequence-rejected_fact",
+        "verifier_version": "1"
+      }
+    },
+    "restart": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "9fd4e9bc3852077f76ce4b73e06c24187aac441299c8a1afbcb73cb4f4999afb",
+        "verdict": true,
+        "verifier_id": "authored-sequence-restart",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "9fd4e9bc3852077f76ce4b73e06c24187aac441299c8a1afbcb73cb4f4999afb",
+        "verdict": true,
+        "verifier_id": "authored-sequence-restart",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "54e3458c928b45f4919e94e96ead714bb9d79a7b19bda0450b0f16188d724a8a",
+        "verdict": true,
+        "verifier_id": "authored-sequence-restart",
+        "verifier_version": "1"
+      }
+    },
+    "short": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "71752d1cd7f698261fa420abe35e4c7e30f133819cf57d2cd6cdbcf72aa214b5",
+        "verdict": true,
+        "verifier_id": "authored-sequence-short",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "71752d1cd7f698261fa420abe35e4c7e30f133819cf57d2cd6cdbcf72aa214b5",
+        "verdict": true,
+        "verifier_id": "authored-sequence-short",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "6ad961f90f6b89fa39f28911472c42982f66d01b45241021ed97e35f4cc93e57",
+        "verdict": true,
+        "verifier_id": "authored-sequence-short",
+        "verifier_version": "1"
+      }
+    },
+    "small_history": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "2066f63360ba44f5591110b337fa276762b0dee00f517c3837eacffd9aa59310",
+        "verdict": true,
+        "verifier_id": "authored-sequence-small_history",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "cc81be4950aef0d87078529d683ada75ded3387f2cbafe7645b1691715d2e302",
+        "verdict": true,
+        "verifier_id": "authored-sequence-small_history",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "2af55e9b562067a369cc6ecf07751ae04c2abe31af86ee24e96330031bb2714a",
+        "verdict": true,
+        "verifier_id": "authored-sequence-small_history",
+        "verifier_version": "1"
+      }
+    },
+    "task_change": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "e00a2913e1be310f4e68d785de83ce03a955ebf30fef4bbf4523a307e9686635",
+        "verdict": true,
+        "verifier_id": "authored-sequence-task_change",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "e00a2913e1be310f4e68d785de83ce03a955ebf30fef4bbf4523a307e9686635",
+        "verdict": true,
+        "verifier_id": "authored-sequence-task_change",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "6edb6654156a590076713a00e6d6a203a95de8e24b5d03b49f94e380f747e53f",
+        "verdict": true,
+        "verifier_id": "authored-sequence-task_change",
+        "verifier_version": "1"
+      }
+    },
+    "tool_change": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "9fd4e9bc3852077f76ce4b73e06c24187aac441299c8a1afbcb73cb4f4999afb",
+        "verdict": true,
+        "verifier_id": "authored-sequence-tool_change",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "9fd4e9bc3852077f76ce4b73e06c24187aac441299c8a1afbcb73cb4f4999afb",
+        "verdict": true,
+        "verifier_id": "authored-sequence-tool_change",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "54e3458c928b45f4919e94e96ead714bb9d79a7b19bda0450b0f16188d724a8a",
+        "verdict": true,
+        "verifier_id": "authored-sequence-tool_change",
+        "verifier_version": "1"
+      }
+    },
+    "unknown_verifier": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "8a4d24d64f86972fa1b449a1accc3aa970e368dc4c28c72c3b6cb4ccf8b3aa00",
+        "verdict": true,
+        "verifier_id": "authored-sequence-unknown_verifier",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "8a4d24d64f86972fa1b449a1accc3aa970e368dc4c28c72c3b6cb4ccf8b3aa00",
+        "verdict": true,
+        "verifier_id": "authored-sequence-unknown_verifier",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "20fe93dc61dea319d926bb57bc8b0c90637a3717441580a5bc5892a01557f920",
+        "verdict": true,
+        "verifier_id": "authored-sequence-unknown_verifier",
+        "verifier_version": "1"
+      }
+    },
+    "version_change": {
+      "compact": {
+        "detail_code": null,
+        "input_hash": "8342c2f389c1d190adbdef2172f0c989e6b8eca214f0eb9985e265b24c45ff1d",
+        "verdict": true,
+        "verifier_id": "authored-sequence-version_change",
+        "verifier_version": "1"
+      },
+      "compact_persistent": {
+        "detail_code": null,
+        "input_hash": "8342c2f389c1d190adbdef2172f0c989e6b8eca214f0eb9985e265b24c45ff1d",
+        "verdict": true,
+        "verifier_id": "authored-sequence-version_change",
+        "verifier_version": "1"
+      },
+      "full_history": {
+        "detail_code": null,
+        "input_hash": "92550d26ce270f2c64434efe6193473678c15b64bee4a6d17e3873f21b47c448",
+        "verdict": true,
+        "verifier_id": "authored-sequence-version_change",
+        "verifier_version": "1"
+      }
+    }
+  }
+}
