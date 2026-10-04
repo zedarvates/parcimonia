@@ -125,7 +125,8 @@ La relecture reconstruit les requêtes depuis la révision du corpus et refuse
 les changements de budget, d'identité, d'origine ou de cas. Elle n'appelle aucun
 modèle et ne réécrit pas les fichiers de la capture.
 
-Les nouveaux manifestes sont en version 3 et peuvent enregistrer une étiquette
+Les nouveaux manifestes du corpus de base sont en version 3 et peuvent
+enregistrer une étiquette
 d'environnement choisie par l'appelant (`--machine-id`) ainsi que les versions
 Python du client et Ollama du serveur. La version 3 exige un arrêt au premier
 échec : aucune tentative ne peut suivre les cas non tentés. Les anciens
@@ -133,6 +134,13 @@ manifestes versions 1 et 2 restent rejouables, y compris s'ils poursuivaient
 les appels après un échec ; la version 1 conserve un environnement inconnu.
 L'étiquette ne certifie ni le matériel, ni la charge GPU, ni l'isolation ; ne
 pas y mettre de secret.
+
+Le mode explicite `--corpus choice-order` prépare 104 requêtes pour tester la
+stabilité des choix sous six présentations des mêmes options. Il écrit un
+manifeste v4 et des rapports v3, avec une révision dérivée qui conserve l'ordre
+des clés. Le mode par défaut reste celui des 24 cas. Capture, relecture,
+comparaison et métriques par cas source sont décrites dans le
+[diagnostic d'ordre des options](TEV1_CHOICE_ORDER.md).
 
 ## Comparaison appariée des deux tailles
 
