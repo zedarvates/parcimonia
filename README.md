@@ -137,9 +137,18 @@ wider than one call offers is either cut into balanced stages or scored option b
 option before one explicit choice, one response is recorded with the provenance
 that replays it offline, and the recomposed decision is verified by recomputation
 instead of being trusted. A decision clock keeps a missed deadline and a stale
-snapshot apart from decision quality. No model is called, the library provides no
-transport of its own and no cost is claimed. See
+snapshot apart from decision quality. The core adapter calls no model on its own
+and claims no cost. See
 [Typed-decision adapters](docs/DECISION_ADAPTER.md).
+
+An optional local Tev1 transport now implements that boundary through Ollama.
+It is explicitly invoked, pins runtime and model identity, bounds the HTTP call,
+and keeps every decision advisory. A 24-case French corpus compares rules and
+captured decisions, with offline replay and no saving claim. No real model was
+evaluated for this integration. See [Tev1 local shadow](docs/TEV1_SHADOW.md).
+The paired comparator revalidates both captures, counts every failure and keeps
+total cost unknown. A [local run guide](docs/TEV1_LOCAL_RUN.md) prepares execution
+on an existing model server.
 
 A prompt-signature predictor is implemented: it reads an input and names what that
 input is about, the kind of task, the capabilities it needs, the fields worth

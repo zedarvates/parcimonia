@@ -106,8 +106,8 @@ zero score or a default option. The recomposed winner is verified by
 recomputation under `decision.two_stage` version 1 instead of being trusted.
 
 One response is stored as a record carrying the backend id and version, the
-request fingerprint, the origin and the usage, and replayed offline. The library
-injects the transport and performs no network I/O, so its absence is a typed
+request fingerprint, the origin and the usage, and replayed offline. The core
+adapter takes an injected transport and performs no network I/O, so its absence is a typed
 `unavailable` capture. That injection point is the only piece a real call needs,
 which is what makes one authorized call convertible into a committed fixture.
 
@@ -128,8 +128,22 @@ is not correctness, so a well-typed answer can still be the wrong answer.
 One response can be written to and read from a self-describing JSON file, which
 is the mechanical step that turns one authorized call into a committed fixture.
 
-No model, no weights, no network and no cost claim. See
+The core adapter loads no model or weights and makes no cost claim. See
 [Typed-decision adapters](DECISION_ADAPTER.md).
+
+### Optional local Tev1 transport
+
+`tev1_transport.py` implements explicit loopback HTTP captures through Ollama's
+`/v1/systemone`. The runtime version and installed model digest are checked
+before and after inference within one deadline. Responses are normalized into
+existing records; missing answers, invalid distributions and identity drift
+fail closed. Provider concentration is discarded and all results remain advisory.
+
+`examples/tev1_shadow.py` offers a network-free plan, explicit local capture and
+offline replay on 24 authored French cases. It counts every failed attempt,
+keeps missing resources unknown, and never claims total savings. Tests use a
+simulated HTTP server; no real model has been evaluated here. See
+[Tev1 local shadow](TEV1_SHADOW.md) for limits and commands.
 
 ## WebBrain MCP
 
