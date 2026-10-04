@@ -21,7 +21,7 @@ def _validate(report: Any, model: str) -> None:
     if (
         not isinstance(report, dict)
         or type(report.get("schema_version")) is not int
-        or report["schema_version"] != 1
+        or report["schema_version"] not in (1, 2)
     ):
         raise ValueError("invalid_pair_report")
     if (
@@ -65,8 +65,10 @@ def _validate(report: Any, model: str) -> None:
         not isinstance(rows, list)
         or len(rows) != len(cases)
         or type(report.get("attempted")) is not int
-        or report["attempted"] != len(cases)
     ):
+        raise ValueError("pair_cases_missing")
+    version = report["schema_version"]
+    if version == 1 and report["attempted"] != len(cases):
         raise ValueError("pair_cases_missing")
     for case, row in zip(cases, rows):
         if (
@@ -83,9 +85,10 @@ def _validate(report: Any, model: str) -> None:
             raise ValueError("pair_label_mismatch")
         observed = row.get("model")
         status = row.get("status")
-        if status not in ("ok", "unusable", "unavailable", "error") or (
-            status == "ok"
-        ) != (observed is not None):
+        statuses = ("ok", "unusable", "unavailable", "error")
+        if version == 2:
+            statuses += ("not_attempted",)
+        if status not in statuses or (status == "ok") != (observed is not None):
             raise ValueError("pair_status_mismatch")
         if observed is not None:
             if case.question.kind == ReflexKind.CHOICE:
@@ -100,8 +103,21 @@ def _validate(report: Any, model: str) -> None:
                 )
             if not valid:
                 raise ValueError("invalid_pair_answer")
-        if not _finite(row.get("attempt_latency_ms")):
+        if status == "not_attempted":
+            if row.get("attempt_latency_ms") is not None:
+                raise ValueError("invalid_pair_latency")
+        elif not _finite(row.get("attempt_latency_ms")):
             raise ValueError("invalid_pair_latency")
+    counts = dict(Counter(row["status"] for row in rows))
+    if version == 2 and (
+        type(report.get("case_count")) is not int
+        or report["case_count"] != len(cases)
+        or type(report.get("not_attempted")) is not int
+        or report["not_attempted"] != counts.get("not_attempted", 0)
+        or report["attempted"] != len(cases) - counts.get("not_attempted", 0)
+        or report.get("status_counts") != counts
+    ):
+        raise ValueError("pair_attempt_counts_mismatch")
     resources = report.get("resources")
     if not isinstance(resources, dict):
         raise TypeError("invalid_pair_resources")
@@ -116,11 +132,15 @@ def _summary(report: dict[str, Any]) -> dict[str, Any]:
     cases = tev1_cases()
     correct = sum(agrees(case, row["model"]) for case, row in zip(cases, rows))
     answered = sum(row["model"] is not None for row in rows)
-    latencies = [row["attempt_latency_ms"] for row in rows]
+    latencies = [
+        row["attempt_latency_ms"] for row in rows if row["status"] != "not_attempted"
+    ]
     return {
         "identity": report["identity"],
         "environment": report.get("environment"),
-        "attempted": len(rows),
+        "case_count": len(rows),
+        "attempted": len(latencies),
+        "not_attempted": len(rows) - len(latencies),
         "answered_usable": answered,
         "correct": correct,
         "coverage": answered / len(rows),
@@ -128,10 +148,14 @@ def _summary(report: dict[str, Any]) -> dict[str, Any]:
         "agreement_answered": correct / answered if answered else None,
         "status_counts": dict(Counter(row["status"] for row in rows)),
         "latency_ms": {
-            "first_attempt": latencies[0],
-            "median_all_attempts": median(latencies),
-            "p95_all_attempts": sorted(latencies)[math.ceil(0.95 * len(latencies)) - 1],
-            "median_after_first_attempt": median(latencies[1:]),
+            "first_attempt": latencies[0] if latencies else None,
+            "median_all_attempts": median(latencies) if latencies else None,
+            "p95_all_attempts": sorted(latencies)[math.ceil(0.95 * len(latencies)) - 1]
+            if latencies
+            else None,
+            "median_after_first_attempt": median(latencies[1:])
+            if len(latencies) > 1
+            else None,
         },
         "resources": {
             "input_tokens": report["resources"].get("input_tokens"),
@@ -219,7 +243,9 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
         family = families.setdefault(
             case.family,
             {
-                "attempted": 0,
+                "case_count": 0,
+                "small_attempted": 0,
+                "large_attempted": 0,
                 "rules_correct": 0,
                 "small_correct": 0,
                 "large_correct": 0,
@@ -227,7 +253,9 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
                 "large_answered_usable": 0,
             },
         )
-        family["attempted"] += 1
+        family["case_count"] += 1
+        family["small_attempted"] += s["status"] != "not_attempted"
+        family["large_attempted"] += l["status"] != "not_attempted"
         family["rules_correct"] += agrees(case, rule_baseline(case))
         family["small_correct"] += s_correct
         family["large_correct"] += l_correct
@@ -235,12 +263,16 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
         family["large_answered_usable"] += l["model"] is not None
     return {
         "kind": "tev1_paired_comparison",
-        "schema_version": 1,
+        "schema_version": 2,
         "corpus_revision": corpus_revision(),
         "label_origin": "fixture",
         "capture_origin": small["capture_origin"],
         "budget_ms": small["budget_ms"],
-        "attempted_per_model": len(rows),
+        "case_count": len(rows),
+        "attempted_per_model": {
+            "small": sum(row["status"] != "not_attempted" for row in small["cases"]),
+            "large": sum(row["status"] != "not_attempted" for row in large["cases"]),
+        },
         "environment_relation": "same_declared" if matched_environment else "unknown",
         "latency_scope": "wall_clock_attempt_including_identity_checks",
         "load_state": "unobserved",

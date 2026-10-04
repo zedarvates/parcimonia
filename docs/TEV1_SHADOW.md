@@ -22,8 +22,9 @@ associe la version d'Ollama (au moins 0.35) et le digest SHA-256 observé dans
 Chaque capture vérifie version et digest avant puis après le POST
 `/v1/systemone` : cinq requêtes locales partagent une même échéance. Une
 interruption du socket borne aussi les en-têtes et corps transmis lentement.
-Il n'y a pas de retry. Un modèle absent, une panne, une réponse incomplète ou un
-changement d'identité ne produit aucun record accepté. Le serveur ne fournit
+Il n'y a pas de retry. Le délai borne le client ; le serveur peut continuer son
+calcul après la fermeture du socket. Un modèle absent, une panne, une réponse
+incomplète ou un changement d'identité ne produit aucun record accepté. Le serveur ne fournit
 pas de verrou atomique sur un tag : ne pas remplacer les poids pendant un run.
 
 Les limites locales sont 64 questions, 20 choix ou niveaux par question,
@@ -77,8 +78,9 @@ corriger après lecture des cas invaliderait leur rôle de comparaison initiale.
 L'accord est exact pour les choix, utilise le seuil déclaré 0.5 pour les
 booléens et une tolérance déclarée de 0.25 niveau pour les scores. Tous les cas
 restent au dénominateur. Les réponses manquantes, mal formées ou inutilisables
-ne disparaissent pas pour améliorer l'accord. Le rapport distingue couverture,
-accord sur tous les cas et accord sur les seules réponses utilisables.
+et les cas non tentés ne disparaissent pas pour améliorer l'accord. Le rapport
+distingue couverture, accord sur tous les cas et accord sur les seules réponses
+utilisables.
 
 ## Commandes
 
@@ -100,22 +102,37 @@ par défaut est 5 000 ms par cas, configurable par `--budget-ms` ; il comprend l
 contrôles d'identité. Le premier appel peut inclure le chargement du modèle :
 conserver et distinguer cette observation dans une mesure à froid/à chaud.
 
+Exécuter chaque capture séparément et contrôler son code de sortie avant la
+suivante. La première erreur de transport, réponse mal formée, identité changée
+ou réponse devenue inutilisable arrête les appels du lot. Les résultats déjà
+reçus sont conservés, le manifeste est terminé et les cas restants portent
+`status=not_attempted`, sans record ni temps d'appel inventé
+(`attempt_latency_ms=null`). Le code de sortie de `capture` est 2 après cet
+arrêt, y compris si l'échec concerne le dernier cas ; il est 0 uniquement si
+les 24 réponses sont utilisables. Une erreur de préparation ou d'écriture
+retourne 1. Vérifier l'état du serveur avant toute autre capture ; aucune
+reprise ou relance automatique n'est faite.
+
 `preflight` contrôle les deux modèles déjà installés par des GET de métadonnées,
 sans inférence ni téléchargement. Il refuse des versions de runtime différentes
 ou deux tags pointant sur le même digest, avant de lancer une comparaison.
 
-Le dossier contient `run.json` (corpus, identité, budget et chaque tentative),
-`records/fr-XX.json` pour chaque capture effectuée et `comparison.json`.
+Le dossier contient `run.json` (corpus, identité, budget et statut de chaque cas),
+`records/fr-XX.json` pour chaque réponse acceptée, même périmée, et
+`comparison.json`.
 Un run interrompu avant son manifeste final ne constitue pas un run complet.
 La relecture reconstruit les requêtes depuis la révision du corpus et refuse
 les changements de budget, d'identité, d'origine ou de cas. Elle n'appelle aucun
 modèle et ne réécrit pas les fichiers de la capture.
 
-Les nouveaux manifestes sont en version 2 et peuvent enregistrer une étiquette
+Les nouveaux manifestes sont en version 3 et peuvent enregistrer une étiquette
 d'environnement choisie par l'appelant (`--machine-id`) ainsi que les versions
-Python du client et Ollama du serveur. Les anciens manifestes version 1 restent
-rejouables avec environnement inconnu. L'étiquette ne certifie ni le matériel,
-ni la charge GPU, ni l'isolation ; ne pas y mettre de secret.
+Python du client et Ollama du serveur. La version 3 exige un arrêt au premier
+échec : aucune tentative ne peut suivre les cas non tentés. Les anciens
+manifestes versions 1 et 2 restent rejouables, y compris s'ils poursuivaient
+les appels après un échec ; la version 1 conserve un environnement inconnu.
+L'étiquette ne certifie ni le matériel, ni la charge GPU, ni l'isolation ; ne
+pas y mettre de secret.
 
 ## Comparaison appariée des deux tailles
 
@@ -125,11 +142,21 @@ il ignore les totaux précalculés de `comparison.json`. Les rôles doivent êtr
 origine. Deux environnements déclarés différents sont refusés ; un environnement
 absent conserve la qualité descriptive mais laisse les deltas de temps inconnus.
 
-Le rapport conserve tous les cas, y compris les échecs, et donne les réussites
-communes, celles propres à chaque modèle, les échecs communs et les résultats
-par famille. Il sépare la première tentative des suivantes, avec médiane et
-p95 des tentatives complètes (méthode du rang le plus proche). La charge du
-modèle reste `unobserved` : « après la première tentative » ne veut pas dire
+Les rapports individuels et appariés passent en version 2. `case_count=24`
+reste le dénominateur de couverture et d'accord sur tous les cas ; `attempted`
+compte les captures tentées, y compris un refus avant le POST, et
+`not_attempted` les cas restants. Le rapport apparié donne
+`attempted_per_model={small: N, large: M}` et sépare les compteurs de tentatives
+par modèle dans chaque famille.
+
+Le rapport conserve tous les cas, y compris les échecs et les cas non tentés,
+et donne les réussites communes, celles propres à chaque modèle, les échecs
+communs et les résultats par famille. Il sépare la première tentative des
+suivantes, avec médiane et
+p95 des seules tentatives effectuées (méthode du rang le plus proche), y compris
+les tentatives échouées. Les cas non tentés n'entrent pas dans ces statistiques ;
+la médiane après la première tentative reste inconnue si elle est la seule.
+La charge du modèle reste `unobserved` : « après la première tentative » ne veut pas dire
 « modèle chaud ». Les deltas par cas exigent deux réponses utilisables et des
 environnements déclarés identiques.
 

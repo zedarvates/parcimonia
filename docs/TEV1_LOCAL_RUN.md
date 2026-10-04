@@ -46,8 +46,23 @@ modèles **déjà installés** :
 ```console
 python examples/tev1_shadow.py plan
 python examples/tev1_shadow.py preflight --base-url http://127.0.0.1:11435
+```
+
+Si le prévol réussit, lancer la première capture et contrôler son code de sortie :
+
+```console
 python examples/tev1_shadow.py capture --model tev1:0.8b --base-url http://127.0.0.1:11435 --budget-ms 5000 --machine-id local-pair-01 --out runs/tev1-pair-01-small
+```
+
+Lancer la seconde uniquement si la première a terminé avec le code 0 :
+
+```console
 python examples/tev1_shadow.py capture --model tev1:4b --base-url http://127.0.0.1:11435 --budget-ms 5000 --machine-id local-pair-01 --out runs/tev1-pair-01-large
+```
+
+Après les deux captures, la comparaison est entièrement hors ligne :
+
+```console
 python examples/tev1_shadow.py compare --small runs/tev1-pair-01-small --large runs/tev1-pair-01-large --out runs/tev1-pair-01.json
 ```
 
@@ -59,6 +74,10 @@ clé, adresse réseau privée ou configuration SSH n'est enregistrée.
 
 Arrêter la procédure si le prévol échoue : modèle absent, runtime incompatible,
 connexion indisponible ou digests identiques. Le harnais ne télécharge rien.
+Une capture s'arrête au premier échec, conserve un manifeste rejouable et
+signale les cas restants comme non tentés. Son code de sortie est alors 2 : ne
+pas enchaîner l'autre modèle. Un délai dépassé côté client ne prouve pas que
+le calcul a cessé sur le serveur.
 Après une interruption ou un délai dépassé, conserver les résultats et vérifier
 l'état du serveur avant de relancer une commande ; ne pas répéter un run dont
 l'état est incertain. Un dossier incomplet n'est pas un run complet rejouable.
@@ -75,7 +94,8 @@ python examples/tev1_shadow.py replay --run runs/tev1-pair-01-large
 ```
 
 Rapporter les identités exactes, couverture, accord sur les 24 cas, désaccords
-par famille, erreurs et temps de tentative. Les tokens absents restent inconnus.
+par famille, erreurs, nombre de cas tentés et non tentés, et temps des seules
+tentatives effectuées. Les tokens absents restent inconnus.
 Le premier appel peut charger un modèle ; aucun temps n'est déclaré « chaud »
 sans observation de cet état.
 

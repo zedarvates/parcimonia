@@ -14,6 +14,7 @@ import json
 import math
 import platform
 import sys
+from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
 from statistics import median
@@ -91,6 +92,7 @@ def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=No
         raise ValueError("all_cases_must_be_counted")
     answered = [row for row in output if row["model"] is not None]
     correct = sum(row["model_agrees"] for row in output)
+    attempted = [row for row in rows if row["status"] != "not_attempted"]
     resources = {}
     for key in ("input_tokens", "output_tokens"):
         values = [row.get("usage", {}).get(key + "_total") for row in rows]
@@ -100,14 +102,17 @@ def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=No
             else None
         )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "corpus_revision": corpus_revision(),
         "label_origin": "fixture",
         "capture_origin": capture_origin,
         "identity": asdict(identity),
         "budget_ms": budget_ms,
         "environment": environment,
-        "attempted": len(cases),
+        "case_count": len(cases),
+        "attempted": len(attempted),
+        "not_attempted": len(cases) - len(attempted),
+        "status_counts": dict(Counter(row["status"] for row in rows)),
         "rules": {
             "correct": sum(row["rules_agree"] for row in output),
             "agreement_all_cases": sum(row["rules_agree"] for row in output)
@@ -121,8 +126,10 @@ def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=No
             "agreement_all_cases": correct / len(cases),
             "agreement_answered": correct / len(answered) if answered else None,
             "median_attempt_latency_ms": median(
-                row["attempt_latency_ms"] for row in rows
-            ),
+                row["attempt_latency_ms"] for row in attempted
+            )
+            if attempted
+            else None,
         },
         "resources": {
             **resources,
@@ -163,7 +170,29 @@ def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
     out.mkdir(parents=True)
     (out / "records").mkdir()
     rows, manifest_rows = [], []
+    stopped = False
     for case in tev1_cases():
+        if stopped:
+            detail = "batch_stopped_after_failed_attempt"
+            rows.append(
+                {
+                    "observed": None,
+                    "status": "not_attempted",
+                    "detail_code": detail,
+                    "attempt_latency_ms": None,
+                    "usage": {},
+                }
+            )
+            manifest_rows.append(
+                {
+                    "case_id": case.case_id,
+                    "status": "not_attempted",
+                    "detail_code": detail,
+                    "attempt_latency_ms": None,
+                    "has_record": False,
+                }
+            )
+            continue
         request = build_request(case, identity, budget_ms)
         started = perf_counter()
         capture = transport.capture(request)
@@ -198,8 +227,9 @@ def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
                 "has_record": capture.record is not None,
             }
         )
+        stopped = status != "ok"
     manifest = {
-        "schema_version": 2,
+        "schema_version": 3,
         "corpus_revision": corpus_revision(),
         "identity": asdict(identity),
         "budget_ms": budget_ms,
@@ -251,13 +281,13 @@ def replay_run(run):
         "cases",
     }
     version = manifest.get("schema_version") if isinstance(manifest, dict) else None
-    if version == 2:
+    if version in (2, 3):
         fields.add("environment")
     if (
         not isinstance(manifest, dict)
         or set(manifest) != fields
         or type(manifest["schema_version"]) is not int
-        or manifest["schema_version"] not in (1, 2)
+        or manifest["schema_version"] not in (1, 2, 3)
     ):
         raise ValueError("invalid_run_manifest")
     if manifest["corpus_revision"] != corpus_revision():
@@ -286,27 +316,36 @@ def replay_run(run):
     if not isinstance(manifest["cases"], list) or len(manifest["cases"]) != len(cases):
         raise ValueError("all_cases_must_be_counted")
     rows = []
+    stopped = False
     for case, stored in zip(cases, manifest["cases"]):
         if (
-            set(stored)
+            not isinstance(stored, dict)
+            or set(stored)
             != {"case_id", "status", "detail_code", "attempt_latency_ms", "has_record"}
             or stored["case_id"] != case.case_id
         ):
             raise ValueError("case_manifest_mismatch")
-        latency = stored["attempt_latency_ms"]
-        if (
-            type(latency) not in (int, float)
-            or not math.isfinite(latency)
-            or latency < 0
-        ):
-            raise ValueError("invalid_attempt_latency")
         if type(stored["has_record"]) is not bool or stored["status"] not in (
             "ok",
             "unusable",
             "unavailable",
             "error",
+            "not_attempted",
         ):
             raise ValueError("invalid_attempt_status")
+        not_attempted = stored["status"] == "not_attempted"
+        if not_attempted and version != 3:
+            raise ValueError("invalid_attempt_status")
+        latency = stored["attempt_latency_ms"]
+        if (not_attempted and latency is not None) or (
+            not not_attempted
+            and (
+                type(latency) not in (int, float)
+                or not math.isfinite(latency)
+                or latency < 0
+            )
+        ):
+            raise ValueError("invalid_attempt_latency")
         if (
             not isinstance(stored["detail_code"], str)
             or not stored["detail_code"].strip()
@@ -314,6 +353,16 @@ def replay_run(run):
             raise ValueError("invalid_detail_code")
         if stored["has_record"] != (stored["status"] in ("ok", "unusable")):
             raise ValueError("record_status_mismatch")
+        if version == 3:
+            if stopped != not_attempted:
+                raise ValueError("invalid_batch_stop_sequence")
+            if stored["status"] != "ok":
+                stopped = True
+        if not_attempted:
+            if stored["detail_code"] != "batch_stopped_after_failed_attempt":
+                raise ValueError("invalid_unattempted_detail")
+            if (run / "records" / f"{case.case_id}.json").exists():
+                raise ValueError("unexpected_unattempted_record")
         observed, usage = None, {}
         if stored["has_record"]:
             path = run / "records" / f"{case.case_id}.json"
@@ -435,6 +484,15 @@ def main():
         print(f"{args.command}_failed: {exc}", file=sys.stderr)
         return 1
     print(json.dumps(report, ensure_ascii=False, allow_nan=False, indent=2))
+    if args.command == "capture" and any(
+        row["status"] != "ok" for row in report["cases"]
+    ):
+        print(
+            "capture_stopped_after_failure: partial run saved; "
+            "inspect the server before another capture.",
+            file=sys.stderr,
+        )
+        return 2
     return 0
 
 

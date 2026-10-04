@@ -19,10 +19,12 @@ ENVIRONMENT = asdict(
 )
 
 
-def fixture_report(identity, *, missing=(), wrong=(), environment=None, offset=0):
+def fixture_report(
+    identity, *, missing=(), not_attempted=(), wrong=(), environment=None, offset=0
+):
     rows = []
     for index, case in enumerate(tev1_cases()):
-        observed = None if index in missing else case.expected
+        observed = None if index in missing or index in not_attempted else case.expected
         if index in wrong:
             observed = next(
                 key for key in case.question.option_keys if key != case.expected
@@ -30,9 +32,15 @@ def fixture_report(identity, *, missing=(), wrong=(), environment=None, offset=0
         rows.append(
             {
                 "observed": observed,
-                "status": "error" if observed is None else "ok",
+                "status": "not_attempted"
+                if index in not_attempted
+                else "error"
+                if observed is None
+                else "ok",
                 "detail_code": "fixture",
-                "attempt_latency_ms": 10 + index + offset,
+                "attempt_latency_ms": None
+                if index in not_attempted
+                else 10 + index + offset,
                 "usage": {}
                 if observed is None
                 else {"input_tokens_total": 100, "output_tokens_total": 1},
@@ -52,7 +60,8 @@ def test_paired_quality_counts_missing_answers_and_recomputes_totals():
     large = fixture_report(LARGE, wrong=(2,))
     small["model"]["correct"] = 999  # A precomputed claim must not override cases.
     result = compare_tev1_runs(small, large)
-    assert result["attempted_per_model"] == 24
+    assert result["attempted_per_model"] == {"small": 24, "large": 24}
+    assert result["case_count"] == 24
     assert result["small"]["correct"] == 22 and result["small"]["answered_usable"] == 23
     assert result["large"]["correct"] == 23
     assert result["paired_quality_counts"] == {
@@ -61,7 +70,7 @@ def test_paired_quality_counts_missing_answers_and_recomputes_totals():
         "large_only_correct": 2,
         "neither_correct": 0,
     }
-    assert sum(family["attempted"] for family in result["by_family"].values()) == 24
+    assert sum(family["case_count"] for family in result["by_family"].values()) == 24
     assert result["small"]["resources"]["input_tokens"] is None
     assert result["selected_model"] is None and result["saving_claim"] is False
     assert result["auto_act_allowed"] is False and result["label_origin"] == "fixture"
@@ -87,6 +96,80 @@ def test_declared_environment_deltas_require_two_usable_answers():
     assert result["small"]["latency_ms"]["first_attempt"] == 10
     assert result["small"]["latency_ms"]["p95_all_attempts"] == 32
     assert result["load_state"] == "unobserved"
+
+
+def test_partial_pair_keeps_all_cases_but_times_only_real_attempts():
+    result = compare_tev1_runs(
+        fixture_report(
+            IDENTITY,
+            missing=(1,),
+            not_attempted=tuple(range(2, 24)),
+            environment=ENVIRONMENT,
+        ),
+        fixture_report(LARGE, offset=20, environment=ENVIRONMENT),
+    )
+    assert result["attempted_per_model"] == {"small": 2, "large": 24}
+    small = result["small"]
+    assert small["case_count"] == 24 and small["not_attempted"] == 22
+    assert small["coverage"] == small["agreement_all_cases"] == 1 / 24
+    assert small["status_counts"] == {"ok": 1, "error": 1, "not_attempted": 22}
+    assert small["latency_ms"] == {
+        "first_attempt": 10,
+        "median_all_attempts": 10.5,
+        "p95_all_attempts": 11,
+        "median_after_first_attempt": 11,
+    }
+    assert result["paired_quality_counts"]["large_only_correct"] == 23
+    assert result["cases"][0]["large_minus_small_latency_ms"] == 20
+    assert all(
+        row["large_minus_small_latency_ms"] is None for row in result["cases"][1:]
+    )
+    assert sum(f["small_attempted"] for f in result["by_family"].values()) == 2
+    assert sum(f["large_attempted"] for f in result["by_family"].values()) == 24
+
+
+def test_single_failed_attempt_has_no_after_first_latency():
+    result = compare_tev1_runs(
+        fixture_report(IDENTITY, missing=(0,), not_attempted=tuple(range(1, 24))),
+        fixture_report(LARGE),
+    )
+    assert result["small"]["latency_ms"] == {
+        "first_attempt": 10,
+        "median_all_attempts": 10,
+        "p95_all_attempts": 10,
+        "median_after_first_attempt": None,
+    }
+
+
+@pytest.mark.parametrize(
+    "edit,error",
+    [
+        (lambda r: r.update(attempted=24), "pair_attempt_counts_mismatch"),
+        (lambda r: r.update(case_count=1), "pair_attempt_counts_mismatch"),
+        (lambda r: r.update(not_attempted=0), "pair_attempt_counts_mismatch"),
+        (lambda r: r.update(status_counts={}), "pair_attempt_counts_mismatch"),
+        (
+            lambda r: r["cases"][1].update(attempt_latency_ms=0),
+            "invalid_pair_latency",
+        ),
+    ],
+)
+def test_partial_pair_refuses_inflated_counts_and_invented_latencies(edit, error):
+    small = fixture_report(IDENTITY, missing=(0,), not_attempted=tuple(range(1, 24)))
+    edit(small)
+    with pytest.raises(ValueError, match=error):
+        compare_tev1_runs(small, fixture_report(LARGE))
+
+
+def test_legacy_comparison_reports_still_count_all_attempts():
+    reports = [fixture_report(IDENTITY, missing=(0,)), fixture_report(LARGE)]
+    for report in reports:
+        report["schema_version"] = 1
+        for key in ("case_count", "not_attempted", "status_counts"):
+            del report[key]
+    result = compare_tev1_runs(*reports)
+    assert result["attempted_per_model"] == {"small": 24, "large": 24}
+    assert result["small"]["correct"] == 23
 
 
 @pytest.mark.parametrize(
@@ -136,10 +219,18 @@ def test_swapped_model_roles_are_refused():
         compare_tev1_runs(fixture_report(LARGE), fixture_report(IDENTITY))
 
 
-def test_cli_revalidates_both_captures_and_ignores_precomputed_totals(tmp_path):
+@pytest.mark.parametrize("partial", [False, True])
+def test_cli_revalidates_both_captures_and_ignores_precomputed_totals(
+    tmp_path, partial
+):
     directories = (tmp_path / "small", tmp_path / "large")
     for identity, out in zip((IDENTITY, LARGE), directories):
-        with server(response=authored_response, model_identity=identity) as (url, _):
+        response = (
+            (lambda payload: authored_response(payload, missing=True))
+            if partial and identity == IDENTITY
+            else authored_response
+        )
+        with server(response=response, model_identity=identity) as (url, _):
             capture_run(
                 model=identity.model,
                 base_url=url,
@@ -163,7 +254,12 @@ def test_cli_revalidates_both_captures_and_ignores_precomputed_totals(tmp_path):
     completed = subprocess.run(command, text=True, capture_output=True, check=True)
     result = json.loads(completed.stdout)
     assert result == json.loads(output.read_text(encoding="utf-8"))
-    assert result["small"]["correct"] == result["large"]["correct"] == 24
+    assert result["small"]["correct"] == (0 if partial else 24)
+    assert result["large"]["correct"] == 24
+    assert result["attempted_per_model"] == {
+        "small": 1 if partial else 24,
+        "large": 24,
+    }
     assert result["environment_relation"] == "same_declared"
     assert result["label_origin"] == "fixture" and not result["saving_claim"]
     repeated = subprocess.run(command, text=True, capture_output=True, check=False)
@@ -173,20 +269,29 @@ def test_cli_revalidates_both_captures_and_ignores_precomputed_totals(tmp_path):
     )
 
 
-def test_manifest_v1_replays_with_unknown_environment(tmp_path):
+@pytest.mark.parametrize("version", [1, 2])
+def test_legacy_manifests_replay_even_if_the_old_batch_continued_after_error(
+    tmp_path, version
+):
     with server(response=authored_response) as (url, _):
         capture_run(
             model=IDENTITY.model, base_url=url, budget_ms=2000, out=tmp_path / "run"
         )
     path = tmp_path / "run" / "run.json"
     manifest = json.loads(path.read_text(encoding="utf-8"))
-    assert manifest["schema_version"] == 2
-    manifest["schema_version"] = 1
-    del manifest["environment"]
+    assert manifest["schema_version"] == 3
+    manifest["schema_version"] = version
+    if version == 1:
+        del manifest["environment"]
+    manifest["cases"][0].update(
+        status="error", detail_code="transport_error:ValueError", has_record=False
+    )
+    (tmp_path / "run" / "records" / "fr-01.json").unlink()
     path.write_text(json.dumps(manifest), encoding="utf-8")
     report = replay_run(tmp_path / "run")
     assert report["environment"] is None and report["budget_ms"] == 2000
-    assert report["model"]["correct"] == 24
+    assert report["model"]["correct"] == 23
+    assert report["attempted"] == 24 and report["not_attempted"] == 0
 
 
 def test_invalid_environment_label_is_refused_before_probe(tmp_path, monkeypatch):
