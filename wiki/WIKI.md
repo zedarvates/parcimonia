@@ -11,6 +11,7 @@ ne remplace pas `docs/`, qui documente chaque mécanisme ; il relie, et il date.
 | [ENSEIGNEMENTS.md](ENSEIGNEMENTS.md) | résultats, résultats négatifs et erreurs corrigées |
 | [SOURCES.md](SOURCES.md) | d'où vient la ligne technique, avec licences et frontières |
 | [RELEVE_2026-09-22.json](RELEVE_2026-09-22.json) | le relevé chiffré de cette date, citable |
+| [BEV_2026-10-04.md](BEV_2026-10-04.md) | analyse de la vidéo Bev, diagnostic d'ordre des choix et spécialisation française proposée |
 
 Trois règles de lecture, les mêmes que partout ailleurs dans ce dépôt :
 
