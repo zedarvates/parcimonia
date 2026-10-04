@@ -9,7 +9,15 @@ from typing import Any
 
 from .measurement import Environment
 from .reflex import ReflexKind
-from .tev1_cases import agrees, corpus_revision, rule_baseline, tev1_cases
+from .tev1_cases import agrees, rule_baseline
+from .tev1_permutations import (
+    BASE_CORPUS,
+    CHOICE_ORDER_CORPUS,
+    cases_for,
+    choice_order_summary,
+    order_metadata,
+    revision_for,
+)
 from .tev1_transport import Tev1Identity
 
 
@@ -17,15 +25,24 @@ def _finite(value: Any) -> bool:
     return type(value) in (int, float) and math.isfinite(value) and value >= 0
 
 
+def _corpus_kind(report: dict[str, Any]) -> str:
+    if report.get("schema_version") == 3:
+        if report.get("corpus_kind") != CHOICE_ORDER_CORPUS:
+            raise ValueError("invalid_pair_corpus_kind")
+        return CHOICE_ORDER_CORPUS
+    return BASE_CORPUS
+
+
 def _validate(report: Any, model: str) -> None:
     if (
         not isinstance(report, dict)
         or type(report.get("schema_version")) is not int
-        or report["schema_version"] not in (1, 2)
+        or report["schema_version"] not in (1, 2, 3)
     ):
         raise ValueError("invalid_pair_report")
+    corpus_kind = _corpus_kind(report)
     if (
-        report.get("corpus_revision") != corpus_revision()
+        report.get("corpus_revision") != revision_for(corpus_kind)
         or report.get("label_origin") != "fixture"
     ):
         raise ValueError("pair_corpus_mismatch")
@@ -59,7 +76,7 @@ def _validate(report: Any, model: str) -> None:
         Environment(**environment)
         if environment["runtime_versions"].get("ollama") != identity.ollama_version:
             raise ValueError("pair_environment_runtime_mismatch")
-    cases = tev1_cases()
+    cases = cases_for(corpus_kind)
     rows = report.get("cases")
     if (
         not isinstance(rows, list)
@@ -86,7 +103,7 @@ def _validate(report: Any, model: str) -> None:
         observed = row.get("model")
         status = row.get("status")
         statuses = ("ok", "unusable", "unavailable", "error")
-        if version == 2:
+        if version >= 2:
             statuses += ("not_attempted",)
         if status not in statuses or (status == "ok") != (observed is not None):
             raise ValueError("pair_status_mismatch")
@@ -103,13 +120,51 @@ def _validate(report: Any, model: str) -> None:
                 )
             if not valid:
                 raise ValueError("invalid_pair_answer")
+        if corpus_kind == CHOICE_ORDER_CORPUS:
+            if any(
+                row.get(key) != value for key, value in order_metadata(case).items()
+            ):
+                raise ValueError("pair_option_order_mismatch")
+            probabilities = row.get("probabilities")
+            if observed is None:
+                if probabilities is not None:
+                    raise ValueError("invalid_pair_probabilities")
+            elif (
+                not isinstance(probabilities, dict)
+                or set(probabilities) != set(case.question.option_keys)
+                or any(
+                    not _finite(value) or value > 1 for value in probabilities.values()
+                )
+                or not math.isclose(
+                    sum(probabilities.values()), 1.0, rel_tol=0, abs_tol=1e-6
+                )
+            ):
+                raise ValueError("invalid_pair_probabilities")
+            elif case.question.kind == ReflexKind.CHOICE and (
+                probabilities[observed] < max(probabilities.values()) - 1e-6
+            ):
+                raise ValueError("pair_choice_probability_mismatch")
+            elif case.question.kind == ReflexKind.NOUL and (
+                (probabilities["true"] >= 0.5) != observed
+            ):
+                raise ValueError("pair_noul_probability_mismatch")
+            elif case.question.kind == ReflexKind.SCORE and not math.isclose(
+                observed,
+                sum(
+                    i * probabilities[key]
+                    for i, key in enumerate(case.question.option_keys)
+                ),
+                rel_tol=0,
+                abs_tol=1e-6,
+            ):
+                raise ValueError("pair_score_probability_mismatch")
         if status == "not_attempted":
             if row.get("attempt_latency_ms") is not None:
                 raise ValueError("invalid_pair_latency")
         elif not _finite(row.get("attempt_latency_ms")):
             raise ValueError("invalid_pair_latency")
     counts = dict(Counter(row["status"] for row in rows))
-    if version == 2 and (
+    if version >= 2 and (
         type(report.get("case_count")) is not int
         or report["case_count"] != len(cases)
         or type(report.get("not_attempted")) is not int
@@ -129,7 +184,7 @@ def _validate(report: Any, model: str) -> None:
 
 def _summary(report: dict[str, Any]) -> dict[str, Any]:
     rows = report["cases"]
-    cases = tev1_cases()
+    cases = cases_for(_corpus_kind(report))
     correct = sum(agrees(case, row["model"]) for case, row in zip(cases, rows))
     answered = sum(row["model"] is not None for row in rows)
     latencies = [
@@ -177,6 +232,9 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
     """
     _validate(small, "tev1:0.8b")
     _validate(large, "tev1:4b")
+    corpus_kind = _corpus_kind(small)
+    if corpus_kind != _corpus_kind(large):
+        raise ValueError("pair_corpus_mismatch")
     if small["budget_ms"] != large["budget_ms"]:
         raise ValueError("pair_budget_mismatch")
     if small["identity"]["ollama_version"] != large["identity"]["ollama_version"]:
@@ -202,7 +260,7 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
         }
     )
     families = {}
-    for case, s, l in zip(tev1_cases(), small["cases"], large["cases"]):
+    for case, s, l in zip(cases_for(corpus_kind), small["cases"], large["cases"]):
         s_correct, l_correct = agrees(case, s["model"]), agrees(case, l["model"])
         outcome = (
             "both_correct"
@@ -240,6 +298,8 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
                 else None,
             }
         )
+        if corpus_kind == CHOICE_ORDER_CORPUS:
+            rows[-1].update(order_metadata(case))
         family = families.setdefault(
             case.family,
             {
@@ -261,10 +321,10 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
         family["large_correct"] += l_correct
         family["small_answered_usable"] += s["model"] is not None
         family["large_answered_usable"] += l["model"] is not None
-    return {
+    report = {
         "kind": "tev1_paired_comparison",
-        "schema_version": 2,
-        "corpus_revision": corpus_revision(),
+        "schema_version": 3 if corpus_kind == CHOICE_ORDER_CORPUS else 2,
+        "corpus_revision": revision_for(corpus_kind),
         "label_origin": "fixture",
         "capture_origin": small["capture_origin"],
         "budget_ms": small["budget_ms"],
@@ -287,3 +347,13 @@ def compare_tev1_runs(small: dict[str, Any], large: dict[str, Any]) -> dict[str,
         "saving_claim": False,
         "total_cost_comparison": "unavailable",
     }
+    if corpus_kind == CHOICE_ORDER_CORPUS:
+        report.update(
+            corpus_kind=corpus_kind,
+            observation_unit="request_variant",
+            order_stability={
+                "small": choice_order_summary(small["cases"]),
+                "large": choice_order_summary(large["cases"]),
+            },
+        )
+    return report

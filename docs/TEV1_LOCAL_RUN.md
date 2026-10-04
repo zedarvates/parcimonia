@@ -103,3 +103,12 @@ Les états et labels sont authorés : cette première comparaison ne constitue
 pas une calibration indépendante ni une économie sur des tâches réelles.
 L'autorisation, la validation de fin de tâche et la compaction restent confiées
 aux mécanismes existants. Aucune fusion ou activation n'est incluse dans ce relais.
+
+## Diagnostic complémentaire de l'ordre des choix
+
+Après la comparaison initiale et inspection des échecs, le
+[mode `choice-order`](TEV1_CHOICE_ORDER.md) permet 104 requêtes par modèle.
+Il nécessite le checkout de `codex/tev1-choice-order-20261004`, qui étend la
+préparation de la PR #13. Utiliser des dossiers de résultats distincts ;
+les six présentations d'un cas ne constituent pas six observations indépendantes.
+Cette préparation reste testée sur HTTP simulé, sans mesure de modèle réel.
