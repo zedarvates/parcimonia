@@ -11,6 +11,10 @@ ne remplace pas `docs/`, qui documente chaque mécanisme ; il relie, et il date.
 | [ENSEIGNEMENTS.md](ENSEIGNEMENTS.md) | résultats, résultats négatifs et erreurs corrigées |
 | [SOURCES.md](SOURCES.md) | d'où vient la ligne technique, avec licences et frontières |
 | [RELEVE_2026-09-22.json](RELEVE_2026-09-22.json) | le relevé chiffré de cette date, citable |
+| [COMPACT_MEMORY_2026-10-03.json](COMPACT_MEMORY_2026-10-03.json) | essai authoré A/B/C de contexte borné ; preuves, tailles et limites |
+| [MEMORY_REPLAY_2026-10-03.json](MEMORY_REPLAY_2026-10-03.json) | import/rejeu séquentiel : versions figées, labels séparés et absence de verdict respectée |
+| [MEMORY_CAPTURE_2026-10-03.json](MEMORY_CAPTURE_2026-10-03.json) | capture explicite bornée : faits et absences immuables, reçus d'usage séparés, aucune issue inventée |
+| [MEMORY_EXECUTION_2026-10-04.json](MEMORY_EXECUTION_2026-10-04.json) | rattachement d'exécutions existantes : échec d'appel distinct de l'échec de journalisation, guide pilote Odin |
 
 Trois règles de lecture, les mêmes que partout ailleurs dans ce dépôt :
 

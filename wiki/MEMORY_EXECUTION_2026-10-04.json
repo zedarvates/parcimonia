@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-04",
+  "deployment_performed": false,
+  "files_sha256": {
+    "docs/MEMORY_EXECUTION.md": "1c05c75154a6e05c9d9b0664da8564fd9413541afe5b1edf16f77e7d52c226ce",
+    "src/tiberium_ai/memory_capture.py": "4467811fc7f8d129082f1a463400251583f5b9f61ee319eb8eb6e9b2e741b882",
+    "src/tiberium_ai/memory_execution.py": "55ddec7a5d81aaf87bf520ab6917e783fbdf00362de5039a8719493b0573b33e",
+    "tests/test_memory_execution.py": "9871cf538ed72f6da384f84b5c60ee23979c7adda2529a25c0a9db519bde39ba"
+  },
+  "new_sidecar": {
+    "exception_message_stored": false,
+    "execution_measurement": "Existing capture_run measurement; same caller attribution, not authenticated",
+    "name": "executions.jsonl",
+    "raw_output_stored": false,
+    "raw_request_stored": false,
+    "schema": "memory-execution/1",
+    "usage": "Separate explicit receipt, never inferred from local timing or estimates"
+  },
+  "parent_revision": "f7762f1cc66067896080d6217804ad384ad468ed",
+  "pilot": {
+    "caller": "existing local agent on Odin",
+    "eurekai_diagnostic_boundary": "read-only",
+    "guide": "docs/MEMORY_EXECUTION.md",
+    "homelab_execution_link_from_cloud": "not established",
+    "model_or_provider_call_performed": false,
+    "real_episode_collected": false
+  },
+  "production_saving_claim": {
+    "reason": "No real versioned episode, independent sequence outcomes or paired provider measurements.",
+    "status": "refused"
+  },
+  "promotion_allowed": false,
+  "schema": "memory-execution-evidence/1",
+  "scope": "Attach existing CapturedRun results to explicit memory episodes; no callable/transport accepted, no model or homelab execution launched.",
+  "task_110": "open",
+  "validation": {
+    "command": "PYTHONPATH=src:/workspace/scratch/6bca395b11bc/.test-deps python -m pytest -q",
+    "contracts": [
+      "Existing caller executes once; attachment/duplicate rejection never executes or retries.",
+      "Measured failure retains its error type and optional explicit partial usage.",
+      "Unknown verifier/usage retains null verdict and metrics.",
+      "Wrong task/route/request pin and changed output are rejected before recording.",
+      "Rejected or oversized usage preserves the existing execution.",
+      "Execution byte-budget rejection is a logging failure and preserves the caller result.",
+      "Execution/usage rows bind final sequence/archive and original turn hashes.",
+      "Fixture origin cannot upgrade to provider evidence; local latency never fills provider latency.",
+      "Raw request/output/exception message absent from execution sidecar.",
+      "Recorded output verification does not supply offline sequence labels."
+    ],
+    "new_tests": 16,
+    "origin": "authored/simulated contract tests",
+    "python": "3.12.14",
+    "tests_passed": 897
+  }
+}

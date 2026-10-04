@@ -11,6 +11,7 @@ recopié : ce qui est retenu est un **motif**, réimplémenté et mesuré ici.
 | `yibie/awesome-jev` | 22/09/2026 | un catalogue d'usage du même motif, lu comme état de l'art | aucun composant repris |
 | Dolly-15k (voie publique) | 22/09/2026 | un jeu étiqueté par des personnes qui ne sont pas nous, pour mesurer sans autoriser | CC-BY-SA-3.0 ; l'origine `public` ne peut jamais autoriser une exécution |
 | Le magasin de rollouts local | 22/09/2026 | les prompts réellement tapés, nettoyés du harnais et adressés par contenu | reste local, ignoré par git, jamais publié ni cité en clair |
+| [Switching Linear Attention](https://arxiv.org/html/2609.39034v1), [dépôt officiel](https://github.com/lindermanlab/switching-linear-attention), [vidéo partagée](https://youtu.be/D6UKzes3zag) | 03/10/2026 | analogie applicative : état de travail borné, récupération exacte, persistance temporelle limitée | article et dépôt lus ; vidéo identifiée par métadonnées/description, sans transcription, son ou images examinés ; dépôt MIT à `6ce166c0781ac9a332f90e88ec6de8fd68c5deb6` sans implémentation ; aucun code repris, aucune reproduction de SwiLA ; essai authoré, pas gain réel |
 
 ## Ce qui n'est pas une source
 

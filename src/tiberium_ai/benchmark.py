@@ -88,13 +88,13 @@ class BenchmarkRoute:
 
 @dataclass(frozen=True)
 class BenchmarkCase:
-    """One task compared between exactly two routes: baseline and candidate."""
+    """Compare a baseline and candidates; None means no outcome verifier."""
 
     task: Task
     routes: tuple[BenchmarkRoute, ...]
     verifier_id: str
     verifier_version: str
-    verifier: Callable[[Any], bool]
+    verifier: Callable[[Any], bool] | None
     baseline_route_id: str
 
     def __post_init__(self) -> None:
@@ -113,8 +113,8 @@ class BenchmarkCase:
             self.verifier_version
         ):
             raise ValueError("verifier_id and verifier_version must be nonempty strings.")
-        if not callable(self.verifier):
-            raise TypeError("verifier must be callable.")
+        if self.verifier is not None and not callable(self.verifier):
+            raise TypeError("verifier must be callable or None for unavailable labels.")
 
     @property
     def candidate_route_ids(self) -> tuple[str, ...]:
@@ -263,7 +263,7 @@ def run_benchmark(
     min_confidence: float = 0.9,
     now: Callable[[], str] | None = None,
 ) -> dict[str, Any]:
-    """Execute every case on both routes, store the records and write a report."""
+    """Execute each route, store records, and abstain on unavailable verifiers."""
     cases = list(cases)
     split = split_cases(cases, seed=seed, heldout_fraction=heldout_fraction)
     baseline_ids = {case.baseline_route_id for case in cases}
@@ -274,7 +274,8 @@ def run_benchmark(
 
     registry = VerifierRegistry()
     for case in cases:
-        registry.register(case.verifier_id, case.verifier_version, case.verifier)
+        if case.verifier is not None:
+            registry.register(case.verifier_id, case.verifier_version, case.verifier)
 
     out_dir = Path(out_dir)
     measurements_dir = out_dir / "measurements"
@@ -285,6 +286,9 @@ def run_benchmark(
     results: list[CaseResult] = []
     for case_id in [*split.development, *split.heldout]:
         case = by_id[case_id]
+        # A different case may register the same identity. No labels for this
+        # case must still abstain rather than accidentally reuse that verifier.
+        case_registry = registry if case.verifier is not None else VerifierRegistry()
         captured = {}
         for route in case.routes:
             captured[route.route_id] = capture_run(
@@ -293,7 +297,7 @@ def run_benchmark(
                 run=route.run,
                 verifier_id=case.verifier_id,
                 verifier_version=case.verifier_version,
-                registry=registry,
+                registry=case_registry,
                 cost_unit=cost_unit,
                 environment=environment,
                 clock=clock,

@@ -77,6 +77,13 @@ Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, uns
 
 Early design / bootstrap. No automatic routing is enabled.
 
+An opt-in bounded-context experiment retrieves exact versioned facts and compares
+full history, compact context and limited temporal persistence on 14 authored
+sequences. [Explicit capture](docs/MEMORY_CAPTURE.md) exports bounded observed
+episodes and separate usage receipts; [existing-run attachment](docs/MEMORY_EXECUTION.md)
+keeps execution and logging outcomes distinct. Replay preserves missing-proof abstentions and reports context bytes
+separately from unmeasured tokens/cost. See [Bounded context](docs/COMPACT_MEMORY.md).
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.

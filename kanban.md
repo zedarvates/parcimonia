@@ -5,6 +5,12 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## Terminé
 
+- [x] TASK-109 [P1] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Mémoire de travail bornée, récupération exacte et maintien limité des propositions en observation
+  - Dépendances : TASK-G2, TASK-G5
+  - Preuve : `docs/COMPACT_MEMORY.md`, `wiki/COMPACT_MEMORY_2026-10-03.json` ; 14 séquences authorées × 3 variantes, 39 nouveaux tests. Implémenté sur `codex/compact-memory-shadow`, sans promotion en production.
+
+
 - [x] TASK-G1 [P0] [difficulté: déterministe]
   - Intitulé : Baseline measurements & provenance (G1)
   - Reçu : 40 runs enregistrés dans examples/fixture_suite.py
@@ -155,6 +161,15 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Notes : observation-only, loopback, pas d'ACT
 
 ## À faire (Backlog)
+
+- [ ] TASK-110 [P2] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Évaluer la mémoire compacte sur des traces séquentielles versionnées et des issues indépendantes
+  - Dépendances : TASK-109
+  - Avancement du 03/10 : import/rejeu JSONL prêt (`docs/MEMORY_REPLAY.md`), archive immuable et labels liés aux empreintes exactes ; absence de labels ou auto-évaluation conservées comme « sans verdict ». Trois traces publiques Botte rejetées car sans contrat séquentiel. Exemples authorés vérifiés ; corpus réel et mesures d'usage encore nécessaires.
+  - Collecte du 03/10 : `MemorySequenceCapture` et exporteur explicite prêts (`docs/MEMORY_CAPTURE.md`) ; faits et absences figés par version, épisodes bornés, reçus d'usage distincts liés aux empreintes finales. Aucun journal privé ou hook actif modifié ; prochains épisodes réels et comparaison appariée à collecter, issues indépendantes toujours nécessaires.
+  - Raccord du 04/10 : `attach_memory_run` relie les résultats du `capture_run` existant à l'épisode, avec échecs mesurés et vérification d'output distincte des labels séquentiels. L'adaptateur n'accepte aucun transport/callable et ne peut pas relancer d'appel. Guide Odin prêt (`docs/MEMORY_EXECUTION.md`) ; essai matériel non exécuté depuis cette session cloud, accès local Odin nécessaire.
+  - Notes : Les traces publiques consultées de Botte sont des tâches isolées, sans faits versionnés. Préparer l'adaptateur du comparateur existant lorsqu'un corpus séquentiel autorisé est disponible ; compter recherche, tokens réels, reprises, coût et latence répétée. Le banc authoré ne prouve pas d'économie réelle et reste en observation.
+
 
 - [ ] TASK-068 [P1] [difficulté: raisonnement] [class: feature] [horizon: near]
   - Intitulé : Calibration mesurée de l'audit statique sur fichiers réels (labels humains)
