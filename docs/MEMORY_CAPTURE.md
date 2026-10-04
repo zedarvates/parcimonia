@@ -63,6 +63,7 @@ replayable; overflow raises, never truncates history.
 | `sequences.jsonl` | Ordered tasks, candidates, scope and actual history | Private raw replay input |
 | `facts.jsonl` | Exact versioned fact snapshot; may be empty when all facts are missing | Private raw replay input |
 | `usage.jsonl` | Optional `memory-usage/1` receipts bound to final sequence/archive hashes and each turn hash | Usage sidecar, not offline benchmark measurements |
+| `executions.jsonl` | Optional existing `CapturedRun` measurements and output-verification hashes | Execution sidecar; contains no raw response |
 | `manifest.json` | Revisions, origin, counts, raw-input flag and refused saving claim | Capture receipt; no quality labels |
 
 Usage requires a unique `receipt_id`, declared `origin`, `source_ref`, variant,
@@ -131,3 +132,6 @@ provider cost and token fields unknown even when a usage sidecar is present.
 Real paired calls, independent quality evaluation, repeated latency and complete
 cost accounting remain TASK-110. Every capture explicitly refuses a production
 saving claim; no deployment or promotion is performed.
+
+Use [the existing-run attachment](MEMORY_EXECUTION.md) at the caller boundary
+to retain measured failures and successful attempts without relaunching them.

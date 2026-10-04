@@ -14,6 +14,8 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from .compact_memory import _identity
+from .contracts import validate_verification_record
+from .measurement import _validate_measurement_record
 from .memory_replay import (
     MAX_FILE_BYTES, VARIANTS, VersionedFactArchive, _closed, _encode,
     _safe_id, _strings, validate_sequence,
@@ -94,8 +96,13 @@ class MemorySequenceCapture:
                                  "turns": []})
         self._pins: dict[tuple[str, str, str], str | None] = {}
         self._receipts: list[dict[str, Any]] = []
+        self._executions: list[dict[str, Any]] = []
         self._max_turns, self._max_bytes = max_turns, max_capture_bytes
         self._package(self._sequence, self._pins, self._receipts)
+
+    @property
+    def origin(self) -> str:
+        return self._sequence["origin"]
 
     def append_turn(self, turn: Mapping[str, Any], *, facts: Mapping[str, Any],
                     missing: Sequence[str]) -> None:
@@ -133,24 +140,67 @@ class MemorySequenceCapture:
         item = _usage(receipt)
         if any(r["receipt_id"] == item["receipt_id"] for r in self._receipts):
             raise ValueError("duplicate usage receipt identity.")
+        execution = next((e for e in self._executions if e["execution_id"] == item["receipt_id"]), None)
+        if execution is not None and (execution["task_id"] != task_id
+                                      or execution["payload_hash"] != item["payload_hash"]
+                                      or item["variant"] != "current"):
+            raise ValueError("usage does not match its recorded execution.")
         item.update(task_id=task_id, turn_hash=hash_input(turn))
         receipts = [*self._receipts, item]
         self._package(self._sequence, self._pins, receipts)
         self._receipts = receipts
 
-    def _package(self, sequence, pins, receipts):
+    def record_execution(self, task_id: str, record: Mapping[str, Any]) -> None:
+        """Attach an existing measured run; this method executes nothing."""
+        turn = next((t for t in self._sequence["turns"] if t["task"]["task_id"] == task_id), None)
+        if turn is None or not isinstance(record, Mapping):
+            raise ValueError("execution must reference an already captured task.")
+        item = _clone(dict(record))
+        _closed(item, {"execution_id", "route_id", "payload_hash", "measurement", "verification"})
+        _identity(item["execution_id"], "execution_id")
+        if item["route_id"] not in {c["route_id"] for c in turn["candidates"]}:
+            raise ValueError("execution route is outside the captured candidate set.")
+        if (not isinstance(item["payload_hash"], str)
+                or not re.fullmatch(r"[0-9a-f]{64}", item["payload_hash"])):
+            raise ValueError("execution needs a canonical request payload hash.")
+        _validate_measurement_record(item["measurement"])
+        measured = item["measurement"]
+        if measured["task_id"] != task_id or measured["route_id"] != item["route_id"]:
+            raise ValueError("execution measurement scope mismatch.")
+        if measured["outcome"]["ok"]:
+            validate_verification_record(item["verification"])
+        elif item["verification"] is not None:
+            raise ValueError("a failed run cannot carry an output verification.")
+        if any(e["execution_id"] == item["execution_id"] for e in self._executions):
+            raise ValueError("duplicate execution identity.")
+        linked = next((r for r in self._receipts if r["receipt_id"] == item["execution_id"]), None)
+        if linked is not None and (linked["task_id"] != task_id
+                                   or linked["payload_hash"] != item["payload_hash"]
+                                   or linked["variant"] != "current"):
+            raise ValueError("execution does not match its earlier usage receipt.")
+        item.update(task_id=task_id, turn_hash=hash_input(turn))
+        executions = [*self._executions, item]
+        self._package(self._sequence, self._pins, self._receipts, executions)
+        self._executions = executions
+
+    def _package(self, sequence, pins, receipts, executions=None):
         facts = [json.loads(value) for _, value in sorted(pins.items()) if value is not None]
         archive = VersionedFactArchive(facts)
         sequence_hash = hash_input(sequence)
         usage = [{"schema": "memory-usage/1", **r, "sequence_id": sequence["sequence_id"],
                   "sequence_hash": sequence_hash, "archive_revision": archive.revision} for r in receipts]
+        executions = self._executions if executions is None else executions
+        runs = [{"schema": "memory-execution/1", **e, "sequence_id": sequence["sequence_id"],
+                 "sequence_hash": sequence_hash, "archive_revision": archive.revision,
+                 "origin": sequence["origin"]} for e in executions]
         manifest = {"schema": "memory-capture/1", "sequence_id": sequence["sequence_id"],
                     "sequence_hash": sequence_hash, "archive_revision": archive.revision,
                     "usage_revision": hash_input(usage), "origin": sequence["origin"],
                     "turns": len(sequence["turns"]), "facts": len(facts), "usage_receipts": len(usage),
+                    "executions": len(runs), "executions_revision": hash_input(runs),
                     "outcomes": "not_collected", "raw_inputs_present": True,
                     "production_saving_claim": {"status": "refused", "reason": "capture is not a comparison"}}
-        package = {"sequence": sequence, "facts": facts, "usage": usage, "manifest": manifest}
+        package = {"sequence": sequence, "facts": facts, "usage": usage, "executions": runs, "manifest": manifest}
         payloads = self._payloads(package)
         if sum(len(v.encode("utf-8")) for v in payloads.values()) > self._max_bytes:
             raise ValueError("capture byte limit exceeded.")
@@ -161,7 +211,8 @@ class MemorySequenceCapture:
         def lines(rows):
             return "".join(_encode(r) + "\n" for r in rows)
         return {"sequences.jsonl": lines([package["sequence"]]), "facts.jsonl": lines(package["facts"]),
-                "usage.jsonl": lines(package["usage"]), "manifest.json": _encode(package["manifest"]) + "\n"}
+                "usage.jsonl": lines(package["usage"]), "executions.jsonl": lines(package["executions"]),
+                "manifest.json": _encode(package["manifest"]) + "\n"}
 
     def snapshot(self) -> dict[str, Any]:
         if not self._sequence["turns"]:
