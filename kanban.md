@@ -156,6 +156,16 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## À faire (Backlog)
 
+- [ ] TASK-109 [P2] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Comparaison contrôlée des routes Astra/LLM, jugement Jev-like, Needle-like, règle et KNN sur les mêmes tâches
+  - Dépendances : TASK-075, TASK-102
+  - Notes : protocole et matrice dans docs/ASTRA_JEV_NEEDLE_RESEARCH.md ; mesurer séparément mécanisme, vérification, temps, coût total et abstentions ; aucun appel quota-bearing ni téléchargement de poids n'est compris dans cette carte
+
+- [ ] TASK-110 [P3] [difficulté: raisonnement] [class: feature] [horizon: long] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Évaluer une piste géométrique sur des représentations accessibles et un test de perturbation apparié
+  - Dépendances : TASK-109
+  - Notes : distinguer étude des activations publiée et revendication Sophontic ; pas de modèle ou d'activation accessible confirmé pour notre stack ; cette carte est une hypothèse de recherche, pas une route admise
+
 - [ ] TASK-068 [P1] [difficulté: raisonnement] [class: feature] [horizon: near]
   - Intitulé : Calibration mesurée de l'audit statique sur fichiers réels (labels humains)
   - Dépendances : TASK-070
@@ -357,10 +367,12 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Preuve : 785 tests ; sur la **même révision** 3244946e, donc attribuable au seul lexique : les demandes non atteintes par les trois mécanismes passent de **764 distinctes / 1493 messages à 346 / 624** (−58 % de messages) ; couverture en volume 0.169 → **0.403** (règle), 0.272 → **0.556** (cadre témoin), 0.288 → **0.560** (cadre avec signal), au-dessus de la cible de 0.50 ; couverture en distincts du cadre 0.747
   - Notes : deux constats mesurés. Un : la tolérance à une édition attrape un vrai lapsus (« formatter », « corrgier » par transposition) mais produisait un faux positif sur « rendu », nom à une substitution de l'impératif « rends », d'où le plancher relevé à six caractères. Deux : la faute réelle des données, « develloper », est à **deux** éditions, donc hors de portée d'une tolérance à une édition ; elle est **déclarée** comme variante, pas devinée, parce qu'une faute vue dix fois est du vocabulaire et non un lapsus. Limite : j'ai vu les jetons du recensement avant de déclarer, donc ce chiffre est en échantillon ; la preuve indépendante demande une révision postérieure, voir TASK-102. Le recensement ne propose plus que du bruit à rejeter (nom propre, passé anglais, adjectif, auxiliaire) : l'écart de verbes est refermé
 
-- [ ] TASK-102 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+- [x] TASK-102 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Remesurer la couverture sur une révision postérieure à l'artefact
   - Dépendances : TASK-100
-  - Notes : le gain de TASK-100 est en échantillon, puisque les verbes déclarés l'ont été après avoir vu les jetons du recensement. Première tentative de vérification : **impossible aujourd'hui, et c'est un résultat**. La réingestion a rendu delta=unchanged avec le même identifiant de révision, alors que le compteur de messages est passé de 6808 à 6813 : les cinq messages neufs sont des répétitions d'entrées connues, et l'identité d'une révision étant adressée par contenu, des occurrences nouvelles ne changent rien. La séparation est donc armée mais l'ensemble tenu à l'écart est vide : aucun contenu distinct n'est apparu depuis la déclaration. Procédure prête : ingérer, prendre les prompts dont le texte est absent de revision-3244946e44a7aeaf.json, mesurer la couverture sur ceux-là seulement. Critère : la couverture en volume du cadre doit rester au-dessus de 0.50 sur du contenu qui n'existait pas à la déclaration, sinon le gain était du surapprentissage. Prérequis réel : du travail neuf, hors de cette conversation
+  - Reçu : heldout_asks.py mesure seulement les textes absents de la révision 3244946e44a7aeaf ; révision privée 22de4af5f3175be4, 162 textes nouveaux dont 154 demandes, volume 195
+  - Preuve : couverture en volume règle 0.1590, cadre contrôle 0.7128, cadre avec signal 0.7179 ; seuil préannoncé >0.50 atteint ; tests/test_heldout_asks.py
+  - Notes : ces demandes n'ont pas de label humain ; le résultat prouve la couverture hors de l'échantillon de déclaration, jamais la précision ni la sûreté. Corpus et textes conservés dans runs/signature-corpus, ignoré par git
 
 - [x] TASK-101 [P0] [difficulté: compact] [class: bug] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Retirer le fichier d'instructions de projet injecté dans les messages
@@ -381,15 +393,13 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Preuve : tests/test_signature_taxonomy.py (13 tests au total), dont la frontière qui suit la classification (« continuer », « oui ! », « et la suite » vers le directeur ; « summarise the report », « extraire les colonnes » vers Parcimonia) et la vérification qu'une continuation ne demande ni signature ni vérificateur ; démonstration réelle : l'arbitre alimenté par le quota effectif (fenêtre hebdomadaire à 0 %, réinitialisation à 12 h 23 UTC) autorise une tâche déterministe via une règle locale à coût nul de jeton, dégrade une tâche compacte en modèle local à 1000 jetons, gèle le raisonnement lourd et demande un humain quand il ne reste pas d'horloge
   - Notes : c'est une frontière, pas un routeur — aucune couche ne prend silencieusement la décision de l'autre, et le directeur a besoin d'état, jamais de texte ; environ 55 % du volume réel de messages appartient à cette famille, donc le chemin état est le chemin majoritaire
 
-- [ ] TASK-096 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+- [x] TASK-096 [P2] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Branchement consommateur : une continuation alimente l'état du directeur, jamais le chemin de signature
   - Dépendances : TASK-095
-  - Notes : la partition mesure la famille et la frontière nomme son propriétaire, mais rien ne branche encore au niveau du consommateur ; le geste est un appel conditionnel dans la boucle de tour de l'appelant (famille continuation vers AstralDirector.propose avec quota, difficulté, horloge, stalls et capacité ; famille demande vers le chemin de signature), et il appartient au consommateur parce que le directeur détient l'intention et l'autorisation ; invariant à tenir : une continuation ne devient jamais un Task, et un prélèvement de quota observé devient une contrainte FREEZE_QUOTA, pas une prévision
+  - Reçu : dispatch_turn en observation, avec continuation exacte vers AstralDirector et demande vers signature_escalation ; les messages courts ambigus restent unresolved
+  - Preuve : tests/test_turn_dispatch.py ; ni la signature ni le vérificateur ne sont créés par une continuation
+  - Notes : la boucle de tour de l'application peut appeler ce pont ; le Director conserve intention et autorisation. Le quota observé reste une contrainte de ContinuationArbiter
 
 - [ ] TASK-061 [P3] [difficulté: compact]
   - Intitulé : Sync live Kanboard Neo si KANBOARD_URL et AGENT_INGEST_TOKEN existent
   - Dépendances : TASK-052
-
-- [ ] TASK-062 [P3] [difficulté: compact]
-  - Intitulé : Capacité locale (VRAM / slots concurrents) dans ContinuationArbiter
-  - Dépendances : TASK-056

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-24",
+  "repository": "zedarvates/parcimonia",
+  "corpus": {
+    "location": "runs/signature-corpus, local and git-ignored",
+    "revision_id": "22de4af5f3175be494ca84b33d456abd9f86a636bb4bcedfc822ed5f46e23b40",
+    "generated_at": "2026-09-24T06:29:32Z",
+    "messages_seen": 6972,
+    "distinct_prompts": 1966,
+    "harness_stripped": 1147,
+    "redactions": 208
+  },
+  "real_asks": {
+    "command": ".venv/Scripts/python.exe examples/real_asks_lane.py --corpus runs/signature-corpus/latest.json --out runs/signature-corpus/real-lane-22de4af5.json",
+    "revision_id": "22de4af5f3175be494ca84b33d456abd9f86a636bb4bcedfc822ed5f46e23b40",
+    "candidates": [
+      {"predictor": "rule.keyword", "coverage_volume": 0.4028},
+      {"predictor": "frame.control", "coverage_volume": 0.5683},
+      {"predictor": "frame.interrogative", "coverage_volume": 0.5731}
+    ],
+    "triage": {"unanimous_share_of_volume": 0.5624, "share_needing_one_label": 0.0081},
+    "claim": "coverage_and_agreement_only"
+  },
+  "heldout": {
+    "method": "measure_new_ask_coverage(reference, current) in src/tiberium_ai/heldout_asks.py",
+    "reference_revision_id": "3244946e44a7aeaf9d8448974e5838bd9f05b07a65ed8ac3a157971e8f1d1e41",
+    "current_revision_id": "22de4af5f3175be494ca84b33d456abd9f86a636bb4bcedfc822ed5f46e23b40",
+    "new_distinct": 162,
+    "new_volume": 205,
+    "ask_distinct": 154,
+    "ask_volume": 195,
+    "announced_threshold_volume": 0.5,
+    "candidates": [
+      {"predictor": "rule.keyword", "coverage_distinct": 0.2013, "coverage_volume": 0.159},
+      {"predictor": "frame.control", "coverage_distinct": 0.8247, "coverage_volume": 0.7128},
+      {"predictor": "frame.interrogative", "coverage_distinct": 0.8312, "coverage_volume": 0.7179}
+    ],
+    "verdict": "coverage_threshold_met",
+    "claim": "coverage_only",
+    "data_origin": "unlabelled_real_prompts",
+    "composition": {
+      "texts_over_1000_chars": 92,
+      "frame_control_answers_over_1000_chars": 92,
+      "volume_30_to_99_chars": 44,
+      "frame_control_answers_30_to_99_chars": 10
+    },
+    "caveat": "Long texts dominate the new set; no outcome labels exist, so neither accuracy nor future short-prompt coverage is established."
+  }
+}

@@ -66,10 +66,24 @@ from .kanban import (
 from .roadmap import (
     DailyPlan,
     DayReport,
+    DailySnapshot,
     close_day,
     export_roadmap_views,
+    orchestrate_day,
     plan_day,
+    read_daily_snapshot,
+    write_daily_snapshot,
 )
+from .route_experiment import (
+    ArmAvailability,
+    ExperimentArm,
+    ExperimentPlan,
+    PairedOutcome,
+    ReadinessReport,
+    assess_experiment,
+)
+from .turn_dispatch import TurnDispatch, TurnFamily, dispatch_turn
+from .heldout_asks import HeldoutCoverage, measure_new_ask_coverage
 from .goals import Goal, GoalSet, load_goals, parse_goals_markdown
 from .director import (
     AstralDirector,
@@ -370,9 +384,24 @@ __all__ = [
     "schedule_key",
     "DailyPlan",
     "DayReport",
+    "DailySnapshot",
     "close_day",
     "export_roadmap_views",
+    "orchestrate_day",
     "plan_day",
+    "read_daily_snapshot",
+    "write_daily_snapshot",
+    "ArmAvailability",
+    "ExperimentArm",
+    "ExperimentPlan",
+    "PairedOutcome",
+    "ReadinessReport",
+    "assess_experiment",
+    "TurnDispatch",
+    "TurnFamily",
+    "dispatch_turn",
+    "HeldoutCoverage",
+    "measure_new_ask_coverage",
     "Goal",
     "GoalSet",
     "load_goals",
