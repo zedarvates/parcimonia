@@ -186,6 +186,7 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Dépendances : TASK-072
   - Préparation partielle du 30/10 : diagnostic LM Studio en lecture seule sans inférence, helper opt-in d'itérations d'une mission déjà admise, procédure `docs/LOCAL_AGENT_BOOTSTRAP.md` et exemple hors ligne. Tests cloud uniquement ; le backend réel, les éditeurs et leurs ressources restent à qualifier. TASK-074 reste ouverte, aucune route activée ni économie annoncée.
   - Suite du 30/10 : client texte local borné et worker stdin/stdout JSON explicites, un POST au maximum sans retry ni outils exécutés ; plan de qualification 7B puis 30B MoE dans `docs/LOCAL_LLM_EUREKAI.md`. Protocole testé avec serveur simulé, pas encore sur Eurekaï.
+  - Raccord RAG du 30/10 : commande existante `rag` explicitement choisie par le caller, captures et durée bornées, échec bloquant l'inférence, reçu version 3 ; programmes de test et serveur simulé uniquement. Le véritable script/index du coffre et ses effets restent à qualifier sur PC.
   - Notes : toutes les pistes sont tierces et non vérifiées ici (licences annoncées Apache-2.0 et MIT) ; aucun poids téléchargé et aucune branche compilée sans décision explicite ; le point d'injection, le format de capture et le lecteur de record existent déjà, donc l'appel se convertit mécaniquement en fixture rejouable ; la calibration locale resterait à mesurer avant tout auto-act
 
 - [ ] TASK-076 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]

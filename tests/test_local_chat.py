@@ -251,3 +251,44 @@ def test_worker_sends_existing_context_as_data_in_one_real_http_request(tmp_path
     assert [m["role"] for m in sent] == ["system", "user", "user"]
     assert json.loads(sent[1]["content"])["content"] == raw.decode("utf-8")
     assert sent[-1] == MESSAGES[-1]
+
+
+@pytest.mark.parametrize("engine_ok", [True, False])
+def test_worker_runs_existing_retrieval_then_at_most_one_http_call(tmp_path, engine_ok):
+    root = Path(__file__).resolve().parents[1]
+    vault = tmp_path / "authored fixture vault"
+    engine = vault / "tools" / "rag_dag_engine.py"
+    engine.parent.mkdir(parents=True)
+    raw = "[note:authored-fixture] Règle et source écrites pour ce test.\r\n".encode("utf-8")
+    source = f"import sys\nsys.stdout.buffer.write({raw!r})\n"
+    if not engine_ok:
+        source += "sys.stderr.write('private-engine-error')\nsys.exit(7)\n"
+    engine.write_text(source, encoding="utf-8")
+    environment = {**os.environ, "PYTHONPATH": str(root / "src")}
+    with server() as (url, calls):
+        completed = subprocess.run(
+            [sys.executable, str(root / "examples/local_chat_worker.py"),
+             "--base-url", url, "--vault-dir", str(vault),
+             "--rag-query", "Une question de test.", "--rag-timeout", "2"],
+            input=json.dumps({"schema_version": 1, "task_id": "local-rag-to-model",
+                              "model": "requested-id", "messages": MESSAGES}),
+            capture_output=True, text=True, encoding="utf-8", env=environment, timeout=5,
+        )
+    assert completed.returncode == (0 if engine_ok else 2), completed.stderr
+    record = json.loads(completed.stdout)
+    assert record["schema_version"] == 3
+    assert "content" not in record["retrieval"]
+    assert "private-engine-error" not in completed.stdout + completed.stderr
+    assert str(vault) not in completed.stdout + completed.stderr
+    if engine_ok:
+        assert len(calls) == 1
+        assert record["retrieval"]["status"] == "completed"
+        assert record["context"]["sha256"] == hashlib.sha256(raw).hexdigest()
+        assert record["context"]["source"] == "existing_rag_engine"
+        assert json.loads(calls[0][2]["messages"][1]["content"])["content"] == raw.decode("utf-8")
+        assert calls[0][2]["messages"][-1] == MESSAGES[-1]
+    else:
+        assert calls == []
+        assert record["status"] == "retrieval_failed"
+        assert record["inference_attempted"] is False
+        assert record["content"] is None

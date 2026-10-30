@@ -88,3 +88,18 @@ le mode sans contexte reste inchangé. Aucun index, wiki, moteur vectoriel ni
 stockage supplémentaire n'est créé. Le parcours de graphe Prospector reste une
 piste à comparer, documentée dans `docs/LOCAL_KNOWLEDGE.md`. Les données du
 second cerveau ne sont pas copiées dans ce dépôt public.
+
+## Suite : une commande RAG avant le modèle
+
+`local_retrieval.retrieve_context` appelle une fois le sous-programme `rag` du
+coffre explicitement choisi. Le worker peut l'utiliser via `--vault-dir` et
+`--rag-query` ; un échec bloque le POST. Les captures sont bornées et les
+empreintes observées restent dans un reçu version 3, sans query, chemin privé
+ni stderr en clair. Ce raccord ne crée pas d'index et n'exécute pas des commandes
+issues des notes ; il requiert la qualification du programme externe choisi.
+
+La relecture a reproduit une course entre la fin des captures et le contrôle
+de leur limite, ainsi qu'une mauvaise classification de timeout pendant une
+relecture de source lente. Des régressions déterministes vérifient les correctifs.
+Les preuves restent des fixtures ; aucun moteur du coffre, modèle réel ou
+service du homelab n'a été lancé par ce travail.

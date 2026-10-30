@@ -30,7 +30,7 @@ PYTHONPATH=src python3 examples/local_chat_worker.py \
 `request.json` garde son enveloppe d'entrée version 1. Le texte documentaire est
 borné à 16 Kio, encapsulé comme données, accompagné d'une instruction de citation
 et séparé de la tâche. Une lecture invalide ou un dépassement empêche le POST.
-Le worker ne recherche pas dans le coffre et n'exécute aucune instruction d'une
+Ce mode ne recherche pas dans le coffre et n'exécute aucune instruction d'une
 note. La séparation de messages ne garantit pas à elle seule qu'un modèle
 résistera à toutes les injections : les autorisations et vérifications restent
 dans l'appelant.
@@ -40,6 +40,64 @@ est explicitement version 2 et ajoute `context` : empreinte SHA-256 des octets
 lus, taille UTF-8, origine `provided_rag_context` et fraîcheur `not_assessed`.
 Cela identifie exactement le contexte fourni ; cela ne certifie pas la vérité,
 la fraîcheur des notes ni leur utilisation effective par le modèle.
+
+## Rechercher et répondre dans le même appel
+
+Une fois le script du coffre qualifié, l'appelant peut éviter le fichier
+intermédiaire :
+
+```sh
+PYTHONPATH=src python3 examples/local_chat_worker.py \
+  --vault-dir /chemin/du/coffre-existant \
+  --rag-query "QUESTION DE RECHERCHE" --rag-top 3 --rag-timeout 15 < request.json
+```
+
+Le chemin du coffre et la requête de recherche sont des options du processus,
+pas des instructions tirées des notes. L'adaptateur lance une seule commande
+fixe avec l'interpréteur Python courant et le dossier du coffre comme répertoire
+de travail : `tools/rag_dag_engine.py rag --query ... --top ...`. L'option
+`--rag-python` sélectionne au besoin l'interpréteur de cette installation.
+`--context-file` et `--vault-dir` sont mutuellement exclusifs.
+
+Une recherche réussie fournit ses octets UTF-8 exacts au même mécanisme de
+contexte. Le résultat est explicitement version 3 : il conserve le contexte,
+les empreintes du script observées avant et après, celle de la requête, le code
+de sortie et le temps mesuré. Le contenu RAG n'est pas dupliqué dans le reçu
+`retrieval`. Les chemins privés et stderr n'y sont pas enregistrés.
+
+Un échec de recherche, une sortie trop grande, un UTF-8 invalide, une source
+modifiée ou un timeout bloque l'inférence : `retrieval_failed`, code de sortie
+2, sans retry ni appel de secours. Une recherche `completed` signifie que la
+commande a terminé avec une sortie textuelle valide ; cela ne prouve pas que
+les bonnes sources ont été retrouvées. Le caller vérifie toujours les citations.
+
+La sortie RAG est bornée à 16 Kio, stderr à 4 Kio ; aucun des deux flux n'est
+capturé sans limite. Le timeout RAG couvre le processus et la collecte des flux,
+avec une courte marge de nettoyage. Les lectures de fichiers et la création
+du processus par l'OS ne sont pas préemptées. Seul le fils direct est arrêté ;
+l'appelant garde le budget global du worker et la gestion d'éventuels descendants.
+
+L'adaptateur ne demande ni réindexation ni synchronisation. Il ne constitue pas
+un sandbox et ne garantit pas les effets internes du programme externe. Son
+code, ses dépendances, son index et ses droits doivent être vérifiés sur le
+poste avant activation. Le script réel n'était pas accessible dans les sources
+inspectées ici ; les essais utilisent des programmes explicitement écrits comme
+fixtures. Ni cette compatibilité documentaire ni les tests ne qualifient le
+moteur réel du PC.
+
+Pour qualifier le moteur sans demander d'inférence, l'appelant peut utiliser
+directement la primitive de lecture :
+
+```python
+from tiberium_ai.local_retrieval import retrieve_context
+
+result = retrieve_context("/chemin/du/coffre-existant", "QUESTION", top=3)
+print({key: value for key, value in result.items() if key != "content"})
+```
+
+Dans les reçus du worker, `execution_performed` désigne l'exécution d'actions
+proposées par le modèle ; la commande de préparation explicitement choisie par
+l'appelant est observée séparément dans `retrieval.attempted`.
 
 ## Fonctionner quand les crédits cloud sont épuisés
 

@@ -98,7 +98,8 @@ candidat. Garder les vrais contrôles dans `VerifierRegistry` et le score dans
 export GLB ni qualité visuelle. Voir le [contrat de boucle](LOCAL_AGENT_BOOTSTRAP.md).
 
 Le second cerveau existant alimente le modèle via des extraits cités du moteur
-RAG/DAG, avec `--context-file` sur le worker. Voir le
+RAG/DAG, avec `--context-file` sur le worker ou `--vault-dir` et `--rag-query`
+pour une commande RAG explicitement configurée. Voir le
 [raccord de mémoire et ses limites](LOCAL_KNOWLEDGE.md), y compris le maintien
 d'un corpus utilisable lorsque la synchronisation cloud est indisponible.
 
