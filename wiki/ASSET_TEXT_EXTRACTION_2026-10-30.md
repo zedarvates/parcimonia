@@ -50,6 +50,13 @@ redétection de format ; six régressions PDF/OCR vérifient aussi les offsets
 Unicode et la preuve de page ou de zone. Les tests CLI vérifient un parcours
 persisté jusqu'à l'acceptation, puis l'invalidation après une extraction modifiée.
 
+Le premier passage CI a révélé une course dans le test de nettoyage POSIX :
+le descendant peut disparaître entre l'ouverture et la lecture de son fichier
+`/proc/PID/stat`, ce qui produit `ProcessLookupError` (ESRCH) plutôt que
+`FileNotFoundError`. Le test accepte les deux observations de disparition ; les
+autres erreurs et les assertions de délai, statut et arrêt restent contrôlées.
+Aucun changement du lanceur d'exécution n'a été nécessaire pour ce correctif.
+
 ## Reproduction et limites
 
 ```bash

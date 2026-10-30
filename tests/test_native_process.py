@@ -158,7 +158,8 @@ def test_descendant_holding_pipes_does_not_make_parent_exit_a_completion():
         # Some container PID 1 processes retain dead grandchildren as zombies.
         try:
             state = proc.read_text(encoding="utf-8").split(")", 1)[1].split()[0]
-        except FileNotFoundError:
+        except (FileNotFoundError, ProcessLookupError):
+            # The process can disappear before open or between open and read.
             state = None
         assert state in (None, "Z")
 
