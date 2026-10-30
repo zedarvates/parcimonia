@@ -12,6 +12,10 @@ Where the project stands, what was decided and what was learned — including th
 negative results — lives in [the wiki](wiki/WIKI.md). Mechanism documentation stays
 in [docs](docs/).
 
+For the opt-in, no-inference runtime diagnostic and single-task iteration
+helper, see [Local agent bootstrap](docs/LOCAL_AGENT_BOOTSTRAP.md). Its offline
+fixture does not establish model quality, hardware readiness or token savings.
+
 Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.
 
 It is not intended to be another general-purpose LLM. It sits between an agent/LLM and its execution mechanisms:

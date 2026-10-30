@@ -184,6 +184,7 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 - [ ] TASK-074 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
   - Intitulé : Backend de décision local documenté (endpoint de décision llama.cpp ou petit modèle ouvert) derrière autorisation explicite
   - Dépendances : TASK-072
+  - Préparation partielle du 30/10 : diagnostic LM Studio en lecture seule sans inférence, helper opt-in d'itérations d'une mission déjà admise, procédure `docs/LOCAL_AGENT_BOOTSTRAP.md` et exemple hors ligne. Tests cloud uniquement ; le backend réel, les éditeurs et leurs ressources restent à qualifier. TASK-074 reste ouverte, aucune route activée ni économie annoncée.
   - Notes : toutes les pistes sont tierces et non vérifiées ici (licences annoncées Apache-2.0 et MIT) ; aucun poids téléchargé et aucune branche compilée sans décision explicite ; le point d'injection, le format de capture et le lecteur de record existent déjà, donc l'appel se convertit mécaniquement en fixture rejouable ; la calibration locale resterait à mesurer avant tout auto-act
 
 - [ ] TASK-076 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
