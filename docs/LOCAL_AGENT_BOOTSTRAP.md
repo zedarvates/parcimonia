@@ -11,6 +11,8 @@ cette tâche et ne dépend pas de la fusion des PR mémoire #12 ou Tev1 #13.
 - Un helper d'amélioration d'un seul candidat JSON, à appeler à l'intérieur
   d'une mission déjà admise par le caller existant. Il réutilise `capture_run`,
   `VerifierRegistry`, `Environment` et les mesures `measurement/2`.
+- Un client texte explicite `local_chat.chat_completion` et un worker stdin/stdout
+  JSON qui effectuent au plus un POST local, sans retry ni exécution d'outil.
 - Un exemple hors ligne qui démontre le rejet d'un export invalide, la
   conservation du meilleur candidat et l'arrêt après stagnation. Les exports
   et scores de cet exemple sont des fixtures écrites pour le test.
@@ -18,8 +20,10 @@ cette tâche et ne dépend pas de la fusion des PR mémoire #12 ou Tev1 #13.
 Ce n'est pas un nouvel orchestrateur : aucun changement d'ActiveRouter,
 ContinuationArbiter, permissions, seuil Needle, scheduler ou route de secours.
 Il n'y a pas encore d'adaptateur aux éditeurs d'avatars ou de monstres, ni de
-connexion de ce helper au serveur LM Studio ou au pont cloud. Le client
-`examples/lmstudio_ab.py` reste un chemin distinct pour une inférence explicite.
+connexion automatique du helper au serveur LM Studio ou au pont cloud. Le worker
+`examples/local_chat_worker.py` fournit maintenant le raccord d'inférence texte
+appelable par le caller ; voir le [plan local concret](LOCAL_LLM_EUREKAI.md).
+`examples/lmstudio_ab.py` reste un ancien chemin distinct de comparaison A/B.
 
 ## 1. Premier diagnostic sur la machine voulue
 

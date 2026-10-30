@@ -35,7 +35,7 @@ _MAX_MODELS = 512
 
 
 def _positive_number(value: object, name: str, maximum: float) -> float:
-    if type(value) not in (int, float) or not math.isfinite(value) or not 0 < value <= maximum:
+    if type(value) not in (int, float) or not 0 < value <= maximum or not math.isfinite(value):
         raise ValueError(f"{name} must be a finite positive number at most {maximum:g}.")
     return float(value)
 

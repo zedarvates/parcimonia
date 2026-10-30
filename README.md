@@ -13,7 +13,9 @@ negative results — lives in [the wiki](wiki/WIKI.md). Mechanism documentation 
 in [docs](docs/).
 
 For the opt-in, no-inference runtime diagnostic and single-task iteration
-helper, see [Local agent bootstrap](docs/LOCAL_AGENT_BOOTSTRAP.md). Its offline
+helper, see [Local agent bootstrap](docs/LOCAL_AGENT_BOOTSTRAP.md). A bounded
+LM Studio text client and JSON worker are available for explicit local requests;
+see [the Eurekaï local LLM plan](docs/LOCAL_LLM_EUREKAI.md). Its offline
 fixture does not establish model quality, hardware readiness or token savings.
 
 Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.

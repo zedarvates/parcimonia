@@ -65,3 +65,17 @@ Prochaine étape matérielle : lancer le diagnostic explicite sur l'hôte concer
 puis qualifier une inférence et une boucle d'éditeur sur une copie isolée.
 Omettre ces nouveaux imports et exemples conserve les comportements existants.
 La réparation et l'activation ne font pas partie des résultats revendiqués.
+
+## Suite : raccord texte explicite
+
+Ajout de `local_chat.chat_completion` et du worker JSON stdin/stdout
+`examples/local_chat_worker.py`. Un POST local au maximum, modèle explicitement
+demandé, réponses tronquées et appels d'outils distingués, aucun retry ou outil
+exécuté. Le [plan Eurekaï](../docs/LOCAL_LLM_EUREKAI.md) prévoit un 7B de remise
+en service puis un 30B MoE à qualifier sur les deux cartes.
+
+56 tests supplémentaires passent ; suite complète : 968 tests sur Python
+3.12.14, dont les essais de protocole sur serveur simulé. La revue a reproduit
+et fait corriger une échéance TCP/TLS cumulée et un entier hors plage causant
+un traceback. L'essai matériel sur Eurekaï et le raccord aux éditeurs restent
+à réaliser ; aucun poids ni service local n'a été modifié.
