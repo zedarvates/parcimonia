@@ -79,3 +79,12 @@ en service puis un 30B MoE à qualifier sur les deux cartes.
 et fait corriger une échéance TCP/TLS cumulée et un entier hors plage causant
 un traceback. L'essai matériel sur Eurekaï et le raccord aux éditeurs restent
 à réaliser ; aucun poids ni service local n'a été modifié.
+
+## Suite : contexte du second cerveau
+
+Le worker accepte un fichier explicite d'extraits cités du moteur RAG existant.
+Le mode avec contexte rend une enveloppe version 2 et son empreinte exacte ;
+le mode sans contexte reste inchangé. Aucun index, wiki, moteur vectoriel ni
+stockage supplémentaire n'est créé. Le parcours de graphe Prospector reste une
+piste à comparer, documentée dans `docs/LOCAL_KNOWLEDGE.md`. Les données du
+second cerveau ne sont pas copiées dans ce dépôt public.

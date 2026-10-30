@@ -97,6 +97,11 @@ candidat. Garder les vrais contrôles dans `VerifierRegistry` et le score dans
 `evaluate`. Du texte ou une forme JSON valide ne prouvent ni code correct ni
 export GLB ni qualité visuelle. Voir le [contrat de boucle](LOCAL_AGENT_BOOTSTRAP.md).
 
+Le second cerveau existant alimente le modèle via des extraits cités du moteur
+RAG/DAG, avec `--context-file` sur le worker. Voir le
+[raccord de mémoire et ses limites](LOCAL_KNOWLEDGE.md), y compris le maintien
+d'un corpus utilisable lorsque la synchronisation cloud est indisponible.
+
 Adapter d'abord par consignes FR/EN, contexte de projet récupéré et outils de
 vérification. Constituer un jeu de tâches réelles avant un éventuel LoRA.
 Supprimer des langues ne retire pas des blocs indépendants de poids. Draft /

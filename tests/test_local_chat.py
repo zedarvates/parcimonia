@@ -1,4 +1,5 @@
 import json
+import hashlib
 import os
 from pathlib import Path
 import socket
@@ -223,3 +224,30 @@ def test_worker_cli_reaches_the_explicit_endpoint_and_returns_attributed_json(re
     assert record["finish_reason"] == reason
     assert record["execution_performed"] is False
     assert len(calls) == 1
+
+
+def test_worker_sends_existing_context_as_data_in_one_real_http_request(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    raw = "[note:authored-fixture] Règle de test ; source version 1.\n".encode("utf-8")
+    context = tmp_path / "private-context.txt"
+    context.write_bytes(raw)
+    environment = {**os.environ, "PYTHONPATH": str(root / "src")}
+    with server() as (url, calls):
+        completed = subprocess.run(
+            [sys.executable, str(root / "examples/local_chat_worker.py"),
+             "--base-url", url, "--context-file", str(context)],
+            input=json.dumps({"schema_version": 1, "task_id": "existing-context",
+                              "model": "requested-id", "messages": MESSAGES}),
+            capture_output=True, text=True, encoding="utf-8", env=environment, timeout=5,
+        )
+    assert completed.returncode == 0, completed.stderr
+    result = json.loads(completed.stdout)
+    assert result["schema_version"] == 2
+    assert result["context"]["sha256"] == hashlib.sha256(raw).hexdigest()
+    assert result["context"]["freshness"] == "not_assessed"
+    assert str(context) not in completed.stdout
+    assert len(calls) == 1
+    sent = calls[0][2]["messages"]
+    assert [m["role"] for m in sent] == ["system", "user", "user"]
+    assert json.loads(sent[1]["content"])["content"] == raw.decode("utf-8")
+    assert sent[-1] == MESSAGES[-1]
