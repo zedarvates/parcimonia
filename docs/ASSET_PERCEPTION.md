@@ -4,6 +4,10 @@ Extension disponible : [extraction locale du texte](ASSET_TEXT_EXTRACTION.md)
 avec OCR PNG/JPEG et texte PDF, puis tags lexicaux liés aux zones ou pages et
 au journal de revue. Les limites ci-dessous décrivent l'inspection initiale.
 
+Les [snapshots de catalogue](ASSET_CATALOG_SNAPSHOTS.md) permettent ensuite de
+sauvegarder une sélection de ces rapports, de remplacer une révision précise et
+de rechercher les tags avec leur état de revue.
+
 Objectif : retrouver des fichiers par leur format, leurs caractéristiques, leur
 contenu proposé et leur localisation, puis préparer leur classement. Un même
 asset pourra relever de plusieurs modalités : une vidéo peut contenir image,

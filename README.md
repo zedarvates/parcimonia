@@ -102,6 +102,11 @@ installed Tesseract OCR and embedded-PDF text extraction to proposed lexical
 tags, image word boxes or PDF pages, and the same review journal. Native tools
 are opt-in; their quality and OCR weights remain unqualified.
 
+A portable [catalogue snapshot](docs/ASSET_CATALOG_SNAPSHOTS.md) saves a current
+report per source, with explicit replacement preconditions, preserved earlier
+snapshots and review-aware search. It reuses the existing inspection reports and
+tag decisions without modifying source assets.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.
