@@ -1,5 +1,9 @@
 # Perception, classification et recherche des fichiers
 
+Extension disponible : [extraction locale du texte](ASSET_TEXT_EXTRACTION.md)
+avec OCR PNG/JPEG et texte PDF, puis tags lexicaux liés aux zones ou pages et
+au journal de revue. Les limites ci-dessous décrivent l'inspection initiale.
+
 Objectif : retrouver des fichiers par leur format, leurs caractéristiques, leur
 contenu proposé et leur localisation, puis préparer leur classement. Un même
 asset pourra relever de plusieurs modalités : une vidéo peut contenir image,

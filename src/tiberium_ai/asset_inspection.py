@@ -79,6 +79,26 @@ def _tag(namespace: str, value: str, basis: str, refs: list[str]) -> dict[str, A
     return {"namespace": namespace, "value": value, "status": "proposed", "basis": basis, "evidence_refs": refs}
 
 
+def _lexical_topic_matches(
+    text: str, topic_terms: dict[str, list[str]] | None, *, complete: bool,
+) -> list[tuple[int, str, int, int]]:
+    """Match known text without reinterpreting its contents as a file format."""
+    _validate_topics(topic_terms)
+    found = []
+    for index, (label, terms) in enumerate(sorted((topic_terms or {}).items())):
+        matches = []
+        for term in sorted(set(terms)):
+            for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.IGNORECASE):
+                # The end of a prefix is not an observed word boundary.
+                if complete or match.end() < len(text):
+                    matches.append(match)
+                    break
+        if matches:
+            match = min(matches, key=lambda item: (item.start(), item.end()))
+            found.append((index, label, match.start(), match.end()))
+    return found
+
+
 def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result = {}
     for key, value in pairs:
@@ -248,19 +268,10 @@ def inspect_asset(
         if report["format"]["detected"] in {"text", "json", "python", "geojson", "gltf"}:
             decoded = decoded if decoded is not None else _decode_text(data, complete)
             if decoded is not None:
-                for index, (label, terms) in enumerate(sorted(topic_terms.items())):
-                    matches = []
-                    for term in sorted(set(terms)):
-                        for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", decoded, re.IGNORECASE):
-                            # The end of a prefix is not an observed word boundary.
-                            if complete or match.end() < len(decoded):
-                                matches.append(match)
-                                break
-                    if matches:
-                        match = min(matches, key=lambda item: (item.start(), item.end()))
-                        evidence_id = f"text:topic:{index}"
-                        report["evidence"].append({"id": evidence_id, "kind": "lexical_match", "char_range": [match.start(), match.end()], "indexing": "unicode_codepoints"})
-                        report["tag_proposals"].append(_tag("topic", label, "lexical_hint", [evidence_id]))
+                for index, label, start, end in _lexical_topic_matches(decoded, topic_terms, complete=complete):
+                    evidence_id = f"text:topic:{index}"
+                    report["evidence"].append({"id": evidence_id, "kind": "lexical_match", "char_range": [start, end], "indexing": "unicode_codepoints"})
+                    report["tag_proposals"].append(_tag("topic", label, "lexical_hint", [evidence_id]))
         report["limits"]["semantic_content"] = "not_assessed_lexical_hints_only"
     detected = report["format"]["detected"]
     if detected is not None:

@@ -1,7 +1,8 @@
 """Explicit-file asset inspection and advisory catalogue search.
 
-Exit 0 means a report was produced, 2 an input/read error, 3 indeterminate
-inspection. Reports contain proposed tags; no source file is changed.
+Exit 0 means a usable report was produced, 2 an input/read error,
+3 indeterminate inspection or unavailable extraction, and 4 native extraction
+failure. Reports contain proposed tags; no source file is changed.
 """
 
 from __future__ import annotations
@@ -18,6 +19,8 @@ from .asset_catalog import search_asset_reports
 from .asset_inspection import MAX_SAMPLE_BYTES, _json_value, inspect_asset
 from .asset_tag_journal import append_tag_decision, create_tag_journal, validate_tag_journal
 from .asset_tag_review import project_tag_reviews, search_reviewed_assets
+from .asset_text_extract import extract_asset_text
+from .asset_text_enrichment import enrich_asset_with_text
 
 MAX_JOURNAL_BYTES = 8 * 1024 * 1024
 
@@ -104,6 +107,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     reviewed.add_argument("--state", action="append", choices=["proposed", "accepted", "rejected"])
     reviewed.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
     reviewed.add_argument("--limit", type=int, default=50)
+    extract = commands.add_parser("extract-text", help="explicitly run one installed local OCR/PDF backend")
+    extract.add_argument("input")
+    extract.add_argument("--source-id", required=True)
+    extract.add_argument("--revision", required=True)
+    extract.add_argument("--backend", required=True, choices=["tesseract", "pdftotext"])
+    extract.add_argument("--executable", help="optional explicit local executable path")
+    extract.add_argument("--language", default="eng")
+    extract.add_argument("--max-pages", type=int, default=3)
+    extract.add_argument("--timeout", type=float, default=10.0)
+    enrich = commands.add_parser("enrich-text", help="propose tags from an existing exact extraction record")
+    enrich.add_argument("input", help="original deterministic inspection report")
+    enrich.add_argument("extraction", help="completed text extraction record")
+    enrich.add_argument("--topics", help="optional explicit JSON vocabulary")
     arguments = parser.parse_args(argv)
     try:
         if arguments.command == "inspect":
@@ -118,6 +134,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif arguments.command == "search":
             reports = _read_json(arguments.input, 16 * 1024 * 1024)
             report = search_asset_reports(reports, tags=arguments.tag, bbox=arguments.bbox, limit=arguments.limit)
+            code = 0
+        elif arguments.command == "extract-text":
+            data, _, complete = _read_regular(arguments.input, MAX_SAMPLE_BYTES)
+            report = extract_asset_text(
+                data, filename=Path(arguments.input).name,
+                source_id=arguments.source_id, revision=arguments.revision,
+                backend=arguments.backend, executable=arguments.executable,
+                language=arguments.language, max_pages=arguments.max_pages,
+                timeout_s=arguments.timeout, complete=complete,
+            )
+            code = 0 if report["status"] == "completed" else 4 if report["status"] == "failed" else 3
+        elif arguments.command == "enrich-text":
+            inspection = _read_json(arguments.input, 2 * 1024 * 1024)
+            extraction = _read_json(arguments.extraction, 2 * 1024 * 1024)
+            topics = _read_json(arguments.topics, 64 * 1024, max_nodes=4096) if arguments.topics else None
+            report = enrich_asset_with_text(inspection, extraction, topic_terms=topics)
             code = 0
         elif arguments.command == "review-init":
             report = _write_journal_new(arguments.output, create_tag_journal())

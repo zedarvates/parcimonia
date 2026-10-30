@@ -97,6 +97,11 @@ rejection and reset decisions against exact inspection reports, with new
 snapshot files and review-aware search. Changed reports retain their proposals
 without silently inheriting earlier decisions; actor identities remain declared.
 
+An explicit [local text extraction](docs/ASSET_TEXT_EXTRACTION.md) step connects
+installed Tesseract OCR and embedded-PDF text extraction to proposed lexical
+tags, image word boxes or PDF pages, and the same review journal. Native tools
+are opt-in; their quality and OCR weights remain unqualified.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.
