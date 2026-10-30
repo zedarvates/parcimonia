@@ -91,6 +91,11 @@ Les caractères d'un indice lexical sont comptés en points de code Unicode.
 Les identités et empreintes établissent des liens de calcul, pas une origine
 authentifiée ou la vérité des déclarations du fichier.
 
+Le [journal de revue](ASSET_TAG_REVIEW.md) peut conserver séparément les choix
+acceptés, rejetés ou réinitialisés et les utiliser dans une recherche dédiée.
+Il ne modifie pas ces propositions et ne transfère pas les choix à une nouvelle
+révision ou à un rapport d'analyse changé.
+
 L'échantillon est limité à 1 Mio. Pour un fichier plus grand, la CLI lit un
 préfixe et conserve la taille observée ; `content_sha256` reste `null`. Deux
 préfixes identiques ne prouvent pas que deux fichiers entiers sont identiques.

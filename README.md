@@ -92,6 +92,11 @@ keeping extension hints, parsed metadata and lexical suggestions separate.
 No semantic image/audio/scene recognition, model call or source reorganization
 is performed by this first foundation.
 
+An explicit [tag review journal](docs/ASSET_TAG_REVIEW.md) records acceptance,
+rejection and reset decisions against exact inspection reports, with new
+snapshot files and review-aware search. Changed reports retain their proposals
+without silently inheriting earlier decisions; actor identities remain declared.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.

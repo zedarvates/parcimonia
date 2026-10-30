@@ -16,6 +16,10 @@ from typing import Sequence
 
 from .asset_catalog import search_asset_reports
 from .asset_inspection import MAX_SAMPLE_BYTES, _json_value, inspect_asset
+from .asset_tag_journal import append_tag_decision, create_tag_journal, validate_tag_journal
+from .asset_tag_review import project_tag_reviews, search_reviewed_assets
+
+MAX_JOURNAL_BYTES = 8 * 1024 * 1024
 
 
 def _signature(info: os.stat_result) -> tuple[int, int, int, int]:
@@ -50,6 +54,21 @@ def _read_json(path: str, maximum: int, *, max_nodes: int = 200_000):
     return _json_value(data.decode("utf-8"), max_nodes=max_nodes)
 
 
+def _write_journal_new(path: str, journal: dict) -> dict:
+    """Use the repository's exclusive-write pattern for a new review snapshot."""
+    validate_tag_journal(journal)
+    payload = json.dumps(journal, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n"
+    if len(payload.encode("utf-8")) > MAX_JOURNAL_BYTES:
+        raise ValueError("The serialized journal exceeds the CLI's 8 MiB read/write budget.")
+    with Path(path).open("x", encoding="utf-8", newline="\n") as stream:
+        stream.write(payload)
+    return {
+        "schema": "parcimonia.asset-tag-write/v1", "output": str(Path(path)),
+        "head_hash": journal["head_hash"], "event_count": len(journal["events"]),
+        "write": "created",
+    }
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -63,6 +82,28 @@ def main(argv: Sequence[str] | None = None) -> int:
     search.add_argument("--tag", action="append", default=[])
     search.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
     search.add_argument("--limit", type=int, default=50)
+    init = commands.add_parser("review-init", help="create a new empty tag journal")
+    init.add_argument("output")
+    decision = commands.add_parser("review-tag", help="record one caller decision in a new journal snapshot")
+    decision.add_argument("input", help="one exact inspection report")
+    decision.add_argument("journal", help="existing journal snapshot")
+    decision.add_argument("--tag", required=True, help="namespace:value of an existing proposal")
+    decision.add_argument("--decision", required=True, choices=["accept", "reject", "reset"])
+    decision.add_argument("--actor", required=True)
+    decision.add_argument("--reason", required=True)
+    decision.add_argument("--event-id", required=True)
+    decision.add_argument("--expected-head", required=True, help="current journal head, or none for an empty journal")
+    decision.add_argument("--out", required=True, help="new journal path; never overwritten")
+    view = commands.add_parser("review-view", help="project journal decisions onto an explicit catalogue")
+    view.add_argument("input", help="catalogue JSON array")
+    view.add_argument("journal")
+    reviewed = commands.add_parser("search-reviewed", help="search tags with explicit review-state filtering")
+    reviewed.add_argument("input", help="catalogue JSON array")
+    reviewed.add_argument("journal")
+    reviewed.add_argument("--tag", action="append", default=[])
+    reviewed.add_argument("--state", action="append", choices=["proposed", "accepted", "rejected"])
+    reviewed.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
+    reviewed.add_argument("--limit", type=int, default=50)
     arguments = parser.parse_args(argv)
     try:
         if arguments.command == "inspect":
@@ -74,9 +115,38 @@ def main(argv: Sequence[str] | None = None) -> int:
                 complete=complete, total_bytes=total, topic_terms=topics,
             )
             code = 3 if report["status"] == "indeterminate" else 0
-        else:
+        elif arguments.command == "search":
             reports = _read_json(arguments.input, 16 * 1024 * 1024)
             report = search_asset_reports(reports, tags=arguments.tag, bbox=arguments.bbox, limit=arguments.limit)
+            code = 0
+        elif arguments.command == "review-init":
+            report = _write_journal_new(arguments.output, create_tag_journal())
+            code = 0
+        elif arguments.command == "review-tag":
+            inspection = _read_json(arguments.input, 2 * 1024 * 1024)
+            journal = _read_json(arguments.journal, MAX_JOURNAL_BYTES)
+            namespace, separator, value = arguments.tag.partition(":")
+            if not separator:
+                raise ValueError("The reviewed tag must use namespace:value syntax.")
+            updated = append_tag_decision(
+                journal, inspection, namespace=namespace, value=value,
+                action=arguments.decision, actor_id=arguments.actor,
+                reason=arguments.reason, event_id=arguments.event_id,
+                expected_head=None if arguments.expected_head == "none" else arguments.expected_head,
+            )
+            report = _write_journal_new(arguments.out, updated)
+            report["event_created"] = len(updated["events"]) > len(journal["events"])
+            code = 0
+        else:
+            reports = _read_json(arguments.input, 16 * 1024 * 1024)
+            journal = _read_json(arguments.journal, MAX_JOURNAL_BYTES)
+            if arguments.command == "review-view":
+                report = project_tag_reviews(reports, journal)
+            else:
+                report = search_reviewed_assets(
+                    reports, journal, tags=arguments.tag, bbox=arguments.bbox,
+                    states=arguments.state, limit=arguments.limit,
+                )
             code = 0
     except (OSError, ValueError, TypeError, RecursionError) as exc:
         print(json.dumps({"error": type(exc).__name__, "detail": str(exc)}, ensure_ascii=True), file=sys.stderr)
