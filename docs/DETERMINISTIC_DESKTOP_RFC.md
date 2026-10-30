@@ -1,4 +1,4 @@
-# RFC: deterministic inspection and desktop actions
+# RFC: deterministic inspection and organization
 
 Status: R&D proposal, 2026-10-30. No new route or desktop command is enabled by
 this document. The standalone Parcimonia router remains in shadow mode.
@@ -6,15 +6,22 @@ this document. The standalone Parcimonia router remains in shadow mode.
 ## Intent
 
 Extend the minimum-sufficient-mechanism approach to duplicate discovery,
-consistency checks and routine workspace actions. A small configured language
+consistency checks and rule-based organization of records. A small configured language
 model may translate ambiguous requests into proposed structured commands. The
 deterministic layer validates and executes supported commands, then checks the
 result. Complex reasoning remains an escalation path.
 
-The desktop application described by the user is not identified with certainty.
-The accessible candidate is [Mr. Mak Workspace](https://github.com/zedarvates/mr-mak-workspace),
-which already supports Windows and Linux. Another workstation is developing the
-desktop app; this RFC does not change that application's active branch.
+## User scope correction — 2026-10-30
+
+Current work covers duplicate discovery, missing-link/consistency checks and
+rule-based organization. Desktop behavior and visual customization are roadmap
+items only. The user identified the intended project as **Custom Desktop by
+kelpie-dev** and will provide its link when its website is available, expected
+in **November 2026**. This is an indicative availability window, not an automatic
+start date. Do not begin desktop research, adapter design or implementation
+before receiving that link and inspecting the actual project.
+
+No other desktop repository is an integration target for this proposal.
 
 ## Observed sources
 
@@ -22,7 +29,6 @@ desktop app; this RFC does not change that application's active branch.
 | --- | --- | --- |
 | Parcimonia | `83f40ebd715d09add32c45a73c44dc48e88a472a` | `src/tiberium_ai/contracts.py`, `registry.py`, `verification.py`, `docs/REGISTRY.md` |
 | Botte Secrète | `6037a26789a9470c78450399d6442c291c094f23` (draft PR148) | `skills/fallow_like/analyzers/duplication.py`, `skills/code_fingerprint/__init__.py`, `scripts/check_docs_links.py`, `skills/docs_steward/`, `skills/asset_quality/memory.py`, `skills/response_cache/` |
-| Mr. Mak candidate | `97f51c47b5b1c382cbbc502d564ee453cb4532ff` | `desktop/service/quick-actions.mjs`, `project-adapters/contracts.mjs`, `desktop/README.md`, `docs/customization.md` |
 | Botte hosted service | `1ff900bb7a2465d1b3ea90f94f7e559ce52a8d34`, service 0.4.0 | Deterministic statistics calculator and advisory task assessment; separate deployment from the Python draft |
 
 Repository state and implementation claims must be revalidated before coding.
@@ -40,7 +46,6 @@ adapters exist.
 | Broken documentation links | `check_docs_links.py` checks inline Markdown local target existence outside fenced blocks. It skips HTTP and standalone anchors. | Extend that checker for heading fragments and reference-style links with explicit parser conventions. Keep remote checks separate and distinguish missing, unauthorized, rate-limited and unavailable. |
 | Documentation and checklists | Docs Steward maps components and reads open/checked boxes. | Combine missing targets, component documentation and checklist state in one existing report flow. A checked box records text state, not independent proof of completed work. |
 | Repeated requests/results | Exact response cache includes query, model and context; fuzzy overlap is a candidate mechanism. | Reuse only when all relevant inputs, target revision, policy and freshness conditions match. Similar wording is not sufficient evidence for accepting an old result. |
-| Workspace actions | Mr. Mak QuickActions has an injected execute dispatcher, request-ID deduplication, operation states and duration. Themes and card actions exist. | Extend that dispatcher with typed note/checklist/presentation commands and French aliases. Do not introduce a second card store or orchestrator. |
 
 Important regression: the existing code-fingerprint normalization also changes
 whitespace inside string literals. Fix or avoid that normalization before using
@@ -56,8 +61,6 @@ it as evidence of equality. Case-folding arbitrary code can also change meaning.
 - Extract fields with known parsers; compute counters, budgets and statistics.
 - Generate indexes, cross-reference maps, checklists and fixed-format reports.
 - Cache exact results with provenance; invalidate them when relevant inputs change.
-- Arrange notes/windows/cards inside known display and layout constraints.
-- Apply theme/color/font/spacing presets and validate the resulting settings.
 - Check checklist dependencies and flag inconsistent states or blocked next steps.
 
 When the rule is unspecified (for example, "group by meaning" or "make this
@@ -80,73 +83,41 @@ scope, exclusions and read failures. Candidate outputs do not silently become
 verified equivalence or instructions to delete/merge content. The first pilot
 produces reports and previews.
 
-## Desktop integration boundary
+## Reuse the current Parcimonia contracts
 
 Parcimonia already has `Task.kind` and structured `Task.inputs`, a versioned
 route registry, versioned verifiers, input hashes and observation records.
-Reuse them. Keep proposed capabilities separate from enabled manifests until
-matching handlers and verifiers are available. Do not extend a closed schema
-without a versioned adapter contract.
+Reuse them for inspection and organization tasks. Keep proposed capabilities
+separate from enabled manifests until matching handlers and verifiers are
+available. Do not extend a closed schema without a versioned adapter contract.
 
-For the Mr. Mak candidate, extend the existing QuickActions dispatcher:
-
-- Structured UI commands and fully matched language rules take the direct path.
-- A small model can produce a command proposal for ambiguous natural language.
-- The same command validator, handler and postcondition verifier serve both paths.
-- Unresolved targets, unsupported commands or uncertain intent return to the
-  coordinator rather than guessing.
-- Preserve the application's existing stores, themes, adapters and operation log.
-
-Illustrative adapter envelope, not an accepted application API today:
-
-```json
-{
-  "schema": "parcimonia.desktop-command-proposal/v1",
-  "request_id": "note-color-001",
-  "task_kind": "desktop.command",
-  "target": {"workspace_id": "example-workspace", "entity_id": "note-42"},
-  "expected_revision": 7,
-  "action": "note.set_color",
-  "arguments": {"color_preset": "priority-high"},
-  "mode": "preview"
-}
-```
-
-Initial command candidates:
-
-| Surface | Candidate actions | Observable result |
-| --- | --- | --- |
-| Notes | create, edit, tag, set color, move to a named zone | Re-read note identity, attributes and position. |
-| Checklists | add item, reorder, check/uncheck, filter | Re-read item state and order; preserve whether completion was user-marked, agent-reported or independently verified. |
-| Workspace | pin, archive, focus, select layout preset | Re-read workspace state; check UI placement when relevant. |
-| Appearance | select theme, font scale, spacing or palette preset | Re-read persisted settings and verify rendering on the affected platform. |
-
-The adapter must bind request ID to payload identity: a repeated identical
-request can reuse its receipt, but the same ID with different arguments must
-conflict. Use expected revisions to reject stale changes, and retain before/after
-state or a reversible operation where supported. Reuse the existing operation
-states; add verification evidence through the adapter rather than declaring
-success from the model's sentence.
-
-User-facing feedback should make pending, applied and failed actions visible.
-A checklist can be marked by the user without asserting that an agent verified
-the underlying work.
-
-Visual settings are typed parameters and presets. Do not rewrite application
-source/CSS for each color or position command. Windows/Linux adapters must account
-for display bounds, DPI, monitor changes and persistence; native visual behavior
-still needs execution on the target platform.
-
-## Bounded R&D sequence
+## Current bounded R&D sequence
 
 | Lot | Deliverable | Acceptance |
 | --- | --- | --- |
 | A: inspect | One combined read-only report using existing code/link/documentation detectors, plus a byte-equality file adapter prototype. | Keep equality levels distinct; preserve failures and intentional copies; no false exact matches on a fixed held-out corpus. |
-| B: desktop preview | A typed adapter proposal for three user flows: color/tag a note, rearrange a checklist, apply a layout/theme preset. | Preview lists exact target and state changes; ambiguous names and stale revisions fail explicitly; replay does not duplicate effects. |
-| C: qualified integration | An application-owned handler connected through existing QuickActions/adapter interfaces. | Verify real state and visual behavior on Windows and Linux, persistence/restart, undo where supported and interrupted-action recovery. |
+| B: organize records | Explicit sort/filter/group/tag rules over supplied records, with a proposed-change report. | Same inputs and rules yield the same result; preserve identities and report unmatched or ambiguous records. This does not manipulate desktop widgets or appearance. |
+| C: verify and compare | Held-out inspection/organization cases and whole-task measurements through existing verifier/observation contracts. | Compare correct results, false matches, abstentions and cost through accepted output; keep unknown usage null. |
 
-Keep work on the active desktop repository coordinated with its owner/workstation.
-This RFC does not launch jobs, restart apps, install software or activate routes.
+## Roadmap only: Custom Desktop by kelpie-dev
+
+Status: **waiting for the user-provided project link**. Expected website
+availability: **November 2026**. No URL or architecture is assumed, and no
+automatic start or scheduled lookup is created.
+
+Deferred scope includes desktop post-it controls, note colors and placement,
+checklist UI controls, window/card layouts, themes, palettes, font settings and
+other visual customization. General data organization and checklist reporting
+remain in the current inspection/organization scope.
+
+After the user supplies the link, inspect the actual Custom Desktop project and
+its current work before deciding the integration boundaries, supported actions,
+state persistence, verification and platform requirements. Design must follow
+that project's existing implementation rather than an unrelated desktop app.
+
+This document does not launch jobs, restart apps, install software or activate
+routes. The desktop/visual roadmap remains blocked until the explicit dependency
+above is satisfied.
 
 ## Evaluation and cost claims
 
