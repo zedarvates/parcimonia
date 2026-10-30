@@ -2,6 +2,13 @@
 
 ## Current checkpoint
 
+The [perception and classification axis](docs/ASSET_PERCEPTION.md) starts with
+deterministic format/metadata observations, proposed tags and bounded catalogue
+search across text, media, 3D, code and GeoJSON. Next: qualify extractors and local
+semantic models, track tag acceptance, then persistent/semantic indexing and
+reviewable organization. Gaussian splatting is a provisional interpretation of
+the received term; supported PLY shapes remain representation candidates.
+
 The v1 work is sequenced in [V1 gates](docs/V1_GATES.md): real outcomes and
 provenance, deterministic verifiers, escalation budgets, route registry, cost
 vector and benchmarks, then opt-in active mode. A later gate does not start

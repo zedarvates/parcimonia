@@ -85,6 +85,13 @@ Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, uns
 
 Early design / bootstrap. No automatic routing is enabled.
 
+An opt-in [asset inspection and catalogue](docs/ASSET_PERCEPTION.md) proposes
+source-bound tags from media headers, structured text, existing Python rules and
+GeoJSON coordinates. It supports exact-tag and spatial-envelope search while
+keeping extension hints, parsed metadata and lexical suggestions separate.
+No semantic image/audio/scene recognition, model call or source reorganization
+is performed by this first foundation.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.
