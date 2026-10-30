@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .feasibility import diagnose
+from .reduced_feasibility import diagnose_via_2sat
+from .reductions import reduce_to_2cnf
 from .stability import inspect_python_stability
 
 MAX_INPUT_BYTES = 256 * 1024
@@ -46,6 +48,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     feasibility = commands.add_parser("feasibility", help="analyse a Boolean contract")
     feasibility.add_argument("input", help="explicit UTF-8 JSON request file")
     feasibility.add_argument("--max-variables", type=int, default=12)
+    reduction = commands.add_parser("reduce", help="translate a Boolean contract into 2-CNF")
+    reduction.add_argument("input", help="explicit UTF-8 JSON request file")
+    reduction.add_argument("--with-observations", action="store_true")
+    solve = commands.add_parser("solve", help="check a Boolean contract through 2-SAT")
+    solve.add_argument("input", help="explicit UTF-8 JSON request file")
     stability = commands.add_parser("stability", help="inspect Python patterns without execution")
     stability.add_argument("input", help="explicit UTF-8 Python source file")
     stability.add_argument("--source-id", required=True)
@@ -53,12 +60,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     try:
         source = _read_input(arguments.input)
-        if arguments.command == "feasibility":
+        if arguments.command in {"feasibility", "reduce", "solve"}:
             request = json.loads(
                 source, object_pairs_hook=_unique_object, parse_constant=_reject_constant
             )
-            report = diagnose(request, max_variables=arguments.max_variables)
-            indeterminate = report["feasibility"] == "indeterminate"
+            if arguments.command == "feasibility":
+                report = diagnose(request, max_variables=arguments.max_variables)
+                indeterminate = report["feasibility"] == "indeterminate"
+            elif arguments.command == "reduce":
+                report = reduce_to_2cnf(
+                    request, include_observations=arguments.with_observations
+                )
+                indeterminate = report["status"] == "indeterminate"
+            else:
+                report = diagnose_via_2sat(request)
+                indeterminate = report["feasibility"] == "indeterminate"
         else:
             report = inspect_python_stability(
                 source, source_id=arguments.source_id, revision=arguments.revision

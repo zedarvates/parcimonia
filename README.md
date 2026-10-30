@@ -91,6 +91,13 @@ and inspects three Python code patterns for stability risks. Reports distinguish
 model proofs, caller-declared observations and static risk indicators. The
 offline CLI does not execute inspected code or change routing policy.
 
+An explicit [verified reduction to 2-SAT](docs/VERIFIED_REDUCTIONS.md) translates
+the supported Boolean requirements into clauses and checks them with an
+iterative implication-graph solver. It handles up to 128 variables and returns
+checkable assignments or contradictory paths. This is one implemented Karp
+reduction, not automatic discovery of arbitrary reductions; quality and
+completeness remain separate from the new satisfiability report.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.
