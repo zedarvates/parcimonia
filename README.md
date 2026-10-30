@@ -85,6 +85,12 @@ Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, uns
 
 Early design / bootstrap. No automatic routing is enabled.
 
+An opt-in [feasibility and stability diagnostic](docs/FEASIBILITY_DIAGNOSTICS.md)
+checks a bounded Boolean contract for contradictions and missing prerequisites,
+and inspects three Python code patterns for stability risks. Reports distinguish
+model proofs, caller-declared observations and static risk indicators. The
+offline CLI does not execute inspected code or change routing policy.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.
