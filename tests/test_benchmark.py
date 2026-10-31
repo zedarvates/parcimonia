@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -465,3 +466,17 @@ def test_declared_resources_reach_the_measurement_and_the_report(tmp_path):
     assert payload["resources"]["tokens"] is not None
     assert built["routes"]["rule"]["heldout_median"]["tokens"] is not None
     assert built["routes"]["baseline"]["heldout_median"]["tokens"] is None
+
+
+def test_missing_case_labels_cannot_reuse_another_cases_verifier(tmp_path):
+    known = replace(case(1), verifier_id="shared", verifier_version="1", verifier=lambda value: True)
+    unknown = replace(case(2), verifier_id="shared", verifier_version="1", verifier=None)
+    built = run_benchmark([known, unknown], out_dir=tmp_path, seed=7,
+                         environment=Environment("test", {}), clock=__import__("time").perf_counter,
+                         cost_unit="unknown", corpus="fixture")
+    for route in ("baseline", "rule"):
+        assert built["routes"][route]["accepted"] == 1
+        assert built["routes"][route]["no_verdict"] == 1
+    record = json.loads((tmp_path / "observations" / "case-002.json").read_text())
+    assert record["baseline_evidence"]["verification"]["verdict"] is None
+    assert record["baseline_evidence"]["verification"]["detail_code"] == "unregistered_verifier"

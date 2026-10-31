@@ -1,0 +1,375 @@
+{
+  "base_commit": "0a336a97b952474349d0d0f313e4263b9a0e6061",
+  "branch": "codex/compact-memory-shadow",
+  "checks": [
+    "Exact versioned source snapshot; contradictory same-version facts rejected.",
+    "Outcome labels bound to both sequence and archive fingerprints.",
+    "No labels and self-attributed outcomes yield no quality verdict.",
+    "An unlabeled benchmark case cannot reuse another case verifier.",
+    "Private task fixture values absent from CLI output and report/measurement/observation files.",
+    "Existing evidence is not overwritten; budget failures are recorded without fabricated zero sizes."
+  ],
+  "commands": [
+    "PYTHONPATH=src python examples/memory_replay.py --sequences docs/fixtures/memory-replay/sequences.jsonl --archive docs/fixtures/memory-replay/facts.jsonl --outcomes docs/fixtures/memory-replay/outcomes.jsonl --cost-margin 0.02 --out runs/memory-replay-labelled-final",
+    "PYTHONPATH=src python examples/memory_replay.py --sequences docs/fixtures/memory-replay/sequences.jsonl --archive docs/fixtures/memory-replay/facts.jsonl --cost-margin 0.02 --out runs/memory-replay-unlabelled-final",
+    "PYTHONPATH=src python -m pytest -q"
+  ],
+  "date": "2026-10-03",
+  "examples": {
+    "labelled": {
+      "claim": {
+        "allowed": [
+          "compact"
+        ],
+        "baseline": "full_history",
+        "candidate": "compact",
+        "detail": "compact was verified on every held-out case and dominates full_history on the median measured vector.",
+        "evaluated": [
+          {
+            "detail": "compact was verified on every held-out case and dominates full_history on the median measured vector.",
+            "reason_code": "verified_dominance",
+            "route_id": "compact",
+            "status": "allowed"
+          },
+          {
+            "detail": "Claim refused for compact_persistent: the median measured vector does not dominate the baseline.",
+            "reason_code": "no_dominance",
+            "route_id": "compact_persistent",
+            "status": "refused"
+          }
+        ],
+        "front": [
+          "compact"
+        ],
+        "reason_code": "verified_dominance",
+        "status": "allowed"
+      },
+      "context_totals": {
+        "compact": {
+          "completed_sequences": 2,
+          "prepared_context_utf8_bytes": 2764,
+          "provider_cost": null,
+          "requested_sequences": 2,
+          "route_switches_including_abstentions": 2,
+          "tokens": null
+        },
+        "compact_persistent": {
+          "completed_sequences": 2,
+          "prepared_context_utf8_bytes": 2764,
+          "provider_cost": null,
+          "requested_sequences": 2,
+          "route_switches_including_abstentions": 1,
+          "tokens": null
+        },
+        "full_history": {
+          "completed_sequences": 2,
+          "prepared_context_utf8_bytes": 5224,
+          "provider_cost": null,
+          "requested_sequences": 2,
+          "route_switches_including_abstentions": 2,
+          "tokens": null
+        }
+      },
+      "memory_replay": {
+        "archive_revision": "c3ab37775bb3280bab6ce7f6bb4c78105d5e7f8d9e3cf3dd3b83376fadb7419e",
+        "claim_scope": "Offline retrieval/route contract replay; source origins are caller-declared.",
+        "files_sha256": {
+          "memory_replay_cli": "42f55f1d479118d18133e9be691188c47a78d417b89fe42daff219ab3e573efe",
+          "tiberium_ai.benchmark": "63f65cf1da71147926fadbd12856cb45272681e2d3b05530106d14d83412a230",
+          "tiberium_ai.compact_memory": "e652c783ff3535990f7d7143f3ef02b5d377a4f4a72ad2b7c392527a4d2d589a",
+          "tiberium_ai.context_router": "a55e4ddc4e478b1691a2eba2ffb2447b9ab73f47f21eca23c2693ebde71730ec",
+          "tiberium_ai.memory_replay": "49bd88472388d68c650f6c3aeba9b83a01b0881ef3a47cd76a1078c0648bea8b",
+          "tiberium_ai.verification": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440"
+        },
+        "label_status": {
+          "authored-critical": "authored_labels",
+          "authored-jitter": "authored_labels"
+        },
+        "origins": {
+          "authored-critical": "authored",
+          "authored-jitter": "authored"
+        },
+        "outcome_attribution": {
+          "authored-critical": {
+            "labeller_id": "doc-oracle",
+            "origin": "authored",
+            "revision": "8c2b789709d5af60eb14a44ebb86a8f36a0b6451096017c4603cd4125b3f0e9c",
+            "source_ref": "authored-exact-contract-v1"
+          },
+          "authored-jitter": {
+            "labeller_id": "doc-oracle",
+            "origin": "authored",
+            "revision": "4ecb47edbe81826e3e96006da97088ae6fa2cc5f51638dafb9d95e9e7dbf5359",
+            "source_ref": "authored-exact-contract-v1"
+          }
+        },
+        "outcomes_revision": "d8df8cbf32c723d12e335a414a994c65e6e668954b8a993d14331f9adae02902",
+        "policy": {
+          "limits": {
+            "max_context_bytes": 8192,
+            "max_entities": 8,
+            "max_fact_bytes": 4096,
+            "max_refs_per_entity": 16
+          },
+          "max_holds": 3,
+          "relative_cost_margin": 0.02
+        },
+        "production_saving_claim": {
+          "reason": "no model or provider usage measurement",
+          "status": "refused"
+        },
+        "schema": "memory-replay-provenance/1",
+        "sequence_revision": "55a652ccaef64804bfd50b8cae6e26a5e3f7f48dbbcb75ddd405e39657814f0f",
+        "source_attribution": {
+          "authored-critical": {
+            "origin": "authored",
+            "producer_id": "authored-demo",
+            "source_ref": "documentation-fixture-v1"
+          },
+          "authored-jitter": {
+            "origin": "authored",
+            "producer_id": "authored-demo",
+            "source_ref": "documentation-fixture-v1"
+          }
+        }
+      },
+      "routes": {
+        "compact": {
+          "accepted": 2,
+          "failed": 0,
+          "heldout_median": {
+            "energy_joules": null,
+            "latency_ms": 0.191197992535308,
+            "tokens": null,
+            "vram_mb": null
+          },
+          "heldout_median_latency_ms": 0.191197992535308,
+          "no_verdict": 0,
+          "ok": 2,
+          "rejected": 0,
+          "runs": 2
+        },
+        "compact_persistent": {
+          "accepted": 2,
+          "failed": 0,
+          "heldout_median": {
+            "energy_joules": null,
+            "latency_ms": 0.3866930055664852,
+            "tokens": null,
+            "vram_mb": null
+          },
+          "heldout_median_latency_ms": 0.3866930055664852,
+          "no_verdict": 0,
+          "ok": 2,
+          "rejected": 0,
+          "runs": 2
+        },
+        "full_history": {
+          "accepted": 2,
+          "failed": 0,
+          "heldout_median": {
+            "energy_joules": null,
+            "latency_ms": 0.19189900194760412,
+            "tokens": null,
+            "vram_mb": null
+          },
+          "heldout_median_latency_ms": 0.19189900194760412,
+          "no_verdict": 0,
+          "ok": 2,
+          "rejected": 0,
+          "runs": 2
+        }
+      },
+      "split": {
+        "development": [
+          "authored-critical"
+        ],
+        "heldout": [
+          "authored-jitter"
+        ]
+      }
+    },
+    "unlabelled": {
+      "claim": {
+        "allowed": [],
+        "baseline": "full_history",
+        "candidate": "compact",
+        "detail": "Claim refused for compact: a held-out case carries no verdict.",
+        "evaluated": [
+          {
+            "detail": "Claim refused for compact: a held-out case carries no verdict.",
+            "reason_code": "insufficient_evidence",
+            "route_id": "compact",
+            "status": "refused"
+          },
+          {
+            "detail": "Claim refused for compact_persistent: a held-out case carries no verdict.",
+            "reason_code": "insufficient_evidence",
+            "route_id": "compact_persistent",
+            "status": "refused"
+          }
+        ],
+        "front": [],
+        "reason_code": "insufficient_evidence",
+        "status": "refused"
+      },
+      "context_totals": {
+        "compact": {
+          "completed_sequences": 2,
+          "prepared_context_utf8_bytes": 2764,
+          "provider_cost": null,
+          "requested_sequences": 2,
+          "route_switches_including_abstentions": 2,
+          "tokens": null
+        },
+        "compact_persistent": {
+          "completed_sequences": 2,
+          "prepared_context_utf8_bytes": 2764,
+          "provider_cost": null,
+          "requested_sequences": 2,
+          "route_switches_including_abstentions": 1,
+          "tokens": null
+        },
+        "full_history": {
+          "completed_sequences": 2,
+          "prepared_context_utf8_bytes": 5224,
+          "provider_cost": null,
+          "requested_sequences": 2,
+          "route_switches_including_abstentions": 2,
+          "tokens": null
+        }
+      },
+      "memory_replay": {
+        "archive_revision": "c3ab37775bb3280bab6ce7f6bb4c78105d5e7f8d9e3cf3dd3b83376fadb7419e",
+        "claim_scope": "Offline retrieval/route contract replay; source origins are caller-declared.",
+        "files_sha256": {
+          "memory_replay_cli": "42f55f1d479118d18133e9be691188c47a78d417b89fe42daff219ab3e573efe",
+          "tiberium_ai.benchmark": "63f65cf1da71147926fadbd12856cb45272681e2d3b05530106d14d83412a230",
+          "tiberium_ai.compact_memory": "e652c783ff3535990f7d7143f3ef02b5d377a4f4a72ad2b7c392527a4d2d589a",
+          "tiberium_ai.context_router": "a55e4ddc4e478b1691a2eba2ffb2447b9ab73f47f21eca23c2693ebde71730ec",
+          "tiberium_ai.memory_replay": "49bd88472388d68c650f6c3aeba9b83a01b0881ef3a47cd76a1078c0648bea8b",
+          "tiberium_ai.verification": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440"
+        },
+        "label_status": {
+          "authored-critical": "missing_outcomes",
+          "authored-jitter": "missing_outcomes"
+        },
+        "origins": {
+          "authored-critical": "authored",
+          "authored-jitter": "authored"
+        },
+        "outcome_attribution": {},
+        "outcomes_revision": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "policy": {
+          "limits": {
+            "max_context_bytes": 8192,
+            "max_entities": 8,
+            "max_fact_bytes": 4096,
+            "max_refs_per_entity": 16
+          },
+          "max_holds": 3,
+          "relative_cost_margin": 0.02
+        },
+        "production_saving_claim": {
+          "reason": "no model or provider usage measurement",
+          "status": "refused"
+        },
+        "schema": "memory-replay-provenance/1",
+        "sequence_revision": "55a652ccaef64804bfd50b8cae6e26a5e3f7f48dbbcb75ddd405e39657814f0f",
+        "source_attribution": {
+          "authored-critical": {
+            "origin": "authored",
+            "producer_id": "authored-demo",
+            "source_ref": "documentation-fixture-v1"
+          },
+          "authored-jitter": {
+            "origin": "authored",
+            "producer_id": "authored-demo",
+            "source_ref": "documentation-fixture-v1"
+          }
+        }
+      },
+      "routes": {
+        "compact": {
+          "accepted": 0,
+          "failed": 0,
+          "heldout_median": {
+            "energy_joules": null,
+            "latency_ms": 0.3730320022441447,
+            "tokens": null,
+            "vram_mb": null
+          },
+          "heldout_median_latency_ms": 0.3730320022441447,
+          "no_verdict": 2,
+          "ok": 2,
+          "rejected": 0,
+          "runs": 2
+        },
+        "compact_persistent": {
+          "accepted": 0,
+          "failed": 0,
+          "heldout_median": {
+            "energy_joules": null,
+            "latency_ms": 0.2569470088928938,
+            "tokens": null,
+            "vram_mb": null
+          },
+          "heldout_median_latency_ms": 0.2569470088928938,
+          "no_verdict": 2,
+          "ok": 2,
+          "rejected": 0,
+          "runs": 2
+        },
+        "full_history": {
+          "accepted": 0,
+          "failed": 0,
+          "heldout_median": {
+            "energy_joules": null,
+            "latency_ms": 0.24613100686110556,
+            "tokens": null,
+            "vram_mb": null
+          },
+          "heldout_median_latency_ms": 0.24613100686110556,
+          "no_verdict": 2,
+          "ok": 2,
+          "rejected": 0,
+          "runs": 2
+        }
+      },
+      "split": {
+        "development": [
+          "authored-critical"
+        ],
+        "heldout": [
+          "authored-jitter"
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Declarations and hashes do not authenticate origin or establish factual truth.",
+    "These are offline retrieval/route contract checks, not model answer quality.",
+    "Tokens, provider cost and real usage gains remain unmeasured.",
+    "The authorized sequential corpus and provider measurement adapter are still required for TASK-110."
+  ],
+  "production_saving_claim": {
+    "reason": "no model or provider usage measurement",
+    "status": "refused"
+  },
+  "public_trace_inspection": {
+    "blob_sha": "3ddefe05e870de0d01c873c0e8da48dc39ede6b2",
+    "path": "skills/trajectory/store/trajectories.jsonl",
+    "quality_or_cost_inferred": false,
+    "records": 3,
+    "rejected_for_missing_sequential_contract": 3,
+    "repository": "zedarvates/botte-secrete"
+  },
+  "sample_origin": "authored; fictional documentation examples, not captured user usage",
+  "schema": "memory-replay-evidence/1",
+  "status": "importer_and_offline_replay_verified_on_authored_examples; real corpus gate open",
+  "tests": {
+    "new_in_this_step": 21,
+    "passed": 855,
+    "python": "3.12.14"
+  }
+}
