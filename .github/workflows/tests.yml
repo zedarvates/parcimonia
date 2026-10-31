@@ -43,6 +43,7 @@ jobs:
           choco install tesseract --yes --no-progress
           $ocr = Join-Path $env:ProgramFiles 'Tesseract-OCR'
           if (-not (Test-Path -LiteralPath (Join-Path $ocr 'tesseract.exe'))) { throw 'OCR backend was not installed' }
+          & (Join-Path $ocr 'tesseract.exe') --version
           Add-Content -LiteralPath $env:GITHUB_PATH -Value $ocr
       - name: Select pinned PDF and media backends on Windows
         if: runner.os == 'Windows'

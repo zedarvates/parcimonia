@@ -16,6 +16,9 @@
   native-tool failures and unexpected skips still fail archive qualification.
 - Accept numbered FFprobe release-tag versions such as `n9.0.2` while retaining
   the observed version, minimum major version and existing resource limits.
+- Recognize Windows Tesseract `v5` version strings, and interrupt a TLS deadline
+  without clearing SSL state concurrently with the handshake. Both have focused
+  regression coverage; model-call, retry and native execution limits stay intact.
 - Install native fixture backends in CI so OCR, PDF and media integration tests
   execute rather than disappear behind absent optional executables. Windows SDK
   archives are pinned by release URL and SHA-256, only within disposable CI jobs.

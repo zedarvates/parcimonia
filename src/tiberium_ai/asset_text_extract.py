@@ -109,7 +109,7 @@ def _usable(report: dict[str, Any], result: dict[str, Any]) -> bool:
 
 
 def _version(backend: str, result: dict[str, Any]) -> str:
-    pattern = r"tesseract ([0-9]+)\.[0-9A-Za-z.+_-]+" if backend == "tesseract" else r"pdftotext version ([0-9]+)\.[0-9A-Za-z.+_-]+"
+    pattern = r"tesseract v?([0-9]+)\.[0-9A-Za-z.+_-]+" if backend == "tesseract" else r"pdftotext version ([0-9]+)\.[0-9A-Za-z.+_-]+"
     candidates = (result["stdout"] + b"\n" + result["stderr"]).decode("utf-8").splitlines()
     for line in candidates[:16]:
         line = line.strip()

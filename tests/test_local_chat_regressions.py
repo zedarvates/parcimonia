@@ -14,6 +14,28 @@ from tiberium_ai.local_chat import chat_completion
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def test_tls_deadline_during_handshake_is_a_sanitized_timeout(monkeypatch):
+    client, peer = socket.socketpair()
+    with client, peer:
+        peer.settimeout(1)
+        monkeypatch.setattr(socket, "create_connection", lambda *args, **kwargs: client)
+
+        def interrupted_handshake(tls_socket, *args, **kwargs):
+            # The watchdog's fd shutdown wakes this deterministic stalled peer.
+            assert peer.recv(1) == b""
+            if tls_socket._sslobj is None:
+                raise AttributeError("TLS state disappeared during the handshake")
+            raise TimeoutError
+
+        monkeypatch.setattr(ssl.SSLSocket, "do_handshake", interrupted_handshake)
+        result = chat_completion(model="fixture", messages=[{"role": "user", "content": "test"}],
+                                 base_url="https://127.0.0.1:1234", timeout=0.1)
+    assert result["status"] == "timeout"
+    assert result["error_type"] == "timeout"
+    assert result["inference_attempted"] is False
+    assert result["content"] is None and result["retries"] == 0
+
+
 def test_https_tcp_and_tls_share_one_deadline(monkeypatch):
     timeout, tcp_delay = 0.25, 0.15
     listener = socket.socket()

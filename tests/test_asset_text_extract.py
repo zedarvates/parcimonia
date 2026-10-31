@@ -188,13 +188,23 @@ def test_native_failures_are_not_empty_text_success(monkeypatch, tool, response,
     assert len(calls) == 2
 
 
-@pytest.mark.parametrize("version", [b"", b"not tesseract\n", b"tesseract 3.05\n", b"\xff"])
+@pytest.mark.parametrize("version", [b"", b"not tesseract\n", b"tesseract 3.05\n", b"tesseract v3.05\n", b"\xff"])
 def test_unrecognized_version_prevents_extraction(monkeypatch, tool, version):
     calls = _fake(monkeypatch, [_result(version)])
     report = extract_asset_text(**_request(tool))
     assert report["status"] == "failed"
     assert report["reason_codes"] == ["backend_version_unusable"]
     assert len(calls) == 1
+
+
+def test_windows_tesseract_version_keeps_observed_identity(monkeypatch, tool):
+    version = b"tesseract v5.5.0.20241111\n"
+    calls = _fake(monkeypatch, [_result(version), _result(TSV)])
+    report = extract_asset_text(**_request(tool))
+    assert report["status"] == "completed"
+    assert report["backend"]["version"] == version.decode().strip()
+    assert report["text"] == "ROBOT"
+    assert len(calls) == 2
 
 
 @pytest.mark.parametrize("payload", [b"not TSV", b"\xff", HEADER + b"bad row\n"])
