@@ -1,0 +1,382 @@
+{
+  "accepted_after": 1,
+  "accepted_after_binary_change": 0,
+  "accepted_before": 0,
+  "data_origin": "authored_glb_no_external_file_check_or_render",
+  "gps_matches": 0,
+  "proposed": 1,
+  "report": {
+    "analyser": {
+      "id": "asset-glb-inspection",
+      "version": "1"
+    },
+    "evidence": [
+      {
+        "byte_range": [
+          0,
+          12
+        ],
+        "id": "media:glb:header",
+        "kind": "header"
+      },
+      {
+        "byte_range": [
+          12,
+          716
+        ],
+        "chunks": [
+          {
+            "byte_range": [
+              20,
+              600
+            ],
+            "header_range": [
+              12,
+              20
+            ],
+            "index": 0,
+            "kind": "JSON",
+            "type_hex": "4e4f534a"
+          },
+          {
+            "byte_range": [
+              608,
+              716
+            ],
+            "header_range": [
+              600,
+              608
+            ],
+            "index": 1,
+            "kind": "BIN",
+            "type_hex": "004e4942"
+          }
+        ],
+        "id": "glb:chunks",
+        "kind": "bounded_glb_chunks",
+        "profile": "parcimonia.glb-core-resources/v1"
+      },
+      {
+        "byte_range": [
+          20,
+          600
+        ],
+        "id": "glb:json",
+        "kind": "parsed_gltf_json",
+        "profile": "parcimonia.glb-core-resources/v1"
+      },
+      {
+        "byte_range": [
+          608,
+          713
+        ],
+        "evidence_refs": [
+          "glb:json"
+        ],
+        "id": "glb:resource:buffer:0",
+        "json_pointer": "/buffers/0",
+        "kind": "core_resource_declaration"
+      },
+      {
+        "evidence_refs": [
+          "glb:json"
+        ],
+        "id": "glb:resource:buffer:1",
+        "json_pointer": "/buffers/1",
+        "kind": "core_resource_declaration"
+      },
+      {
+        "evidence_refs": [
+          "glb:json"
+        ],
+        "id": "glb:resource:buffer:2",
+        "json_pointer": "/buffers/2",
+        "kind": "core_resource_declaration"
+      },
+      {
+        "byte_range": [
+          644,
+          713
+        ],
+        "evidence_refs": [
+          "glb:json"
+        ],
+        "id": "glb:resource:image:0",
+        "json_pointer": "/images/0",
+        "kind": "core_resource_declaration"
+      },
+      {
+        "evidence_refs": [
+          "glb:json"
+        ],
+        "id": "glb:resource:image:1",
+        "json_pointer": "/images/1",
+        "kind": "core_resource_declaration"
+      },
+      {
+        "id": "name:extension",
+        "kind": "filename_hint",
+        "suffix": ".glb"
+      }
+    ],
+    "format": {
+      "basis": "glb_core_resource_profile",
+      "detected": "glb",
+      "extension_conflict": false,
+      "extension_hint": "glb",
+      "media_type": "model/gltf-binary"
+    },
+    "input_hash": "8b56a8d973ec28e3941c7b688e7508e7ee73ed741a984d3a1be69f7843442a04",
+    "limits": {
+      "data_uri_decode": "not_performed",
+      "external_uri_access": "not_performed",
+      "file_mutations": 0,
+      "geographic_coordinates": "not_inferred_from_gltf",
+      "glb_profile": "parcimonia.glb-core-resources/v1",
+      "gltf_validation": "chunk_framing_and_core_resource_profile_not_full_schema",
+      "json_padding": "json_whitespace_accepted_not_strict_space_padding",
+      "max_sample_bytes": 1048576,
+      "mesh_and_image_data": "not_decoded_or_rendered",
+      "model_calls": 0,
+      "resource_inventory": "core_buffers_images_only_extensions_not_traversed",
+      "semantic_content": "not_assessed_glb_structure_only",
+      "sources": "caller_supplied_unverified",
+      "tag_state": "proposals_only"
+    },
+    "metadata": [
+      {
+        "basis": "declared_header",
+        "evidence_ref": "media:glb:header",
+        "name": "container_version",
+        "value": 2
+      },
+      {
+        "basis": "declared_header",
+        "evidence_ref": "media:glb:header",
+        "name": "declared_total_bytes",
+        "value": 716
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_ref": "glb:json",
+        "name": "gltf_declared_counts",
+        "value": {
+          "accessors": 1,
+          "animations": 0,
+          "bufferViews": 2,
+          "buffers": 3,
+          "cameras": 0,
+          "images": 2,
+          "materials": 0,
+          "meshes": 1,
+          "nodes": 1,
+          "samplers": 0,
+          "scenes": 1,
+          "skins": 0,
+          "textures": 0
+        }
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_ref": "glb:json",
+        "name": "gltf_core_resources",
+        "value": [
+          {
+            "availability": "range_present",
+            "byte_range": [
+              608,
+              713
+            ],
+            "declared_bytes": 105,
+            "evidence_ref": "glb:resource:buffer:0",
+            "index": 0,
+            "kind": "buffer",
+            "pointer": "/buffers/0",
+            "storage": "bin_chunk"
+          },
+          {
+            "availability": "not_checked",
+            "declared_bytes": 4,
+            "evidence_ref": "glb:resource:buffer:1",
+            "index": 1,
+            "kind": "buffer",
+            "pointer": "/buffers/1",
+            "storage": "external_uri",
+            "uri": "geometry/extra.bin",
+            "uri_bytes": 18,
+            "uri_sha256": "1839f49bb21a0a943f89666d9cdcac8363b18b3a599522f38f7fb2965e0508a9"
+          },
+          {
+            "availability": "not_checked",
+            "declared_bytes": 3,
+            "evidence_ref": "glb:resource:buffer:2",
+            "index": 2,
+            "kind": "buffer",
+            "pointer": "/buffers/2",
+            "storage": "data_uri",
+            "uri": null,
+            "uri_bytes": 41,
+            "uri_sha256": "3d3049601d3b08a932a5d1f65fe2fab3466e6b5ad333a415e3550f92ca1c7681"
+          },
+          {
+            "availability": "range_present",
+            "buffer": 0,
+            "buffer_view": 1,
+            "byte_range": [
+              644,
+              713
+            ],
+            "declared_mime_type": "image/png",
+            "evidence_ref": "glb:resource:image:0",
+            "index": 0,
+            "kind": "image",
+            "pointer": "/images/0",
+            "storage": "buffer_view"
+          },
+          {
+            "availability": "not_checked",
+            "declared_mime_type": null,
+            "evidence_ref": "glb:resource:image:1",
+            "index": 1,
+            "kind": "image",
+            "pointer": "/images/1",
+            "storage": "external_uri",
+            "uri": "textures/bois%20été.png",
+            "uri_bytes": 25,
+            "uri_sha256": "8d667ef9542eb429483e3da88ec1e92e184933d2ba8c7b0ca298d3cb1a075202"
+          }
+        ]
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_ref": "glb:json",
+        "name": "gltf_extensions_used",
+        "value": []
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_ref": "glb:json",
+        "name": "gltf_extensions_required",
+        "value": []
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_ref": "glb:chunks",
+        "name": "glb_chunk_count",
+        "value": 2
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_ref": "glb:chunks",
+        "name": "glb_unknown_chunk_count",
+        "value": 0
+      }
+    ],
+    "modalities": [
+      "3d"
+    ],
+    "mode": "shadow",
+    "reason_codes": [
+      "glb_profile_not_full_gltf_validation"
+    ],
+    "sample": {
+      "bytes": 716,
+      "complete": true,
+      "content_sha256": "6671a7fc270b35db6395aa26eade394306f47aee1e80570e6938575c84f6cada",
+      "sha256": "6671a7fc270b35db6395aa26eade394306f47aee1e80570e6938575c84f6cada",
+      "total_bytes": 716
+    },
+    "schema": "parcimonia.asset-inspection/v1",
+    "source": {
+      "filename": "authored.glb",
+      "id": "fixture:glb",
+      "revision": "v1"
+    },
+    "spatial": null,
+    "status": "partial",
+    "tag_proposals": [
+      {
+        "basis": "signature",
+        "evidence_refs": [
+          "media:glb:header"
+        ],
+        "namespace": "format",
+        "status": "proposed",
+        "value": "glb"
+      },
+      {
+        "basis": "extension_hint",
+        "evidence_refs": [
+          "name:extension"
+        ],
+        "namespace": "format_hint",
+        "status": "proposed",
+        "value": "glb"
+      },
+      {
+        "basis": "glb_core_resource_profile",
+        "evidence_refs": [
+          "media:glb:header"
+        ],
+        "namespace": "modality",
+        "status": "proposed",
+        "value": "3d"
+      },
+      {
+        "basis": "extension_hint",
+        "evidence_refs": [
+          "name:extension"
+        ],
+        "namespace": "modality_hint",
+        "status": "proposed",
+        "value": "3d"
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_refs": [
+          "glb:resource:buffer:0"
+        ],
+        "namespace": "resource",
+        "status": "proposed",
+        "value": "bin_buffer_range_present"
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_refs": [
+          "glb:resource:image:0"
+        ],
+        "namespace": "resource",
+        "status": "proposed",
+        "value": "buffer_view_image_declared"
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_refs": [
+          "glb:resource:buffer:2"
+        ],
+        "namespace": "resource",
+        "status": "proposed",
+        "value": "data_uri_declared"
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_refs": [
+          "glb:resource:buffer:1",
+          "glb:resource:image:1"
+        ],
+        "namespace": "resource",
+        "status": "proposed",
+        "value": "external_uri_declared"
+      },
+      {
+        "basis": "parsed_core_resource_declarations",
+        "evidence_refs": [
+          "glb:json"
+        ],
+        "namespace": "resource",
+        "status": "proposed",
+        "value": "glb_json_read"
+      }
+    ]
+  }
+}

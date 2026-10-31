@@ -16,6 +16,7 @@ import re
 from typing import Any
 
 from .geo_probe import probe_geojson
+from .glb_probe import PROFILE_ID as GLB_PROFILE_ID, probe_glb
 from .gpx_probe import PROFILE_ID as GPX_PROFILE_ID, probe_gpx
 from .media_probe import probe_media
 from .pattern_rules import builtin_rule_registry
@@ -230,8 +231,27 @@ def inspect_asset(
     )
     if probe is not None and probe["format"] == "ply":
         probe = probe_ply_body(data, complete=complete) or probe
+    if probe is not None and probe["format"] == "glb":
+        probe = probe_glb(data, complete=complete) or probe
     decoded = None
     if probe is not None:
+        if probe["format"] == "glb":
+            report["analyser"] = {"id": "asset-glb-inspection", "version": "1"}
+            report["input_hash"] = hash_input({
+                "source": source, "sample": sample, "topic_terms": topic_terms,
+                "glb_profile": GLB_PROFILE_ID,
+            })
+            report["limits"].update({
+                "glb_profile": GLB_PROFILE_ID,
+                "semantic_content": "not_assessed_glb_structure_only",
+                "gltf_validation": "chunk_framing_and_core_resource_profile_not_full_schema",
+                "json_padding": "json_whitespace_accepted_not_strict_space_padding",
+                "resource_inventory": "core_buffers_images_only_extensions_not_traversed",
+                "external_uri_access": "not_performed",
+                "data_uri_decode": "not_performed",
+                "mesh_and_image_data": "not_decoded_or_rendered",
+                "geographic_coordinates": "not_inferred_from_gltf",
+            })
         if probe["format"] == "ply":
             report["analyser"] = {"id": "asset-ply-inspection", "version": "1"}
             report["input_hash"] = hash_input({
@@ -308,7 +328,7 @@ def inspect_asset(
                     evidence_id = f"text:topic:{index}"
                     report["evidence"].append({"id": evidence_id, "kind": "lexical_match", "char_range": [start, end], "indexing": "unicode_codepoints"})
                     report["tag_proposals"].append(_tag("topic", label, "lexical_hint", [evidence_id]))
-        if report["format"]["detected"] != "ply":
+        if report["format"]["detected"] not in {"ply", "glb"}:
             report["limits"]["semantic_content"] = "not_assessed_lexical_hints_only"
     detected = report["format"]["detected"]
     if detected is not None:

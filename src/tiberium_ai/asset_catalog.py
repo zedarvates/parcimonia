@@ -144,6 +144,7 @@ def _report(value: Any) -> tuple[set[str], list[float] | None]:
             ("asset-gpx-inspection", "1"),
             ("asset-media-enrichment", "1"),
             ("asset-ply-inspection", "1"),
+            ("asset-glb-inspection", "1"),
         }
     ):
         raise ValueError("Unsupported analyser identity or version.")

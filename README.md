@@ -144,6 +144,11 @@ face records, computes local XYZ bounds with source evidence, and proposes
 mesh/point-cloud or Gaussian-parameter candidates. Local coordinates remain
 separate from GPS and no rendering quality is inferred.
 
+A bounded [GLB resource inventory](docs/ASSET_GLB_RESOURCES.md) reads chunk
+framing and core buffer/image declarations, including exact embedded byte ranges
+and external URI references. Linked resources are never opened; their existence,
+decoded contents and rendering quality remain unverified.
+
 An explicit [asset expectation audit](docs/ASSET_EXPECTATIONS.md) compares
 supplied reports with caller-written requirements. It separates matching
 declarations, contradictions, unknown facts and missing exact report revisions,
