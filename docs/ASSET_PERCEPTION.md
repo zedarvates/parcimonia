@@ -19,6 +19,10 @@ La [lecture du corps PLY](ASSET_PLY_BODY.md) contrôle les positions locales,
 indices de faces et paramètres Gaussian des enregistrements disponibles, puis
 ajoute leurs agrégats, preuves et tags candidats.
 
+L'[inventaire GLB](ASSET_GLB_RESOURCES.md) lit les chunks et les déclarations
+core de buffers/images, avec leurs plages et références. Les URI externes
+restent non vérifiés ; aucun contenu lié ou rendu n'est ouvert.
+
 L'[audit d'attentes explicites](ASSET_EXPECTATIONS.md) compare ces rapports à
 des exigences choisies : correspondance, contradiction, inconnu ou rapport
 manquant. L'absence d'une proposition n'est pas une preuve d'absence du contenu.
@@ -41,7 +45,7 @@ indices lexicaux et les futures inférences de modèles restent distincts.
 | Images | En-têtes PNG, GIF, JPEG ; dimensions lorsque disponibles | Objets, textures, scènes, texte présent dans l'image |
 | Vidéo | Conteneur ISO-BMFF et Ogg ; suffixe vidéo conservé comme indice | Pistes réelles, images clés, segments, sous-titres et événements |
 | Sons | WAV PCM : métadonnées déclarées ; FLAC par signature | Parole, transcription, musique, événements sonores |
-| 3D | GLB par en-tête ; profil PLY des sommets/faces ; structure glTF JSON déclarée | Autres profils géométriques, unités, textures, animation et reconnaissance après rendu autorisé |
+| 3D | Profil GLB des chunks et ressources core ; profil PLY des sommets/faces ; structure glTF JSON déclarée | Géométrie glTF décodée, extensions, unités, textures, animation et reconnaissance après rendu autorisé |
 | Gaussian splatting | Candidat de paramètres PLY après lecture des records compatibles | Qualification des paramètres, rendu, formats splat/ksplat/spz et variantes |
 | Code | Rôles et motifs nommés Python des analyseurs existants | Autres langages et similarité fonctionnelle vérifiée |
 | Géographie | GeoJSON et profil GPX 1.1 : coordonnées, ordre des axes, CRS et enveloppe | KML, GeoTIFF, Shapefile, reprojection et recherche géométrique exacte |
