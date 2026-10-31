@@ -10,3 +10,4 @@ build/
 !.env.example
 tiberium-ai-bootstrap.zip
 runs/
+/release-tests.xml

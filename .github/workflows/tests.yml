@@ -14,8 +14,51 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  release_package:
+    name: Canonical release archives
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.head_ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: Install build and native fixture backends
+        run: |
+          python -m pip install --disable-pip-version-check ".[dev,release]"
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends ffmpeg poppler-utils tesseract-ocr tesseract-ocr-eng
+      - name: Qualify canonical archives from their source distribution
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          temporary = Path(os.environ["RUNNER_TEMP"])
+          wheelhouse = temporary / "release-wheelhouse"
+          output = temporary / "parcimonia-release"
+          subprocess.run([sys.executable, "-m", "pip", "download", "--only-binary=:all:",
+                          "--dest", str(wheelhouse), "pytest==9.1.1", "tomli", "exceptiongroup",
+                          "typing_extensions", "colorama"], check=True)
+          subprocess.run([sys.executable, "scripts/qualify_release.py", "--output", str(output),
+                          "--wheelhouse", str(wheelhouse), "--python", sys.executable], check=True)
+          subprocess.run([sys.executable, "scripts/check_release_payload.py", "--directory", str(output),
+                          "--record", str(output / "VALIDATION-canonical.json")], check=True)
+      - name: Retain qualified canonical archives and evidence
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: canonical-release
+          path: ${{ runner.temp }}/parcimonia-release
+          retention-days: 14
+          if-no-files-found: error
   pytest:
     name: pytest (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: release_package
+    if: always() && (needs.release_package.result == 'success' || needs.release_package.result == 'skipped')
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -82,5 +125,47 @@ jobs:
                   stream.write(str(executable.parent) + "\n")
       - name: Build the wheel and source archives
         run: python -m build --no-isolation
+      - name: Download the canonical release archives
+        if: needs.release_package.result == 'success'
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: canonical-release
+          path: ${{ runner.temp }}/parcimonia-release
+      - name: Verify and install the exact canonical wheel
+        if: needs.release_package.result == 'success'
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          directory = Path(os.environ["RUNNER_TEMP"]) / "parcimonia-release"
+          subprocess.run([sys.executable, "scripts/check_release_payload.py",
+                          "--directory", str(directory), "--install"], check=True)
       - name: Run the offline test suite
-        run: python -m pytest -q
+        env:
+          PARCIMONIA_RELEASE_INSTALL: ${{ needs.release_package.result == 'success' && '1' || '' }}
+        run: python -m pytest -q --junitxml=release-tests.xml
+      - name: Record canonical package test evidence
+        if: needs.release_package.result == 'success'
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          temporary = Path(os.environ["RUNNER_TEMP"])
+          directory = temporary / "parcimonia-release"
+          subprocess.run([sys.executable, "scripts/check_release_payload.py", "--directory", str(directory),
+                          "--junit", "release-tests.xml", "--record",
+                          str(temporary / "release-validation" / "validation.json")], check=True)
+      - name: Retain portable release validation
+        if: needs.release_package.result == 'success'
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: release-validation-${{ runner.os }}-${{ matrix.python-version }}
+          path: ${{ runner.temp }}/release-validation
+          retention-days: 14
+          if-no-files-found: error

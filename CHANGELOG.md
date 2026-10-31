@@ -1,7 +1,9 @@
 # Changelog
 
-## Integration into main — 2026-10-31
+## 0.5.1 — 2026-10-31
 
+- Publish the combined main tree as 0.5.1. Build canonical release archives once,
+  then install and test that exact wheel across the four CI environments.
 - Merge 0.5.0 while retaining the newer asset catalogues, native-media probes,
   memory capture/replay, local text/vision clients and feasibility constraints.
 - Keep both suites: the release regression tests and all existing main tests.
