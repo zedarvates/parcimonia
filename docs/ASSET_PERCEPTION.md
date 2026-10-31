@@ -19,6 +19,10 @@ La [lecture du corps PLY](ASSET_PLY_BODY.md) contrôle les positions locales,
 indices de faces et paramètres Gaussian des enregistrements disponibles, puis
 ajoute leurs agrégats, preuves et tags candidats.
 
+L'[audit d'attentes explicites](ASSET_EXPECTATIONS.md) compare ces rapports à
+des exigences choisies : correspondance, contradiction, inconnu ou rapport
+manquant. L'absence d'une proposition n'est pas une preuve d'absence du contenu.
+
 Objectif : retrouver des fichiers par leur format, leurs caractéristiques, leur
 contenu proposé et leur localisation, puis préparer leur classement. Un même
 asset pourra relever de plusieurs modalités : une vidéo peut contenir image,
