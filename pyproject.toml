@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling>=1.25"]
+requires = ["hatchling==1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
 name = "tiberium-ai"
-version = "0.0.1"
+dynamic = ["version"]
 description = "Adaptive cost-, evidence- and risk-aware compute routing for AI agents"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -14,6 +14,28 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+release = ["build==1.3.0", "hatchling==1.27.0"]
+
+[project.scripts]
+parcimonia = "tiberium_ai.agent_recipes.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/zedarvates/parcimonia"
+
+[tool.hatch.version]
+path = "src/tiberium_ai/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tiberium_ai"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src", "/tests", "/examples", "/plugins/parcimonia-local", "/scripts",
+  "/docs", "/wiki", "/README.md", "/LICENSE", "/CONTRIBUTING.md", "/SECURITY.md",
+  "/CHANGELOG.md", "/pyproject.toml",
+  "/AGENTS.md", "/.gitattributes",
+]
+exclude = ["__pycache__", "*.pyc", "/docs/spikes"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

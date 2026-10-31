@@ -77,7 +77,7 @@ class PipelineContext:
     proposed_action: ActionDescriptor | None = None
     proposed_call: ProposedCall | None = None
     tools: tuple[ToolSpec, ...] = ()
-    calibration: CalibrationSnapshot | None = None
+    calibration: CalibrationSnapshot | Mapping[str, CalibrationSnapshot] | None = None
     reflex_state: str | Mapping[str, Any] | None = None
     trust_reflex: bool = False
     webbrain_mode: WebBrainMode = WebBrainMode.ASK

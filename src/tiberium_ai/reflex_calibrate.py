@@ -7,7 +7,7 @@ No neural weights are loaded and no cloud API is called.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Any, Mapping, Sequence
 
 from .reflex import (
@@ -60,13 +60,12 @@ class CalibrationReport:
         return None
 
     def authorizes_auto_act(self) -> bool:
-        return any(
-            snapshot.permits_auto_act(snapshot.threshold) for snapshot in self.snapshots
-        )
+        # A report has no current request binding or host execution authority.
+        return False
 
     def to_record(self) -> dict[str, Any]:
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "kind": "reflex_calibration",
             "data_origin": self.data_origin,
             "backend": self.backend,
@@ -82,6 +81,7 @@ class CalibrationReport:
                     "coverage_at_threshold": snapshot.coverage_at_threshold,
                     "accuracy_at_threshold": snapshot.accuracy_at_threshold,
                     "brier": snapshot.brier,
+                    "binding": asdict(snapshot.binding) if snapshot.binding is not None else None,
                 }
                 for snapshot in self.snapshots
             ],
@@ -287,7 +287,9 @@ def evaluate_calibration(
         asked = [by_name[name] for name in case.labels if name in by_name]
         if not asked:
             continue
-        batch = engine.evaluate(case.state, asked)
+        # Joint decision heads can change an answer when other questions change.
+        # Keep the entire schema fixed, even when a case labels only a subset.
+        batch = engine.evaluate(case.state, questions)
         for name, label in case.labels.items():
             question = by_name.get(name)
             if question is None:
@@ -305,10 +307,8 @@ def evaluate_calibration(
                 predicted = answer.noul is not None and answer.noul >= 0.5
                 correct = predicted == label
                 brier = brier_noul(answer.noul if answer.noul is not None else 0.5, label)
-                if answer.noul is None:
-                    confidence = 0.0
-                else:
-                    confidence = abs(answer.noul - 0.5) * 2.0
+                # Measure exactly the confidence convention consumed at runtime.
+                confidence = answer.confidence if answer.confidence is not None else 0.0
             else:
                 raise ValueError(f"unsupported question kind for calibration: {question.kind}.")
             bucket = per_question[name]
@@ -336,6 +336,7 @@ def evaluate_calibration(
                 brier=brier,
                 min_labelled=min_labelled,
                 data_origin=data_origin,
+                binding=engine.calibration_binding(question, questions=questions),
             )
         )
     return CalibrationReport(
@@ -360,4 +361,3 @@ def calibrate_parcimonia_fixtures(
         threshold=threshold,
         data_origin="fixture",
     )
-

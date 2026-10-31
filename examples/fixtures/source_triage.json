@@ -1,0 +1,95 @@
+{
+  "schema": "source-triage-corpus/1",
+  "origin": "authored_fixture",
+  "independent_labels_established": false,
+  "context": {
+    "id": "parcimonia", "revision": "fixture-1",
+    "objective": "Evaluate local decision models and their evidence",
+    "constraints": ["Retain corrections and source evidence"],
+    "required_context": ["hardware"], "values": {"hardware": "Synthetic CPU host"}
+  },
+  "cases": [
+    {
+      "id": "relevant-update",
+      "source": {"id": "new-version", "title": "Local decision model", "text": "New version lowers measured latency.", "reference": "fixture:new-version"},
+      "knowledge": [{"id": "old-version", "title": "Local decision model", "text": "Earlier version has higher latency.", "reference": "fixture:old-version"}],
+      "attention": [0.96, 0.96, 0.01], "relations": {"old-version": "update"},
+      "expected_disposition": "process", "must_retain": true
+    },
+    {
+      "id": "irrelevant-noise",
+      "source": {"id": "noise", "title": "Garden furniture", "text": "Special offer on outdoor tables.", "reference": "fixture:noise"},
+      "knowledge": [], "attention": [0.01, 0.01, 0.01], "relations": {},
+      "expected_disposition": "skip_candidate", "must_retain": false
+    },
+    {
+      "id": "protected-source",
+      "source": {"id": "protected", "title": "Garden furniture", "text": "Preserve this owner-selected source.", "reference": "fixture:protected", "protected": true},
+      "knowledge": [], "attention": [0.01, 0.01, 0.01], "relations": {},
+      "expected_disposition": "defer", "must_retain": true
+    },
+    {
+      "id": "missing-context",
+      "source": {"id": "unknown-hardware", "title": "Decision model hardware", "text": "Check compatibility with the project machine.", "reference": "fixture:unknown-hardware"},
+      "context_values": {}, "knowledge": [], "attention": [0.96, 0.96, 0.01], "relations": {},
+      "expected_disposition": "defer", "must_retain": true
+    },
+    {
+      "id": "backend-unavailable",
+      "source": {"id": "unavailable", "title": "Decision model", "text": "Potentially useful evidence with no available classifier.", "reference": "fixture:unavailable"},
+      "knowledge": [], "attention": null, "relations": {},
+      "expected_disposition": "defer", "must_retain": true
+    },
+    {
+      "id": "exact-republication",
+      "source": {"id": "copy-new", "title": "Decision model benchmark", "text": "Synthetic model latency is 10 ms.", "reference": "fixture:copy-new", "published_at": "2026-10-08T10:00:00Z"},
+      "knowledge": [{"id": "copy-known", "title": "Decision model benchmark", "text": "Synthetic model latency is 10 ms.", "reference": "fixture:copy-known", "published_at": "2026-10-07T10:00:00Z"}],
+      "attention": [0.96, 0.96, 0.01], "relations": {},
+      "expected_disposition": "skip_candidate", "must_retain": false
+    },
+    {
+      "id": "corrected-context-limit",
+      "source": {"id": "corrected-limit", "title": "Decision model context limit", "text": "Correction: the context limit is 8192, previously reported as 4096.", "reference": "fixture:corrected-limit"},
+      "knowledge": [{"id": "old-limit", "title": "Decision model context limit", "text": "The context limit is 4096.", "reference": "fixture:old-limit"}],
+      "attention": [0.96, 0.96, 0.01], "relations": {"old-limit": "update"},
+      "expected_disposition": "process", "must_retain": true
+    },
+    {
+      "id": "contradictory-evidence",
+      "source": {"id": "cpu-no", "title": "Decision model CPU support", "text": "This test reports CPU support is unavailable.", "reference": "fixture:cpu-no"},
+      "knowledge": [{"id": "cpu-yes", "title": "Decision model CPU support", "text": "Earlier documentation claims CPU support is available.", "reference": "fixture:cpu-yes"}],
+      "attention": [0.96, 0.96, 0.01], "relations": {"cpu-yes": "contradiction"},
+      "expected_disposition": "process", "must_retain": true
+    },
+    {
+      "id": "no-lexical-candidate",
+      "source": {"id": "fresh", "title": "Compact local inference", "text": "An encoder can classify bounded choices offline.", "reference": "fixture:fresh"},
+      "knowledge": [{"id": "garden", "title": "Gardening", "text": "Plant tomatoes in spring.", "reference": "fixture:garden"}],
+      "attention": [0.96, 0.96, 0.01], "relations": {},
+      "expected_disposition": "process", "must_retain": true
+    },
+    {
+      "id": "uncertain-duplicate",
+      "source": {"id": "maybe-new", "title": "Decision model benchmark", "text": "This report may include an improved result.", "reference": "fixture:maybe-new"},
+      "knowledge": [{"id": "maybe-known", "title": "Decision model benchmark", "text": "An earlier report includes some results.", "reference": "fixture:maybe-known"}],
+      "attention": [0.96, 0.96, 0.01], "relations": {"maybe-known": "uncertain"},
+      "expected_disposition": "process", "must_retain": true
+    },
+    {
+      "id": "ambiguous-relevance",
+      "source": {"id": "ambiguous", "title": "General research", "text": "The relationship to project goals is unclear.", "reference": "fixture:ambiguous"},
+      "knowledge": [], "attention": [0.5, 0.5, 0.01], "relations": {},
+      "expected_disposition": "defer", "must_retain": true
+    },
+    {
+      "id": "copy-with-unresolved-other-candidate",
+      "source": {"id": "copy-mixed", "title": "Decision model evidence", "text": "CPU test succeeds.", "reference": "fixture:copy-mixed"},
+      "knowledge": [
+        {"id": "copy-exact", "title": "Decision model evidence", "text": "CPU test succeeds.", "reference": "fixture:copy-exact"},
+        {"id": "copy-other", "title": "Decision model evidence", "text": "CPU test may fail for another revision.", "reference": "fixture:copy-other"}
+      ],
+      "attention": [0.96, 0.96, 0.01], "relations": {},
+      "expected_disposition": "process", "must_retain": true
+    }
+  ]
+}

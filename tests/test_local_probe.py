@@ -36,7 +36,7 @@ def server(body=b'{"data":[{"id":"qwen-test"}]}', *, status=200, delay=0, declar
                         self.wfile.write(bytes([byte]))
                         self.wfile.flush()
                         time.sleep(0.015)
-                except (BrokenPipeError, ConnectionResetError):
+                except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
                     pass
                 return
             self.send_response(status)
@@ -54,7 +54,7 @@ def server(body=b'{"data":[{"id":"qwen-test"}]}', *, status=200, delay=0, declar
                         time.sleep(0.015)
                 else:
                     self.wfile.write(body)
-            except (BrokenPipeError, ConnectionResetError):
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
                 pass
 
         def log_message(self, *_args):
@@ -185,11 +185,12 @@ def test_deep_json_is_a_sanitized_error():
     assert result["status"] == "invalid_response"
 
 
-def test_absent_server_is_unreachable_without_exception_details():
-    with socket.socket() as sock:
-        sock.bind(("127.0.0.1", 0))
-        port = sock.getsockname()[1]
-    result = probe_models(f"http://127.0.0.1:{port}", timeout=0.1)
+def test_absent_server_is_unreachable_without_exception_details(monkeypatch):
+    def refused(*args, **kwargs):
+        raise ConnectionRefusedError("fixture private connection error")
+
+    monkeypatch.setattr(socket, "create_connection", refused)
+    result = probe_models("http://127.0.0.1:1234", timeout=0.1)
     assert result["status"] == "unreachable"
     assert result["error_type"] == "connection_failed"
 

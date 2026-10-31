@@ -282,7 +282,12 @@ def chat_completion(
         def expire() -> None:
             expired.set()
             try:
-                sock.shutdown(socket.SHUT_RDWR)
+                if isinstance(sock, ssl.SSLSocket):
+                    # SSLSocket.shutdown clears _sslobj while do_handshake may
+                    # still use it. Interrupt the fd without discarding TLS state.
+                    socket.socket.shutdown(sock, socket.SHUT_RDWR)
+                else:
+                    sock.shutdown(socket.SHUT_RDWR)
             except OSError:
                 pass
 

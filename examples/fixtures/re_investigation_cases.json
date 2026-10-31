@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "self-hosted-integration-example",
+      "origin": "authored_fixture",
+      "state": "re_investigation_state.json",
+      "inventory": "re_investigation_capabilities.json",
+      "workspace_root": "../..",
+      "expected_files": [
+        "src/tiberium_ai/re_investigation.py",
+        "tests/test_re_investigation.py",
+        "src/tiberium_ai/task_followup.py"
+      ],
+      "expected_route": "leanrea.source_slice"
+    }
+  ]
+}

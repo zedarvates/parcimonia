@@ -885,7 +885,7 @@ def replay_decision(
                 str(name): dict(answer) for name, answer in record.answers.items()
             },
             latin_only=record.latin_only,
-        )
+        ), backend_id=record.backend_id, backend_version=record.backend_version,
     )
     try:
         batch = engine.evaluate(

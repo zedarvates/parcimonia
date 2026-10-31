@@ -59,3 +59,11 @@ stays uncalibrated. Constraints are matched, not enforced by a policy engine, an
 the router keeps its prototype restriction to low risk, normal evidence and any
 locality. Automatic route discovery is out of scope, and protobuf stays deferred
 until a second language or process consumes the manifest.
+
+## Optional execution profiles
+
+The explicit `filter_profiled_routes` adapter adds versioned domain, environment,
+effect and data constraints without changing this manifest's schema or legacy
+matching. It rejects unbound routes and records profile and catalog hashes.
+See [Execution profiles](EXECUTION_PROFILES.md) for skill selection, host
+attestations, dependency pins and invocation replay. Metadata is not permission.

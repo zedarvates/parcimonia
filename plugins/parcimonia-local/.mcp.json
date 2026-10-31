@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "parcimonia-local": {
+      "command": "python",
+      "args": [
+        "-I",
+        "-B",
+        "${PLUGIN_ROOT}/server.py"
+      ],
+      "cwd": "${PLUGIN_ROOT}",
+      "env": {
+        "PYTHONUTF8": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    }
+  }
+}

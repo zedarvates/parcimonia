@@ -80,8 +80,9 @@ def test_measured_calibration_permits_auto_act():
             }
         }
     )
+    engine = ReflexEngine(backend, backend_id="fixture.continue", backend_version="1")
     snapshot = CalibrationSnapshot(
-        task_family="parcimonia-continue",
+        task_family="parcimonia.should_continue",
         measured=True,
         n_labelled=80,
         threshold=0.85,
@@ -89,8 +90,9 @@ def test_measured_calibration_permits_auto_act():
         accuracy_at_threshold=0.94,
         brier=0.08,
         data_origin="labelled_outcomes",
+        binding=engine.calibration_binding(NOUL_Q),
     )
-    batch = ReflexEngine(backend).evaluate("continue", [NOUL_Q], calibration=snapshot)
+    batch = engine.evaluate("continue", [NOUL_Q], calibration=snapshot)
     assert batch.uncalibrated is False
     assert batch.get("should_continue").auto_act_allowed is True
 

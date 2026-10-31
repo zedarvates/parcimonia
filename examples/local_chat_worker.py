@@ -199,7 +199,12 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(output, ensure_ascii=True, separators=(",", ":"), allow_nan=False))
     except (OSError, ValueError, TypeError, UnicodeError, RecursionError):
         # Never echo request content, supplied arguments, credentials or errors.
-        print("local completion configuration or input failed", file=sys.stderr)
+        message = "local completion configuration or input failed\n"
+        binary = getattr(sys.stderr, "buffer", None)
+        if binary is None:
+            sys.stderr.write(message)
+        else:
+            binary.write(message.encode("ascii"))
         return 2
     return 0 if result["status"] == "completed" else 2
 
