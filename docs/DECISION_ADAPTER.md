@@ -67,10 +67,15 @@ deadline, and hashes to a fingerprint. `DecisionRecord` stores one captured
 response with the backend id and version, the script property that changes the
 outcome, the request hash, the origin and the usage.
 
-`capture_decision` takes an injected transport. The library performs no network
-I/O: with no transport the capture is a typed `unavailable`, not an exception.
+`capture_decision` takes an injected transport. This core function performs no
+network I/O: with no transport the capture is a typed `unavailable`, not an exception.
 That injection point is the only piece a real call still needs, which is why one
 authorized call can become a committed fixture instead of a demonstration.
+
+The optional [Tev1 local transport](TEV1_SHADOW.md) supplies a bounded HTTP
+implementation. Its timed capture method keeps provider concentration out of
+the calibration gate and applies the existing decision clock. It is never
+selected or called automatically.
 
 The request identity covers the declared budget even though the budget is not
 sent to a backend: a decision taken under another deadline is a different
