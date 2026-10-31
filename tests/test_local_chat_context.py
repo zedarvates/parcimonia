@@ -168,10 +168,10 @@ def test_augmented_request_obeys_existing_utf8_byte_cap(invoke, tmp_path):
     client.assert_not_called()
 
 
-def test_context_mode_does_not_accept_stdin_version_two(invoke, tmp_path):
+def test_context_mode_does_not_accept_unknown_stdin_version(invoke, tmp_path):
     context_file = write_context(tmp_path, b"[note:fixture-1] Context.")
     code, stdout, stderr, client = invoke(
-        request(schema_version=2), ["--context-file", str(context_file)],
+        request(schema_version=3), ["--context-file", str(context_file)],
     )
     assert code == 2 and stdout == ""
     assert stderr == "local completion configuration or input failed\n"

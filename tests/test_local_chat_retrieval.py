@@ -181,10 +181,10 @@ def test_retrieval_configuration_errors_are_sanitized_without_model_call(invoke,
 
 
 @pytest.mark.parametrize("updates", [
-    {"schema_version": 2}, {"schema_version": 3}, {"rag_query": QUERY},
+    {"schema_version": 3}, {"schema_version": 4}, {"rag_query": QUERY},
     {"vault_dir": "private-vault"}, {"rag_top": 3}, {"rag_timeout": 15}, {"rag_python": "python"},
 ])
-def test_stdin_remains_version_one_with_no_retrieval_process_options(invoke, tmp_path, updates):
+def test_stdin_rejects_unknown_versions_and_retrieval_process_options(invoke, tmp_path, updates):
     code, stdout, stderr, retriever, client = invoke(request(**updates), rag_args(tmp_path))
     assert code == 2 and stdout == ""
     assert stderr == "local completion configuration or input failed\n"

@@ -18,6 +18,8 @@ LM Studio text client and JSON worker are available for explicit local requests;
 see [the Eurekaï local LLM plan](docs/LOCAL_LLM_EUREKAI.md) and the
 [existing second-brain context connection](docs/LOCAL_KNOWLEDGE.md). Its offline
 fixture does not establish model quality, hardware readiness or token savings.
+The same worker also accepts explicit, bounded PNG/JPEG inputs through the
+[versioned local vision contract](docs/LOCAL_VISION.md); request v1 stays text-only.
 
 Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.
 

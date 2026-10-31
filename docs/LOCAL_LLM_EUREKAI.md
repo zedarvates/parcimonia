@@ -6,6 +6,13 @@ du LM Studio déjà installé, puis raccorder les tâches au caller existant.
 
 ## Configuration de départ à qualifier
 
+Mise à jour du 31 octobre : le [raccord vision](LOCAL_VISION.md) utilise le même
+worker et le même contexte RAG. Les candidats multimodaux retenus pour l'essai
+sont Qwen3.5-9B Q4 pour le travail courant et Qwen3.8-27B Q4 pour les tâches
+complexes. Ils incluent la vision dans leur architecture ; le paquet et le
+runtime installés doivent encore être qualifiés. Le tableau ci-dessous conserve
+les candidats texte du plan initial comme recours, sans les déclarer chargés.
+
 | Étape | Candidat et réglage initial | Passage à l'étape suivante |
 | --- | --- | --- |
 | Remise en service | Qwen2.5-Coder-7B-Instruct GGUF Q4_K_M, une RTX 3060, contexte 4–8k | Réponse courte puis tâche de code vérifiée sans erreur mémoire |

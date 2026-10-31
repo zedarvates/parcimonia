@@ -1,7 +1,8 @@
-"""One explicit local text request for an existing caller, using JSON stdin.
+"""One explicit local text or vision request for the existing caller, using JSON stdin.
 
-The request requires schema_version=1, task_id, model and messages; max_tokens
-and temperature are optional. Endpoint and timeout belong to process arguments.
+The request requires schema_version=1 (text) or 2 (vision), task_id, model and
+messages; max_tokens and temperature are optional. Endpoint and timeout belong
+to process arguments. Version 2 requires a compatible local multimodal runtime.
 An explicit --context-file adds existing UTF-8 retrieval output as document data.
 --vault-dir invokes the existing RAG engine once with an explicit --rag-query.
 The RAG command is caller-configured; model replies remain data without tool
@@ -18,13 +19,14 @@ import json
 import sys
 from typing import Any, BinaryIO
 
-from tiberium_ai.local_chat import _request, chat_completion
+from tiberium_ai.local_chat import _request, _validate_messages, chat_completion
 from tiberium_ai.local_probe import (
     _endpoint, _positive_number, _reject_constant, _unique_object,
 )
 from tiberium_ai.local_retrieval import retrieve_context
 
 MAX_REQUEST_BYTES = 262144
+MAX_MULTIMODAL_REQUEST_BYTES = 6 * 1024 * 1024
 MAX_CONTEXT_BYTES = 16384
 _REQUIRED = {"schema_version", "task_id", "model", "messages"}
 _OPTIONAL = {"max_tokens", "temperature"}
@@ -51,8 +53,8 @@ class _SafeArgumentParser(argparse.ArgumentParser):
 
 
 def _read_request(stream: BinaryIO) -> dict[str, Any]:
-    raw = stream.read(MAX_REQUEST_BYTES + 1)
-    if len(raw) > MAX_REQUEST_BYTES:
+    raw = stream.read(MAX_MULTIMODAL_REQUEST_BYTES + 1)
+    if len(raw) > MAX_MULTIMODAL_REQUEST_BYTES:
         raise ValueError("request exceeds the input byte limit")
     request = json.loads(
         raw.decode("utf-8"), object_pairs_hook=_unique_object,
@@ -61,32 +63,35 @@ def _read_request(stream: BinaryIO) -> dict[str, Any]:
     if (not isinstance(request, dict) or not _REQUIRED <= request.keys()
             or request.keys() - _REQUIRED - _OPTIONAL):
         raise ValueError("request must use the supported envelope")
-    if type(request["schema_version"]) is not int or request["schema_version"] != 1:
+    if type(request["schema_version"]) is not int or request["schema_version"] not in (1, 2):
         raise ValueError("unsupported request version")
+    if request["schema_version"] == 1 and len(raw) > MAX_REQUEST_BYTES:
+        raise ValueError("request exceeds the text input byte limit")
     task_id = request["task_id"]
     if (not isinstance(task_id, str) or not task_id or task_id != task_id.strip()
             or len(task_id) > 256
             or any(ord(char) < 32 or ord(char) == 127 for char in task_id)):
         raise ValueError("invalid task identity")
-    # Reuse the client's exact text-only validation, including its encoded cap.
+    # Keep the exact text contract by default; vision is explicitly versioned.
     _request(
         request["model"], request["messages"],
         request.get("max_tokens", 1024), request.get("temperature", 0.0),
+        **({"request_schema_version": 2} if request["schema_version"] == 2 else {}),
     )
     return request
 
 
 def _with_context(
-    messages: list[dict[str, str]], context_file: str,
-) -> tuple[list[dict[str, str]], dict[str, Any]]:
+    messages: list[dict[str, Any]], context_file: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     with open(context_file, "rb") as stream:
         raw = stream.read(MAX_CONTEXT_BYTES + 1)
     return _with_context_bytes(messages, raw, source="provided_rag_context")
 
 
 def _with_context_bytes(
-    messages: list[dict[str, str]], raw: bytes, *, source: str,
-) -> tuple[list[dict[str, str]], dict[str, Any]]:
+    messages: list[dict[str, Any]], raw: bytes, *, source: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     if len(raw) > MAX_CONTEXT_BYTES:
         raise ValueError("context exceeds the input byte limit")
     text = raw.decode("utf-8")
@@ -136,6 +141,7 @@ def main(argv: list[str] | None = None) -> int:
         _scheme, _host, _port, origin = _endpoint(args.base_url, args.allow_lan)
         _positive_number(args.timeout, "timeout", 600)
         request = _read_request(sys.stdin.buffer)
+        version_options = {"request_schema_version": 2} if request["schema_version"] == 2 else {}
         messages, context = request["messages"], None
         retrieval, result = None, None
         if args.context_file is not None:
@@ -165,6 +171,7 @@ def main(argv: list[str] | None = None) -> int:
             _request(
                 request["model"], messages,
                 request.get("max_tokens", 1024), request.get("temperature", 0.0),
+                **version_options,
             )
         if result is None:
             result = chat_completion(
@@ -172,12 +179,21 @@ def main(argv: list[str] | None = None) -> int:
                 base_url=args.base_url, allow_lan=args.allow_lan, timeout=args.timeout,
                 max_tokens=request.get("max_tokens", 1024),
                 temperature=request.get("temperature", 0.0),
+                **version_options,
             )
         output = {**result, "task_id": request["task_id"]}
+        if request["schema_version"] == 2:
+            output.update(schema_version=4, request_schema_version=2)
+            if "images" not in output:
+                output["images"] = _validate_messages(messages, 2)
         if context is not None:
-            output.update(schema_version=2, context=context)
+            output.update(context=context)
+            if request["schema_version"] == 1:
+                output.update(schema_version=2)
         if retrieval is not None:
-            output.update(schema_version=3, retrieval=retrieval)
+            output.update(retrieval=retrieval)
+            if request["schema_version"] == 1:
+                output.update(schema_version=3)
         # ASCII JSON also survives legacy Windows pipe encodings; json.loads
         # restores the original FR/EN and code characters without loss.
         print(json.dumps(output, ensure_ascii=True, separators=(",", ":"), allow_nan=False))
