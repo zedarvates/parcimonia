@@ -105,7 +105,7 @@ class LocalChatWorkerTests(unittest.TestCase):
 
     def test_invalid_input_never_calls_client(self):
         for value in (
-            [], {}, request(schema_version=True), request(schema_version=2),
+            [], {}, request(schema_version=True), request(schema_version=3),
             request(task_id=""), request(task_id=" a"), request(task_id="x" * 257),
             request(task_id="secret\nvalue"), request(model=""), request(messages=[]),
             request(messages=[{"role": "tool", "content": "secret"}]),
