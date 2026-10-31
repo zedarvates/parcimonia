@@ -117,6 +117,11 @@ ffprobe to record reported streams, codecs and durations. Proposed tags retain
 stream evidence and distinguish attached pictures from ordinary video streams,
 then reuse the same catalogue and review flow.
 
+A bounded [PLY body profile](docs/ASSET_PLY_BODY.md) reads declared vertex and
+face records, computes local XYZ bounds with source evidence, and proposes
+mesh/point-cloud or Gaussian-parameter candidates. Local coordinates remain
+separate from GPS and no rendering quality is inferred.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.

@@ -15,6 +15,10 @@ Le [sondage natif audio/vidéo](ASSET_NATIVE_MEDIA.md), explicitement demandé,
 complète les en-têtes par des pistes, codecs et durées rapportés par ffprobe,
 avec preuves par piste et revue des tags.
 
+La [lecture du corps PLY](ASSET_PLY_BODY.md) contrôle les positions locales,
+indices de faces et paramètres Gaussian des enregistrements disponibles, puis
+ajoute leurs agrégats, preuves et tags candidats.
+
 Objectif : retrouver des fichiers par leur format, leurs caractéristiques, leur
 contenu proposé et leur localisation, puis préparer leur classement. Un même
 asset pourra relever de plusieurs modalités : une vidéo peut contenir image,
@@ -33,8 +37,8 @@ indices lexicaux et les futures inférences de modèles restent distincts.
 | Images | En-têtes PNG, GIF, JPEG ; dimensions lorsque disponibles | Objets, textures, scènes, texte présent dans l'image |
 | Vidéo | Conteneur ISO-BMFF et Ogg ; suffixe vidéo conservé comme indice | Pistes réelles, images clés, segments, sous-titres et événements |
 | Sons | WAV PCM : métadonnées déclarées ; FLAC par signature | Parole, transcription, musique, événements sonores |
-| 3D | GLB et PLY par en-tête ; structure glTF JSON déclarée | Géométrie, unités, textures, animation et reconnaissance après rendu autorisé |
-| Gaussian splatting | Candidat d'après un ensemble précis de propriétés PLY | Validation du corps, rendu, formats splat/ksplat/spz et variantes |
+| 3D | GLB par en-tête ; profil PLY des sommets/faces ; structure glTF JSON déclarée | Autres profils géométriques, unités, textures, animation et reconnaissance après rendu autorisé |
+| Gaussian splatting | Candidat de paramètres PLY après lecture des records compatibles | Qualification des paramètres, rendu, formats splat/ksplat/spz et variantes |
 | Code | Rôles et motifs nommés Python des analyseurs existants | Autres langages et similarité fonctionnelle vérifiée |
 | Géographie | GeoJSON et profil GPX 1.1 : coordonnées, ordre des axes, CRS et enveloppe | KML, GeoTIFF, Shapefile, reprojection et recherche géométrique exacte |
 
