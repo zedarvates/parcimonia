@@ -16,6 +16,9 @@
   native-tool failures and unexpected skips still fail archive qualification.
 - Accept numbered FFprobe release-tag versions such as `n9.0.2` while retaining
   the observed version, minimum major version and existing resource limits.
+- Install native fixture backends in CI so OCR, PDF and media integration tests
+  execute rather than disappear behind absent optional executables. Windows SDK
+  archives are pinned by release URL and SHA-256, only within disposable CI jobs.
 
 ## 0.5.0 — 2026-10-31
 

@@ -31,7 +31,20 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install the package and test dependencies
         run: python -m pip install --disable-pip-version-check ".[dev,release]"
-      - name: Select the Poppler PDF backend on Windows
+      - name: Install native fixture backends on Ubuntu
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends ffmpeg poppler-utils tesseract-ocr tesseract-ocr-eng
+      - name: Install the OCR fixture backend on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install tesseract --yes --no-progress
+          $ocr = Join-Path $env:ProgramFiles 'Tesseract-OCR'
+          if (-not (Test-Path -LiteralPath (Join-Path $ocr 'tesseract.exe'))) { throw 'OCR backend was not installed' }
+          Add-Content -LiteralPath $env:GITHUB_PATH -Value $ocr
+      - name: Select pinned PDF and media backends on Windows
         if: runner.os == 'Windows'
         shell: python
         run: |
@@ -42,23 +55,30 @@ jobs:
           import urllib.request
           import zipfile
 
-          url = "https://github.com/oschwartz10612/poppler-windows/releases/download/v26.09.0-0/Release-26.09.0-0.zip"
-          expected = "7a6f256a0ddf7536182246a5733331bf4677cbcc34f4663774947ad34556c8d0"
-          with urllib.request.urlopen(url, timeout=60) as response:
-              data = response.read(64 * 1024 * 1024 + 1)
-          assert len(data) <= 64 * 1024 * 1024
-          assert hashlib.sha256(data).hexdigest() == expected
-          destination = Path(os.environ["RUNNER_TEMP"]) / "parcimonia-poppler"
-          destination.mkdir(exist_ok=False)
-          with zipfile.ZipFile(io.BytesIO(data)) as archive:
-              assert sum(item.file_size for item in archive.infolist()) <= 256 * 1024 * 1024
-              for item in archive.infolist():
-                  path = Path(item.filename)
-                  assert not path.is_absolute() and ".." not in path.parts
-              archive.extractall(destination)
-          executable, = destination.rglob("pdftotext.exe")
-          with open(os.environ["GITHUB_PATH"], "a", encoding="utf-8") as stream:
-              stream.write(str(executable.parent) + "\n")
+          backends = [
+              ("poppler", "pdftotext.exe",
+               "https://github.com/oschwartz10612/poppler-windows/releases/download/v26.09.0-0/Release-26.09.0-0.zip",
+               "7a6f256a0ddf7536182246a5733331bf4677cbcc34f4663774947ad34556c8d0"),
+              ("ffmpeg", "ffprobe.exe",
+               "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-31-12-59/ffmpeg-n9.0.2-39-g7adfbe40dc-win64-lgpl-shared-9.0.zip",
+               "e907b01fa4783913151237e37df2a10fa97d99a1598a021bf59d4ae62ffed4c0"),
+          ]
+          for name, executable_name, url, expected in backends:
+              with urllib.request.urlopen(url, timeout=60) as response:
+                  data = response.read(128 * 1024 * 1024 + 1)
+              assert len(data) <= 128 * 1024 * 1024
+              assert hashlib.sha256(data).hexdigest() == expected
+              destination = Path(os.environ["RUNNER_TEMP"]) / ("parcimonia-" + name)
+              destination.mkdir(exist_ok=False)
+              with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                  assert sum(item.file_size for item in archive.infolist()) <= 256 * 1024 * 1024
+                  for item in archive.infolist():
+                      path = Path(item.filename)
+                      assert not path.is_absolute() and ".." not in path.parts
+                  archive.extractall(destination)
+              executable, = destination.rglob(executable_name)
+              with open(os.environ["GITHUB_PATH"], "a", encoding="utf-8") as stream:
+                  stream.write(str(executable.parent) + "\n")
       - name: Build the wheel and source archives
         run: python -m build --no-isolation
       - name: Run the offline test suite
