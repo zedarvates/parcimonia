@@ -19,6 +19,7 @@ from .geo_probe import probe_geojson
 from .gpx_probe import PROFILE_ID as GPX_PROFILE_ID, probe_gpx
 from .media_probe import probe_media
 from .pattern_rules import builtin_rule_registry
+from .ply_body_probe import PROFILE_ID as PLY_PROFILE_ID, probe_ply_body
 from .source_role import classify_source_role
 from .source_scan import scan_source
 from .verification import hash_input
@@ -227,8 +228,24 @@ def inspect_asset(
         or probe_media(data, complete=complete)
         or probe_gpx(data, complete=complete)
     )
+    if probe is not None and probe["format"] == "ply":
+        probe = probe_ply_body(data, complete=complete) or probe
     decoded = None
     if probe is not None:
+        if probe["format"] == "ply":
+            report["analyser"] = {"id": "asset-ply-inspection", "version": "1"}
+            report["input_hash"] = hash_input({
+                "source": source, "sample": sample, "topic_terms": topic_terms,
+                "ply_profile": PLY_PROFILE_ID,
+            })
+            report["limits"].update({
+                "ply_profile": PLY_PROFILE_ID,
+                "geometry_validation": "typed_records_and_indices_not_full_surface_validation",
+                "semantic_content": "not_assessed_3d_structure_only",
+                "geometry_units": "unknown",
+                "geographic_coordinates": "not_inferred_from_ply_xyz",
+                "gaussian_splats": "schema_candidate_not_render_or_quality_validation",
+            })
         if probe["format"] == "gpx":
             report["analyser"] = {"id": "asset-gpx-inspection", "version": "1"}
             report["input_hash"] = hash_input({
@@ -291,7 +308,8 @@ def inspect_asset(
                     evidence_id = f"text:topic:{index}"
                     report["evidence"].append({"id": evidence_id, "kind": "lexical_match", "char_range": [start, end], "indexing": "unicode_codepoints"})
                     report["tag_proposals"].append(_tag("topic", label, "lexical_hint", [evidence_id]))
-        report["limits"]["semantic_content"] = "not_assessed_lexical_hints_only"
+        if report["format"]["detected"] != "ply":
+            report["limits"]["semantic_content"] = "not_assessed_lexical_hints_only"
     detected = report["format"]["detected"]
     if detected is not None:
         if detected == "python":

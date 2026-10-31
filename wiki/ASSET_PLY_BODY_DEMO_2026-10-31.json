@@ -1,0 +1,467 @@
+{
+  "data_origin": "authored_fixture_not_rendered_or_georeferenced",
+  "fixtures": [
+    {
+      "accepted_after_review": 1,
+      "accepted_before_review": 0,
+      "analyser": {
+        "id": "asset-ply-inspection",
+        "version": "1"
+      },
+      "body_evidence": {
+        "byte_range": [
+          140,
+          178
+        ],
+        "encoding": "ascii",
+        "face_count": 0,
+        "field_value_count": 9,
+        "id": "ply:body",
+        "kind": "validated_ply_body",
+        "profile": "parcimonia.ply-body-profile/v1",
+        "vertex_count": 3
+      },
+      "body_tags": [
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body",
+            "ply:position_extrema"
+          ],
+          "namespace": "geometry",
+          "status": "proposed",
+          "value": "has_local_positions"
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body"
+          ],
+          "namespace": "representation",
+          "status": "proposed",
+          "value": "point_cloud_structure"
+        }
+      ],
+      "catalog_ref": {
+        "generation": 1,
+        "snapshot_hash": "0bde6c839f6c3bf1a2050f62aa944f1ad498cba225d3278a38c2cc657b310119"
+      },
+      "changed_report_accepted": 0,
+      "changed_review_events": [
+        {
+          "event_id": "fixture:ply-review:cloud",
+          "reason": "report_changed",
+          "source": {
+            "id": "fixture:ply:cloud",
+            "revision": "authored-v1"
+          }
+        }
+      ],
+      "extrema_evidence": {
+        "byte_range": [
+          140,
+          178
+        ],
+        "extrema": {
+          "x_max": {
+            "byte_range": [
+              140,
+              151
+            ],
+            "field": "x",
+            "row": 1,
+            "value": 1.0
+          },
+          "x_min": {
+            "byte_range": [
+              152,
+              164
+            ],
+            "field": "x",
+            "row": 2,
+            "value": -1.0
+          },
+          "y_max": {
+            "byte_range": [
+              152,
+              164
+            ],
+            "field": "y",
+            "row": 2,
+            "value": 3.0
+          },
+          "y_min": {
+            "byte_range": [
+              140,
+              151
+            ],
+            "field": "y",
+            "row": 1,
+            "value": 2.0
+          },
+          "z_max": {
+            "byte_range": [
+              152,
+              164
+            ],
+            "field": "z",
+            "row": 2,
+            "value": 4.0
+          },
+          "z_min": {
+            "byte_range": [
+              165,
+              177
+            ],
+            "field": "z",
+            "row": 3,
+            "value": -2.0
+          }
+        },
+        "id": "ply:position_extrema",
+        "kind": "ply_position_extrema",
+        "profile": "parcimonia.ply-body-profile/v1"
+      },
+      "geometry_bounds_xyz": {
+        "axis_order": [
+          "x",
+          "y",
+          "z"
+        ],
+        "coordinate_frame": "file_local_unspecified",
+        "max": [
+          1.0,
+          3.0,
+          4.0
+        ],
+        "min": [
+          -1.0,
+          2.0,
+          -2.0
+        ],
+        "units": "unknown"
+      },
+      "gps_bbox_matches": 0,
+      "kind": "cloud",
+      "model_calls": 0,
+      "observed_face_count": 0,
+      "observed_vertex_count": 3,
+      "old_report_still_accepted": 1,
+      "proposed_search_count": 1,
+      "report_hash": "1816a89ce0c2b4fd10a28e3535896b5a69e72da30d5017d660adb25d7675b0b7",
+      "source_sha256": "d2146eb0f45721065a5df6ce7b923082bc7dfa826e1048ccf88a99729f6f9fa0",
+      "spatial": null
+    },
+    {
+      "accepted_after_review": 1,
+      "accepted_before_review": 0,
+      "analyser": {
+        "id": "asset-ply-inspection",
+        "version": "1"
+      },
+      "body_evidence": {
+        "byte_range": [
+          318,
+          417
+        ],
+        "encoding": "binary_big_endian",
+        "face_count": 1,
+        "field_value_count": 27,
+        "id": "ply:body",
+        "kind": "validated_ply_body",
+        "profile": "parcimonia.ply-body-profile/v1",
+        "vertex_count": 4
+      },
+      "body_tags": [
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body",
+            "ply:position_extrema"
+          ],
+          "namespace": "geometry",
+          "status": "proposed",
+          "value": "has_local_positions"
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body"
+          ],
+          "namespace": "representation",
+          "status": "proposed",
+          "value": "mesh_structure"
+        }
+      ],
+      "catalog_ref": {
+        "generation": 1,
+        "snapshot_hash": "585c105c02622193131c82e2dee23ecb7b78f5825ee880e7aea0554787bd3eb7"
+      },
+      "changed_report_accepted": 0,
+      "changed_review_events": [
+        {
+          "event_id": "fixture:ply-review:mesh",
+          "reason": "report_changed",
+          "source": {
+            "id": "fixture:ply:mesh",
+            "revision": "authored-v1"
+          }
+        }
+      ],
+      "extrema_evidence": {
+        "byte_range": [
+          318,
+          417
+        ],
+        "extrema": {
+          "x_max": {
+            "byte_range": [
+              337,
+              356
+            ],
+            "field": "x",
+            "row": 2,
+            "value": 2.0
+          },
+          "x_min": {
+            "byte_range": [
+              318,
+              337
+            ],
+            "field": "x",
+            "row": 1,
+            "value": 1.0
+          },
+          "y_max": {
+            "byte_range": [
+              356,
+              375
+            ],
+            "field": "y",
+            "row": 3,
+            "value": 3.0
+          },
+          "y_min": {
+            "byte_range": [
+              318,
+              337
+            ],
+            "field": "y",
+            "row": 1,
+            "value": 2.0
+          },
+          "z_max": {
+            "byte_range": [
+              375,
+              394
+            ],
+            "field": "z",
+            "row": 4,
+            "value": 3.0
+          },
+          "z_min": {
+            "byte_range": [
+              318,
+              337
+            ],
+            "field": "z",
+            "row": 1,
+            "value": 0.0
+          }
+        },
+        "id": "ply:position_extrema",
+        "kind": "ply_position_extrema",
+        "profile": "parcimonia.ply-body-profile/v1"
+      },
+      "geometry_bounds_xyz": {
+        "axis_order": [
+          "x",
+          "y",
+          "z"
+        ],
+        "coordinate_frame": "file_local_unspecified",
+        "max": [
+          2.0,
+          3.0,
+          3.0
+        ],
+        "min": [
+          1.0,
+          2.0,
+          0.0
+        ],
+        "units": "unknown"
+      },
+      "gps_bbox_matches": 0,
+      "kind": "mesh",
+      "model_calls": 0,
+      "observed_face_count": 1,
+      "observed_vertex_count": 4,
+      "old_report_still_accepted": 1,
+      "proposed_search_count": 1,
+      "report_hash": "6532e10fbcaa29478cfb8de17231ea90e6cab91c0fa37ddb582ca58764c59134",
+      "source_sha256": "9cad11f7a8b77a9e62c89d8cf2ab78e8a282fc0b3629af437bf687b368849d27",
+      "spatial": null
+    },
+    {
+      "accepted_after_review": 1,
+      "accepted_before_review": 0,
+      "analyser": {
+        "id": "asset-ply-inspection",
+        "version": "1"
+      },
+      "body_evidence": {
+        "byte_range": [
+          398,
+          510
+        ],
+        "encoding": "binary_little_endian",
+        "face_count": 0,
+        "field_value_count": 28,
+        "id": "ply:body",
+        "kind": "validated_ply_body",
+        "profile": "parcimonia.ply-body-profile/v1",
+        "vertex_count": 2
+      },
+      "body_tags": [
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body",
+            "ply:position_extrema"
+          ],
+          "namespace": "geometry",
+          "status": "proposed",
+          "value": "has_local_positions"
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body"
+          ],
+          "namespace": "representation",
+          "status": "proposed",
+          "value": "gaussian_splat_body_candidate"
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body"
+          ],
+          "namespace": "representation",
+          "status": "proposed",
+          "value": "point_cloud_structure"
+        }
+      ],
+      "catalog_ref": {
+        "generation": 1,
+        "snapshot_hash": "efafd1ae8774c803b10abb988e9fd14b4cc92347bb56b47056e7dbeabb67094f"
+      },
+      "changed_report_accepted": 0,
+      "changed_review_events": [
+        {
+          "event_id": "fixture:ply-review:splat",
+          "reason": "report_changed",
+          "source": {
+            "id": "fixture:ply:splat",
+            "revision": "authored-v1"
+          }
+        }
+      ],
+      "extrema_evidence": {
+        "byte_range": [
+          398,
+          510
+        ],
+        "extrema": {
+          "x_max": {
+            "byte_range": [
+              398,
+              454
+            ],
+            "field": "x",
+            "row": 1,
+            "value": 1.0
+          },
+          "x_min": {
+            "byte_range": [
+              454,
+              510
+            ],
+            "field": "x",
+            "row": 2,
+            "value": -1.0
+          },
+          "y_max": {
+            "byte_range": [
+              454,
+              510
+            ],
+            "field": "y",
+            "row": 2,
+            "value": 4.0
+          },
+          "y_min": {
+            "byte_range": [
+              398,
+              454
+            ],
+            "field": "y",
+            "row": 1,
+            "value": 2.0
+          },
+          "z_max": {
+            "byte_range": [
+              398,
+              454
+            ],
+            "field": "z",
+            "row": 1,
+            "value": 3.0
+          },
+          "z_min": {
+            "byte_range": [
+              454,
+              510
+            ],
+            "field": "z",
+            "row": 2,
+            "value": 0.0
+          }
+        },
+        "id": "ply:position_extrema",
+        "kind": "ply_position_extrema",
+        "profile": "parcimonia.ply-body-profile/v1"
+      },
+      "geometry_bounds_xyz": {
+        "axis_order": [
+          "x",
+          "y",
+          "z"
+        ],
+        "coordinate_frame": "file_local_unspecified",
+        "max": [
+          1.0,
+          4.0,
+          3.0
+        ],
+        "min": [
+          -1.0,
+          2.0,
+          0.0
+        ],
+        "units": "unknown"
+      },
+      "gps_bbox_matches": 0,
+      "kind": "splat",
+      "model_calls": 0,
+      "observed_face_count": 0,
+      "observed_vertex_count": 2,
+      "old_report_still_accepted": 1,
+      "proposed_search_count": 1,
+      "report_hash": "be3b56e2be5775a8181c7e14030a121a274508a16f2ada57444abcf2fe2bac72",
+      "source_sha256": "abd92e789bf06c5b9e8f50d98dd5c5c1504ab0aa44d515c2b6764fdc0f03923e",
+      "spatial": null
+    }
+  ]
+}
