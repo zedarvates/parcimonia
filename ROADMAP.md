@@ -2,6 +2,13 @@
 
 ## Current checkpoint
 
+An opt-in [diagnostic prototype](docs/FEASIBILITY_DIAGNOSTICS.md) now checks
+Boolean contradictions, observed blockers and missing prerequisites, alongside
+three advisory Python stability patterns. Next: independently labelled project
+episodes, false-impossibility and false-alarm measurements, then resource and
+temporal constraints. Natural-language extraction and other code languages
+remain R&D; these checks do not activate a route or establish real-world quality.
+
 The v1 work is sequenced in [V1 gates](docs/V1_GATES.md): real outcomes and
 provenance, deterministic verifiers, escalation budgets, route registry, cost
 vector and benchmarks, then opt-in active mode. A later gate does not start
