@@ -1,15 +1,15 @@
-# Parcimonia 0.5.0 : livraison locale et qualification
+# Parcimonia 0.5.1 : livraison et qualification
 
 Cette version livre l'ensemble de la bibliothèque actuelle sous son nom Python
 historique `tiberium_ai` et son nom de distribution `tiberium-ai`. Elle ajoute la
 commande installée `parcimonia`. Le plugin indépendant `parcimonia-local` conserve
 sa version 0.4.1 et ses empreintes. Les archives originales sont disponibles dans
-la [release GitHub v0.5.0](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.0).
+la [release GitHub v0.5.1](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1).
 
-`main` intègre cette version en conservant les ajouts récents : catalogues et
+Cette version livre le `main` intégré avec ses ajouts récents : catalogues et
 inspections d'assets, clients locaux texte/vision, capture/rejeu mémoire et
-contraintes de faisabilité. Le tag publié et ses empreintes restent figés ; une
-construction de `main` inclut ces ajouts et possède donc ses propres empreintes.
+contraintes de faisabilité, ainsi que les corrections Windows et de concurrence
+TLS. Le tag `v0.5.0` et ses empreintes restent figés sur leur ancien snapshot.
 
 ## Utilisation
 
@@ -17,7 +17,7 @@ Dans un environnement Python dédié, installer la wheel livrée :
 
 ```powershell
 python -m venv .venv
-.venv/Scripts/python.exe -m pip install --no-index ./tiberium_ai-0.5.0-py3-none-any.whl
+.venv/Scripts/python.exe -m pip install --no-index ./tiberium_ai-0.5.1-py3-none-any.whl
 .venv/Scripts/parcimonia.exe --version
 .venv/Scripts/parcimonia.exe rules --input request.json --enforce-rules
 ```
@@ -69,7 +69,7 @@ sans accès réseau :
 
 ```powershell
 python -m pip download --only-binary=:all: --implementation py --abi none --platform any --python-version 3.10 --dest runs/release-wheelhouse pytest==9.1.1 tomli exceptiongroup typing_extensions colorama
-python scripts/qualify_release.py --output runs/release-0.5.0 --wheelhouse runs/release-wheelhouse --python C:/Python314/python.exe --python CHEMIN_PYTHON_310/python.exe
+python scripts/qualify_release.py --output runs/release-0.5.1 --wheelhouse runs/release-wheelhouse --python C:/Python314/python.exe --python CHEMIN_PYTHON_310/python.exe
 ```
 
 Les chemins d'interpréteurs doivent désigner des installations déjà présentes.
@@ -105,6 +105,16 @@ Le fichier `qualification.json` décrit les interpréteurs effectivement testés
 La publication initiale a passé ses quatre jobs dans
 [la CI du tag](https://github.com/zedarvates/parcimonia/actions/runs/41224949736).
 La fusion dans `main` doit passer sa propre suite sur le commit intégré.
+
+Pour une branche `release/*` ou un tag `v*`, la CI construit un seul jeu
+d'archives sous Linux. Le qualificateur les reconstruit à l'identique depuis la
+source, teste une installation isolée et vérifie le plugin extrait en stdio.
+Les quatre jobs Python 3.10/3.14 sous Linux et Windows téléchargent ensuite ces
+mêmes archives, vérifient leurs empreintes et installent la wheel de référence.
+Un contrôle de provenance des imports empêche de tester accidentellement les
+sources du checkout à sa place. Chaque job produit un rapport portable lié au
+commit et aux empreintes des archives. Ces artefacts CI sont préparatoires :
+leur construction ne publie aucune release automatiquement.
 
 Pour revenir à une livraison précédente, arrêter le consommateur concerné et
 réinstaller sa wheel conservée dans son environnement dédié. La qualification ne

@@ -119,6 +119,7 @@ def qualify(output, interpreters, wheelhouse):
         with zipfile.ZipFile(plugin_zip, "x", compression=zipfile.ZIP_DEFLATED) as archive:
             for name, path in sorted(actual_files.items()):
                 info = zipfile.ZipInfo("parcimonia-local/" + name, date_time=(1980, 1, 1, 0, 0, 0))
+                info.create_system = 3
                 info.compress_type = zipfile.ZIP_DEFLATED
                 info.external_attr = 0o100644 << 16
                 archive.writestr(info, path.read_bytes())
