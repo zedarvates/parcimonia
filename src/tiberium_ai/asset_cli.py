@@ -16,6 +16,7 @@ import sys
 from typing import Sequence
 
 from .asset_catalog import search_asset_reports
+from .asset_expectations import MAX_AUDIT_BYTES, MAX_EXPECTATIONS_BYTES, audit_asset_expectations
 from .asset_catalog_snapshot import (
     MAX_REPORT_BYTES, MAX_SNAPSHOT_BYTES, MAX_SNAPSHOT_NODES, create_asset_catalog,
     export_asset_reports, put_asset_report, remove_asset_report,
@@ -115,6 +116,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     search.add_argument("--tag", action="append", default=[])
     search.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
     search.add_argument("--limit", type=int, default=50)
+    audit = commands.add_parser("audit-expectations", help="compare explicit expectations with supplied reports")
+    audit.add_argument("input", help="JSON report array, or catalogue snapshot with --catalog")
+    audit.add_argument("expectations", help="explicit versioned expectations JSON")
+    audit.add_argument("--catalog", action="store_true", help="read the input as a saved catalogue snapshot")
     init = commands.add_parser("review-init", help="create a new empty tag journal")
     init.add_argument("output")
     decision = commands.add_parser("review-tag", help="record one caller decision in a new journal snapshot")
@@ -198,6 +203,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif arguments.command == "search":
             reports = _read_json(arguments.input, 16 * 1024 * 1024)
             report = search_asset_reports(reports, tags=arguments.tag, bbox=arguments.bbox, limit=arguments.limit)
+            code = 0
+        elif arguments.command == "audit-expectations":
+            if arguments.catalog:
+                snapshot = _read_catalog(arguments.input)
+                reports = export_asset_reports(snapshot)
+            else:
+                reports = _read_json(arguments.input, MAX_SNAPSHOT_BYTES, max_nodes=MAX_SNAPSHOT_NODES)
+            expectations = _read_json(arguments.expectations, MAX_EXPECTATIONS_BYTES, max_nodes=20_000)
+            report = audit_asset_expectations(reports, expectations)
+            if arguments.catalog:
+                reference = {
+                    "id": snapshot["catalog_id"], "generation": snapshot["generation"],
+                    "snapshot_hash": snapshot["snapshot_hash"],
+                }
+                report = {
+                    "schema": "parcimonia.asset-catalog-expectation-audit/v1", "catalog": reference,
+                    "input_hash": hash_input({"catalog": reference, "audit_input_hash": report["input_hash"]}),
+                    "result": report,
+                }
             code = 0
         elif arguments.command == "extract-text":
             data, _, complete = _read_regular(arguments.input, MAX_SAMPLE_BYTES)
@@ -311,6 +335,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             code = 0
         output = json.dumps(report, ensure_ascii=True, sort_keys=True, allow_nan=False)
+        if arguments.command == "audit-expectations" and len(output.encode("ascii")) + 1 > MAX_AUDIT_BYTES:
+            raise ValueError("The ASCII audit output exceeds 16 MiB.")
         if arguments.command == "catalog-export" and not arguments.out and len(output.encode("ascii")) + 1 > MAX_SNAPSHOT_BYTES:
             raise ValueError("The ASCII stdout export exceeds 16 MiB; use --out for compact UTF-8 export.")
     except (OSError, ValueError, TypeError, RecursionError) as exc:
