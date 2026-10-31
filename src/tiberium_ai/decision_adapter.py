@@ -981,7 +981,7 @@ def capture_decision(
 ) -> DecisionCapture:
     """Capture one decision through an injected transport, then replay it.
 
-    The library performs no network I/O of its own: the caller supplies the
+    This function performs no network I/O of its own: the caller supplies the
     transport, and its absence is a typed unavailable capture. That transport is
     the only piece a real decision-model call still needs.
     """
