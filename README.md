@@ -149,6 +149,11 @@ supplied reports with caller-written requirements. It separates matching
 declarations, contradictions, unknown facts and missing exact report revisions,
 without treating a missing tag as proof of absent content.
 
+A separate [expectation consistency check](docs/ASSET_EXPECTATION_CONSTRAINTS.md)
+finds incompatible same-fact rules before inspection, with independently checked
+candidate assignments or two-rule conflict certificates. It does not model
+relations between facts or guarantee that a matching file exists.
+
 An opt-in bounded-context experiment retrieves exact versioned facts and compares
 full history, compact context and limited temporal persistence on 14 authored
 sequences. [Explicit capture](docs/MEMORY_CAPTURE.md) exports bounded observed

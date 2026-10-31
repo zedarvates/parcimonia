@@ -1,0 +1,213 @@
+{
+  "cases": [
+    {
+      "expectations": {
+        "assets": [
+          {
+            "checks": [
+              {
+                "fact": "metadata.width",
+                "id": "min-width",
+                "op": "gte",
+                "value": 512
+              },
+              {
+                "fact": "metadata.width",
+                "id": "max-width",
+                "op": "lte",
+                "value": 256
+              },
+              {
+                "fact": "format.detected",
+                "id": "png",
+                "op": "eq",
+                "value": "png"
+              }
+            ],
+            "source": {
+              "id": "fixture:image",
+              "revision": "v1"
+            }
+          }
+        ],
+        "id": "fixture:image-requirements",
+        "schema": "parcimonia.asset-expectations/v1"
+      },
+      "label": "contradictory",
+      "report": {
+        "analyser": {
+          "id": "asset-expectation-consistency",
+          "version": "1"
+        },
+        "expectations": {
+          "hash": "ffcfa9a7c950fbeb50bc0cba10ca312c15d9dc7044448b7f20718c0e707e9d37",
+          "id": "fixture:image-requirements"
+        },
+        "input_hash": "ec994afbb79fbee2c4fccdc91122a2320994cbd23849d9d56f6764cd4c81eee9",
+        "limits": {
+          "candidates": "assignments_not_observed_file_values",
+          "cross_fact_relations": "not_modelled",
+          "file_existence_quality_completeness": "not_established",
+          "file_mutations": 0,
+          "inputs": "caller_supplied_expectations_not_authenticated",
+          "integer_domain": [
+            0,
+            9223372036854775807
+          ],
+          "model": "independent_required_scalar_facts_only",
+          "model_calls": 0,
+          "producer_profile_caps": "not_modelled"
+        },
+        "mode": "shadow",
+        "results": [
+          {
+            "facts": [
+              {
+                "candidate": "png",
+                "check_ids": [
+                  "png"
+                ],
+                "conflict": null,
+                "fact": "format.detected",
+                "status": "no_conflict_detected"
+              },
+              {
+                "candidate": null,
+                "check_ids": [
+                  "min-width",
+                  "max-width"
+                ],
+                "conflict": {
+                  "check_ids": [
+                    "min-width",
+                    "max-width"
+                  ],
+                  "check_paths": [
+                    "/assets/0/checks/0",
+                    "/assets/0/checks/1"
+                  ],
+                  "kind": "disjoint_integer_bounds"
+                },
+                "fact": "metadata.width",
+                "status": "contradictory"
+              }
+            ],
+            "source": {
+              "id": "fixture:image",
+              "revision": "v1"
+            },
+            "status": "contradictory"
+          }
+        ],
+        "schema": "parcimonia.asset-expectation-consistency/v1",
+        "status": "contradictory"
+      },
+      "verification": {
+        "id": "asset-expectation-constraints",
+        "input_hash": "ceed5c65c43042cc62901aefa0d212963949f8851bfe87df1823ff791f569b65",
+        "verdict": true,
+        "version": "1"
+      }
+    },
+    {
+      "expectations": {
+        "assets": [
+          {
+            "checks": [
+              {
+                "fact": "metadata.width",
+                "id": "min-width",
+                "op": "gte",
+                "value": 512
+              },
+              {
+                "fact": "metadata.width",
+                "id": "max-width",
+                "op": "lte",
+                "value": 1024
+              },
+              {
+                "fact": "format.detected",
+                "id": "png",
+                "op": "eq",
+                "value": "png"
+              }
+            ],
+            "source": {
+              "id": "fixture:image",
+              "revision": "v1"
+            }
+          }
+        ],
+        "id": "fixture:revised-image-requirements",
+        "schema": "parcimonia.asset-expectations/v1"
+      },
+      "label": "revised",
+      "report": {
+        "analyser": {
+          "id": "asset-expectation-consistency",
+          "version": "1"
+        },
+        "expectations": {
+          "hash": "61cf092aa06f1c101dcfe2ed151d35a799eae2f68c8535de9b18a2979b8b4a3b",
+          "id": "fixture:revised-image-requirements"
+        },
+        "input_hash": "f414c5a1ffa6e35a0c9461bd8cbee0d82dabbc63fbc1e6a79231d0ea2ad1e932",
+        "limits": {
+          "candidates": "assignments_not_observed_file_values",
+          "cross_fact_relations": "not_modelled",
+          "file_existence_quality_completeness": "not_established",
+          "file_mutations": 0,
+          "inputs": "caller_supplied_expectations_not_authenticated",
+          "integer_domain": [
+            0,
+            9223372036854775807
+          ],
+          "model": "independent_required_scalar_facts_only",
+          "model_calls": 0,
+          "producer_profile_caps": "not_modelled"
+        },
+        "mode": "shadow",
+        "results": [
+          {
+            "facts": [
+              {
+                "candidate": "png",
+                "check_ids": [
+                  "png"
+                ],
+                "conflict": null,
+                "fact": "format.detected",
+                "status": "no_conflict_detected"
+              },
+              {
+                "candidate": 512,
+                "check_ids": [
+                  "min-width",
+                  "max-width"
+                ],
+                "conflict": null,
+                "fact": "metadata.width",
+                "status": "no_conflict_detected"
+              }
+            ],
+            "source": {
+              "id": "fixture:image",
+              "revision": "v1"
+            },
+            "status": "no_conflict_detected"
+          }
+        ],
+        "schema": "parcimonia.asset-expectation-consistency/v1",
+        "status": "no_conflict_detected"
+      },
+      "verification": {
+        "id": "asset-expectation-constraints",
+        "input_hash": "7f0f4cef5b59800814cf0be539d69d86e8d8d975422e15ad234ae8a909df6487",
+        "verdict": true,
+        "version": "1"
+      }
+    }
+  ],
+  "data_origin": "authored_requirements_no_asset_inspected"
+}
