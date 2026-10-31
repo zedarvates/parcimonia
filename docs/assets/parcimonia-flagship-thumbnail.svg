@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Parcimonia : gratuit refusé</title>
+  <desc id="desc">Miniature vidéo. La règle gratuite, dont la confiance déclarée est de 0,88, est refusée. Une option KNN à 0,03 et 0,94 est proposée en mode shadow.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1818"/>
+      <stop offset="1" stop-color="#152726"/>
+    </linearGradient>
+    <linearGradient id="card" x2="0" y2="1">
+      <stop offset="0" stop-color="#19302e"/>
+      <stop offset="1" stop-color="#102321"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <path d="M0 614C230 555 386 637 576 570S940 500 1280 580" fill="none" stroke="#315e55" stroke-width="2" opacity=".42"/>
+  <path d="M0 650C230 591 386 673 576 606S940 536 1280 616" fill="none" stroke="#315e55" stroke-width="2" opacity=".25"/>
+
+  <text x="76" y="105" fill="#c6ecdc" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="700" letter-spacing="3">PARCIMONIA</text>
+  <text x="76" y="195" fill="#f2ead7" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="800">GRATUIT</text>
+  <text x="76" y="268" fill="#f1ae69" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="800">REFUSÉ</text>
+  <text x="78" y="315" fill="#a4bdb2" font-family="Arial, Helvetica, sans-serif" font-size="24">Une proposition en mode shadow</text>
+
+  <rect x="590" y="146" width="611" height="389" rx="25" fill="url(#card)" stroke="#41665c" stroke-width="2"/>
+  <circle cx="632" cy="184" r="7" fill="#f1ae69"/>
+  <circle cx="657" cy="184" r="7" fill="#78958a"/>
+  <circle cx="682" cy="184" r="7" fill="#78958a"/>
+  <text x="718" y="191" fill="#9ab7aa" font-family="Arial, Helvetica, sans-serif" font-size="22">fragment 3 / 6</text>
+  <line x1="620" y1="214" x2="1170" y2="214" stroke="#41665c"/>
+
+  <text x="628" y="268" fill="#d9e9e0" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700">RÈGLE</text>
+  <text x="628" y="311" fill="#a9bbb0" font-family="Arial, Helvetica, sans-serif" font-size="24">coût 0,00</text>
+  <rect x="899" y="237" width="258" height="90" rx="17" fill="#382c23" stroke="#f1ae69" stroke-width="3"/>
+  <text x="917" y="270" fill="#f7d9ba" font-family="Arial, Helvetica, sans-serif" font-size="17">CONFIANCE DÉCLARÉE</text>
+  <text x="918" y="308" fill="#ffd0a0" font-family="Arial, Helvetica, sans-serif" font-size="39" font-weight="800">0,88</text>
+
+  <line x1="620" y1="347" x2="1170" y2="347" stroke="#41665c"/>
+  <text x="628" y="402" fill="#d9e9e0" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700">KNN</text>
+  <text x="628" y="445" fill="#a9bbb0" font-family="Arial, Helvetica, sans-serif" font-size="24">coût 0,03</text>
+  <rect x="899" y="371" width="258" height="90" rx="17" fill="#1a3b34" stroke="#88e3bd" stroke-width="3"/>
+  <text x="917" y="404" fill="#b4e5d0" font-family="Arial, Helvetica, sans-serif" font-size="17">CONFIANCE DÉCLARÉE</text>
+  <text x="918" y="442" fill="#b8f4d5" font-family="Arial, Helvetica, sans-serif" font-size="39" font-weight="800">0,94</text>
+  <text x="628" y="506" fill="#bdd2c6" font-family="Arial, Helvetica, sans-serif" font-size="22">Seuil : 0,90 · coûts synthétiques</text>
+
+  <rect x="76" y="401" width="428" height="78" rx="16" fill="#a8eccb"/>
+  <text x="103" y="451" fill="#12372e" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="800">3 REFUS SUR 6</text>
+  <text x="78" y="535" fill="#a4bdb2" font-family="Arial, Helvetica, sans-serif" font-size="21">Aucune économie mesurée</text>
+</svg>

@@ -1,3 +1,4 @@
+from ._version import __version__
 from .contracts import Task, CandidateRoute, Decision, Evidence, Verification
 from .measurement import (
     Environment,
@@ -84,6 +85,8 @@ from .route_experiment import (
 )
 from .turn_dispatch import TurnDispatch, TurnFamily, dispatch_turn
 from .heldout_asks import HeldoutCoverage, measure_new_ask_coverage
+from .label_review import LabelOption, LabelReview, review_label_options
+from .span_retrieval import SpanKnnSignatureBackend, frame_parts
 from .goals import Goal, GoalSet, load_goals, parse_goals_markdown
 from .director import (
     AstralDirector,
@@ -108,6 +111,7 @@ from .world_model import (
 )
 
 from .reflex import (
+    CalibrationBinding,
     CalibrationSnapshot,
     InjectedReflexBackend,
     ReflexAnswer,
@@ -260,6 +264,16 @@ from .task_signature import (
     predict_signature,
     signature_questions,
 )
+from .task_context import (
+    ContextAssessment,
+    ContextContract,
+    ContextField,
+    SignatureContext,
+    assess_context,
+    enrich_signature_context,
+    reference_payload,
+)
+from .context_review import build_context_review_pack, freeze_context_review_split
 from .signature_corpus import (
     aligned_cases,
     all_cases,
@@ -402,6 +416,11 @@ __all__ = [
     "dispatch_turn",
     "HeldoutCoverage",
     "measure_new_ask_coverage",
+    "LabelOption",
+    "LabelReview",
+    "review_label_options",
+    "SpanKnnSignatureBackend",
+    "frame_parts",
     "Goal",
     "GoalSet",
     "load_goals",
@@ -422,6 +441,7 @@ __all__ = [
     "StateVector",
     "TransitionRecord",
     "CalibrationSnapshot",
+    "CalibrationBinding",
     "InjectedReflexBackend",
     "ReflexAnswer",
     "ReflexBatch",
@@ -554,6 +574,15 @@ __all__ = [
     "calibrate_signatures",
     "predict_signature",
     "signature_questions",
+    "ContextAssessment",
+    "ContextContract",
+    "ContextField",
+    "SignatureContext",
+    "assess_context",
+    "enrich_signature_context",
+    "reference_payload",
+    "build_context_review_pack",
+    "freeze_context_review_split",
     "aligned_cases",
     "all_cases",
     "example_schema",
@@ -601,4 +630,3 @@ __all__ = [
     "unreached_verb_candidates",
     "decide_after_signature",
 ]
-__version__ = "0.0.1"

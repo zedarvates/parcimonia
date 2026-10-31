@@ -8,6 +8,15 @@
 
 Repository: https://github.com/zedarvates/parcimonia
 
+[Release **0.5.0**](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.0) includes the qualified Python library and the
+installed `parcimonia` JSON command. See [installation and release
+qualification](docs/RELEASE.md) and [changes](CHANGELOG.md). The separate local
+Codex plugin remains at 0.4.1. Python imports retain the name `tiberium_ai`.
+
+`main` integrates that release while retaining the later asset catalogues,
+bounded local text/vision clients, memory capture/replay and feasibility checks.
+The published tag and its archives remain the original qualified snapshot.
+
 Where the project stands, what was decided and what was learned — including the
 negative results — lives in [the wiki](wiki/WIKI.md). Mechanism documentation stays
 in [docs](docs/).
@@ -92,7 +101,9 @@ Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, uns
 
 ## Status
 
-Early design / bootstrap. No automatic routing is enabled.
+Local library release 0.5.0. No automatic production routing is enabled.
+Archive qualification covers installation, compatibility and existing behavior;
+real-world quality and savings remain subject to the evidence gates below.
 
 An opt-in [feasibility and stability diagnostic](docs/FEASIBILITY_DIAGNOSTICS.md)
 checks a bounded Boolean contract for contradictions and missing prerequisites,

@@ -1,0 +1,580 @@
+{
+  "schema_version": 1,
+  "revision": "re-investigation-inventory/1",
+  "entries": [
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:re.prepare",
+        "kind": "mechanism",
+        "revision": "re-investigation/1",
+        "content_sha256": "abe7285bdb7fdc0712257b0d67c35fb7fec84887e21d5b0b6967531693449453",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/re_investigation.py"
+      },
+      "symbol": "prepare_investigation",
+      "description": "Preparer investigation preuves fichiers utiles profils decisions et reprise",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_re_investigation.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/RE_INVESTIGATION.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:re.coverage",
+        "kind": "mechanism",
+        "revision": "re-investigation/1",
+        "content_sha256": "abe7285bdb7fdc0712257b0d67c35fb7fec84887e21d5b0b6967531693449453",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/re_investigation.py"
+      },
+      "symbol": "evidence_coverage",
+      "description": "Verifier preuves investigation scenarios contradictions et niveaux",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_re_investigation.py"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:re.followup",
+        "kind": "mechanism",
+        "revision": "re-investigation/1",
+        "content_sha256": "510b936ca904d01850cd721296644a567e47f689c0e4a09d16e8572fa7a5adcb",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_followup.py"
+      },
+      "symbol": "continue_task",
+      "description": "Reprise fichiers utiles changements notes perimees investigation",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_task_followup.py"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:re.review",
+        "kind": "mechanism",
+        "revision": "re-investigation/1",
+        "content_sha256": "510b936ca904d01850cd721296644a567e47f689c0e4a09d16e8572fa7a5adcb",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_followup.py"
+      },
+      "symbol": "record_file_review",
+      "description": "Revue fichiers utiles retour hote et preuves investigation",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "docs/FILE_USEFULNESS_AND_FOLLOWUP.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:re.decide",
+        "kind": "mechanism",
+        "revision": "re-investigation/1",
+        "content_sha256": "b317189e2957e700ff2ffea6cc6be73d3e77172d24cd43c4336f70c7f2b6e2c0",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:re-investigation/1",
+            "observed_at": "2026-10-28T00:00:00+01:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/decision_adapter.py"
+      },
+      "symbol": "capture_decision",
+      "description": "Decisions typees investigation transport versionne preuves rejeu",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_decision_adapter.py"
+        }
+      ]
+    }
+  ]
+}

@@ -171,6 +171,7 @@ def test_outputs_are_exclusive_and_never_follow_or_replace_links(tmp_path, capsy
             output.symlink_to(target)
         except OSError:
             pytest.skip("Host cannot create symlinks")
+        original_link_target = output.readlink()
     before = current.read_bytes()
     if command == "catalog-init":
         args = [command, output, "--catalog-id", "other"]
@@ -183,7 +184,7 @@ def test_outputs_are_exclusive_and_never_follow_or_replace_links(tmp_path, capsy
     assert _bad(capsys, *args)["error"] == "FileExistsError"
     assert current.read_bytes() == before
     if target_kind != "regular":
-        assert output.is_symlink() and output.readlink() == target
+        assert output.is_symlink() and output.readlink() == original_link_target
         if target_kind == "symlink":
             assert target.read_bytes() == b"must stay unchanged"
         else:

@@ -8,6 +8,7 @@ failure. Reports contain proposed tags; no source file is changed.
 from __future__ import annotations
 
 import argparse
+import errno
 import json
 import os
 from pathlib import Path
@@ -33,6 +34,22 @@ from .asset_media_enrichment import enrich_asset_with_media
 from .verification import hash_input
 
 MAX_JOURNAL_BYTES = 8 * 1024 * 1024
+
+
+def _new_output(path: str):
+    """Refuse every existing directory entry, including a dangling symlink.
+
+    Windows CRT exclusive-open may follow dangling links; check the entry itself
+    before the exclusive open. Do not resolve the output path to its target.
+    """
+    output = Path(path)
+    try:
+        output.lstat()
+    except FileNotFoundError:
+        pass
+    else:
+        raise FileExistsError(errno.EEXIST, os.strerror(errno.EEXIST), str(output))
+    return output.open("x", encoding="utf-8", newline="\n")
 
 
 def _signature(info: os.stat_result) -> tuple[int, int, int, int]:
@@ -73,7 +90,7 @@ def _write_journal_new(path: str, journal: dict) -> dict:
     payload = json.dumps(journal, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n"
     if len(payload.encode("utf-8")) > MAX_JOURNAL_BYTES:
         raise ValueError("The serialized journal exceeds the CLI's 8 MiB read/write budget.")
-    with Path(path).open("x", encoding="utf-8", newline="\n") as stream:
+    with _new_output(path) as stream:
         stream.write(payload)
     return {
         "schema": "parcimonia.asset-tag-write/v1", "output": str(Path(path)),
@@ -88,7 +105,7 @@ def _write_catalog_new(path: str, snapshot: dict) -> dict:
     payload = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
     if len(payload.encode("utf-8")) > MAX_SNAPSHOT_BYTES:
         raise ValueError("The serialized catalogue exceeds the 16 MiB read/write budget.")
-    with Path(path).open("x", encoding="utf-8", newline="\n") as stream:
+    with _new_output(path) as stream:
         stream.write(payload)
     return {
         "schema": "parcimonia.asset-catalog-write/v1", "output": str(Path(path)),
@@ -288,7 +305,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 payload = json.dumps(report, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
                 if len(payload.encode("utf-8")) > MAX_SNAPSHOT_BYTES:
                     raise ValueError("The exported array exceeds the 16 MiB read/write budget.")
-                with Path(arguments.out).open("x", encoding="utf-8", newline="\n") as stream:
+                with _new_output(arguments.out) as stream:
                     stream.write(payload)
                 report = {
                     "schema": "parcimonia.asset-catalog-export-write/v1",

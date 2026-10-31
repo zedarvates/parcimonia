@@ -194,12 +194,12 @@ def test_bad_configuration_never_opens_a_connection(monkeypatch, override):
         chat_completion(**arguments)
 
 
-def test_connection_failure_is_known_only_as_a_failed_attempt():
-    sock = socket.socket()
-    sock.bind(("127.0.0.1", 0))
-    port = sock.getsockname()[1]
-    sock.close()
-    result = call(f"http://127.0.0.1:{port}", timeout=0.1)
+def test_connection_failure_is_known_only_as_a_failed_attempt(monkeypatch):
+    def refused(*args, **kwargs):
+        raise ConnectionRefusedError("fixture private connection error")
+
+    monkeypatch.setattr(socket, "create_connection", refused)
+    result = call("http://127.0.0.1:1234", timeout=0.1)
     assert result["status"] == "unreachable"
     assert result["content"] is None
     assert result["retries"] == 0
