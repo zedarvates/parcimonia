@@ -1,5 +1,10 @@
 # Contributing
 
+Start with [AGENTS.md](AGENTS.md) and the
+[portable agent workflow](docs/AGENT_WORKFLOW.md). These instructions travel with
+the repository, including the optional Botte Secrète assessment and its fallback
+when the tools are unavailable or abstain.
+
 Contributions should:
 - preserve deterministic safety gates
 - include measurable evidence

@@ -1,0 +1,15 @@
+{
+  "schema": "parcimonia.feasibility-request/v1",
+  "task_id": "fixture-reconnect",
+  "scope_id": "authored-demo",
+  "revision": "fixture-v1",
+  "variables": ["reconnect", "persistence"],
+  "constraints": [
+    {"id": "goal", "kind": "require", "variable": "reconnect", "value": true, "source": "fixture:goal"},
+    {"id": "dependency", "kind": "implies", "if": {"variable": "reconnect", "value": true}, "then": {"variable": "persistence", "value": true}, "source": "fixture:dependency"}
+  ],
+  "observations": [
+    {"variable": "persistence", "value": false, "source": "fixture:observation", "revision": "fixture-v1"}
+  ],
+  "criteria": []
+}

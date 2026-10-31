@@ -11,10 +11,14 @@ ne remplace pas `docs/`, qui documente chaque mécanisme ; il relie, et il date.
 | [ENSEIGNEMENTS.md](ENSEIGNEMENTS.md) | résultats, résultats négatifs et erreurs corrigées |
 | [SOURCES.md](SOURCES.md) | d'où vient la ligne technique, avec licences et frontières |
 | [RELEVE_2026-09-22.json](RELEVE_2026-09-22.json) | le relevé chiffré de cette date, citable |
+| [RELEVE_2026-09-24.json](RELEVE_2026-09-24.json) | la mesure suivante et sa réserve sur les textes longs |
+| [BEV_2026-10-04.md](BEV_2026-10-04.md) | analyse de la vidéo Bev, diagnostic d'ordre des choix et spécialisation française proposée |
+| [TEV1_2026-10-03.md](TEV1_2026-10-03.md) | transport local consultatif, corpus français et preuve réelle encore attendue |
 | [COMPACT_MEMORY_2026-10-03.json](COMPACT_MEMORY_2026-10-03.json) | essai authoré A/B/C de contexte borné ; preuves, tailles et limites |
 | [MEMORY_REPLAY_2026-10-03.json](MEMORY_REPLAY_2026-10-03.json) | import/rejeu séquentiel : versions figées, labels séparés et absence de verdict respectée |
 | [MEMORY_CAPTURE_2026-10-03.json](MEMORY_CAPTURE_2026-10-03.json) | capture explicite bornée : faits et absences immuables, reçus d'usage séparés, aucune issue inventée |
 | [MEMORY_EXECUTION_2026-10-04.json](MEMORY_EXECUTION_2026-10-04.json) | rattachement d'exécutions existantes : échec d'appel distinct de l'échec de journalisation, guide pilote Odin |
+| [MEMORY_TASK_IDS_2026-10-31.md](MEMORY_TASK_IDS_2026-10-31.md) | correspondance contextualisée des anciens identifiants mémoire vers TASK-111 et TASK-112 |
 
 Trois règles de lecture, les mêmes que partout ailleurs dans ce dépôt :
 

@@ -87,5 +87,5 @@ the explicit production saving gate, which remains refused.
 On 3 October 2026, the three public Botte trajectory records were rejected by
 the sequential contract. Their task results, timestamps and declared
 `tokens_saved` do not supply versioned facts or independent sequence outcomes.
-The importer is ready; TASK-110 still needs an authorized sequence corpus and
+The importer is ready; TASK-112 still needs an authorized sequence corpus and
 real usage measurements. See [the dated evidence](../wiki/MEMORY_REPLAY_2026-10-03.json).

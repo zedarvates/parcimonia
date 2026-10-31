@@ -130,7 +130,7 @@ archive hashes. No outcomes file is generated here. A current-route receipt
 alone does not measure the compact alternatives; offline replay keeps its own
 provider cost and token fields unknown even when a usage sidecar is present.
 Real paired calls, independent quality evaluation, repeated latency and complete
-cost accounting remain TASK-110. Every capture explicitly refuses a production
+cost accounting remain TASK-112. Every capture explicitly refuses a production
 saving claim; no deployment or promotion is performed.
 
 Use [the existing-run attachment](MEMORY_EXECUTION.md) at the caller boundary

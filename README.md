@@ -12,6 +12,15 @@ Where the project stands, what was decided and what was learned — including th
 negative results — lives in [the wiki](wiki/WIKI.md). Mechanism documentation stays
 in [docs](docs/).
 
+For the opt-in, no-inference runtime diagnostic and single-task iteration
+helper, see [Local agent bootstrap](docs/LOCAL_AGENT_BOOTSTRAP.md). A bounded
+LM Studio text client and JSON worker are available for explicit local requests;
+see [the Eurekaï local LLM plan](docs/LOCAL_LLM_EUREKAI.md) and the
+[existing second-brain context connection](docs/LOCAL_KNOWLEDGE.md). Its offline
+fixture does not establish model quality, hardware readiness or token savings.
+The same worker also accepts explicit, bounded PNG/JPEG inputs through the
+[versioned local vision contract](docs/LOCAL_VISION.md); request v1 stays text-only.
+
 Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.
 
 It is not intended to be another general-purpose LLM. It sits between an agent/LLM and its execution mechanisms:
@@ -69,6 +78,14 @@ Planned adapters include:
 - ShardJEPA experiments
 - protobuf/ID based capability manifests
 
+[NVIDIA Personal AI Router (PAIR)](https://github.com/NVIDIA/Personal-AI-Router)
+fits this architecture: PAIR exposes OpenAI-compatible and Ollama-compatible
+local endpoints and routes each independent inference request to an eligible
+node. Parcimonia can treat a PAIR endpoint as a candidate for local LLM
+execution while retaining its own cost, evidence and escalation decisions.
+This is an integration path through planned adapters, not an implemented or
+end-to-end validated PAIR adapter.
+
 ## Success metrics
 
 Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, unsafe false positives, abstention, escalation, model calls, evidence completeness and reproducibility.
@@ -76,6 +93,61 @@ Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, uns
 ## Status
 
 Early design / bootstrap. No automatic routing is enabled.
+
+An opt-in [feasibility and stability diagnostic](docs/FEASIBILITY_DIAGNOSTICS.md)
+checks a bounded Boolean contract for contradictions and missing prerequisites,
+and inspects three Python code patterns for stability risks. Reports distinguish
+model proofs, caller-declared observations and static risk indicators. The
+offline CLI does not execute inspected code or change routing policy.
+
+An explicit [verified reduction to 2-SAT](docs/VERIFIED_REDUCTIONS.md) translates
+the supported Boolean requirements into clauses and checks them with an
+iterative implication-graph solver. It handles up to 128 variables and returns
+checkable assignments or contradictory paths. This is one implemented Karp
+reduction, not automatic discovery of arbitrary reductions; quality and
+completeness remain separate from the new satisfiability report.
+
+An opt-in [asset inspection and catalogue](docs/ASSET_PERCEPTION.md) proposes
+source-bound tags from media headers, structured text, existing Python rules and
+GeoJSON coordinates. It supports exact-tag and spatial-envelope search while
+keeping extension hints, parsed metadata and lexical suggestions separate.
+No semantic image/audio/scene recognition, model call or source reorganization
+is performed by this first foundation.
+
+An explicit [tag review journal](docs/ASSET_TAG_REVIEW.md) records acceptance,
+rejection and reset decisions against exact inspection reports, with new
+snapshot files and review-aware search. Changed reports retain their proposals
+without silently inheriting earlier decisions; actor identities remain declared.
+
+An explicit [local text extraction](docs/ASSET_TEXT_EXTRACTION.md) step connects
+installed Tesseract OCR and embedded-PDF text extraction to proposed lexical
+tags, image word boxes or PDF pages, and the same review journal. Native tools
+are opt-in; their quality and OCR weights remain unqualified.
+
+A portable [catalogue snapshot](docs/ASSET_CATALOG_SNAPSHOTS.md) saves a current
+report per source, with explicit replacement preconditions, preserved earlier
+snapshots and review-aware search. It reuses the existing inspection reports and
+tag decisions without modifying source assets.
+
+An explicit [GPX 1.1 coordinate profile](docs/ASSET_GPX.md) reads declared GPS
+positions, retains waypoint/route/track-segment paths and computes a searchable
+2D envelope. It reuses the catalogue and tag review without claiming full GPX
+schema validation or verified real-world location.
+
+An explicit [native audio/video probe](docs/ASSET_NATIVE_MEDIA.md) uses installed
+ffprobe to record reported streams, codecs and durations. Proposed tags retain
+stream evidence and distinguish attached pictures from ordinary video streams,
+then reuse the same catalogue and review flow.
+
+A bounded [PLY body profile](docs/ASSET_PLY_BODY.md) reads declared vertex and
+face records, computes local XYZ bounds with source evidence, and proposes
+mesh/point-cloud or Gaussian-parameter candidates. Local coordinates remain
+separate from GPS and no rendering quality is inferred.
+
+An explicit [asset expectation audit](docs/ASSET_EXPECTATIONS.md) compares
+supplied reports with caller-written requirements. It separates matching
+declarations, contradictions, unknown facts and missing exact report revisions,
+without treating a missing tag as proof of absent content.
 
 An opt-in bounded-context experiment retrieves exact versioned facts and compares
 full history, compact context and limited temporal persistence on 14 authored
@@ -144,9 +216,18 @@ wider than one call offers is either cut into balanced stages or scored option b
 option before one explicit choice, one response is recorded with the provenance
 that replays it offline, and the recomposed decision is verified by recomputation
 instead of being trusted. A decision clock keeps a missed deadline and a stale
-snapshot apart from decision quality. No model is called, the library provides no
-transport of its own and no cost is claimed. See
+snapshot apart from decision quality. The core adapter calls no model on its own
+and claims no cost. See
 [Typed-decision adapters](docs/DECISION_ADAPTER.md).
+
+An optional local Tev1 transport now implements that boundary through Ollama.
+It is explicitly invoked, pins runtime and model identity, bounds the HTTP call,
+and keeps every decision advisory. A 24-case French corpus compares rules and
+captured decisions, with offline replay and no saving claim. No real model was
+evaluated for this integration. See [Tev1 local shadow](docs/TEV1_SHADOW.md).
+The paired comparator revalidates both captures, counts every failure and keeps
+total cost unknown. A [local run guide](docs/TEV1_LOCAL_RUN.md) prepares execution
+on an existing model server.
 
 A prompt-signature predictor is implemented: it reads an input and names what that
 input is about, the kind of task, the capabilities it needs, the fields worth
@@ -188,6 +269,10 @@ shadow mode with its reason, and nothing executed. See the
 [flagship walkthrough](docs/FLAGSHIP.md).
 
 ## Local development
+
+New contributors and coding agents: read [AGENTS.md](AGENTS.md) and the
+[portable agent workflow](docs/AGENT_WORKFLOW.md). They describe when to consult
+the optional Botte Secrète planning tools and how to proceed without them.
 
 Requires Python 3.10 or newer. From the repository root on Windows:
 

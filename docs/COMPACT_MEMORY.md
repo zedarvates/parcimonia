@@ -114,6 +114,12 @@ without hardcoded fixture facts: [Offline sequence replay](MEMORY_REPLAY.md).
 It preserves absent outcome labels as no verdict. Its schema samples remain
 authored; the real sequential-trace and provider-usage gate is still open.
 
+Current tracking: implementation is `TASK-111`; real sequential evaluation and
+provider measurements remain open under `TASK-112`. The earlier branch used
+IDs already assigned to different research tasks on main. See the
+[scoped historical mapping](../wiki/MEMORY_TASK_IDS_2026-10-31.md); dated evidence
+files keep their original contents.
+
 The SwiLA paper, [Switching Linear Attention](https://arxiv.org/html/2609.39034v1),
 motivated the analogy of bounded state and temporal persistence. This application
 code implements no attention kernel, trained recurrent memory or SwiLA model.

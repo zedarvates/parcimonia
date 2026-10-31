@@ -106,5 +106,5 @@ Retain a private fresh export, inspect its attachment statuses and run the
 documented offline replay. Unknown results stay unlabelled. Return a payload-free
 summary (revision, source/sequence hashes, counts, attachment statuses and
 observed usage fields); keep raw source files private. Independent outcomes and
-real paired A/B/C calls are still required before a saving claim. TASK-110 stays
+real paired A/B/C calls are still required before a saving claim. TASK-112 stays
 open; no hardware pilot or provider measurement was run by this cloud session.
