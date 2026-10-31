@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "investigation_id": "parcimonia-re-self-review",
+  "stage_id": "inspect",
+  "objective": "Verifier les decisions investigation, les preuves, les fichiers utiles et la reprise",
+  "target_sha256": "abe7285bdb7fdc0712257b0d67c35fb7fec84887e21d5b0b6967531693449453",
+  "target_revision": "re-investigation/1",
+  "requirements": [
+    {
+      "claim": "decisions_remain_advisory",
+      "scenario": "advisor",
+      "levels": [
+        "static",
+        "runtime"
+      ]
+    },
+    {
+      "claim": "saved_review_reopens_changed_sources",
+      "scenario": "continuation",
+      "levels": [
+        "roundtrip"
+      ]
+    },
+    {
+      "claim": "delivered_packet_integrity",
+      "scenario": "cli",
+      "levels": [
+        "export"
+      ]
+    }
+  ],
+  "evidence": [],
+  "routes": [
+    {
+      "id": "leanrea.source_slice",
+      "tool": "leanrea",
+      "kind": "source_slice",
+      "availability": "available",
+      "levels": [
+        "static"
+      ],
+      "estimated_ms": null
+    },
+    {
+      "id": "rea.deep_native",
+      "tool": "rea",
+      "kind": "decompile",
+      "availability": "unknown",
+      "levels": [
+        "static"
+      ],
+      "estimated_ms": null
+    },
+    {
+      "id": "agent.scoped_checks",
+      "tool": "agent",
+      "kind": "verify",
+      "availability": "available",
+      "levels": [
+        "runtime",
+        "roundtrip",
+        "export"
+      ],
+      "estimated_ms": null
+    }
+  ],
+  "budget_ms": 1000,
+  "state_age_ms": 0,
+  "max_state_age_ms": 1000
+}

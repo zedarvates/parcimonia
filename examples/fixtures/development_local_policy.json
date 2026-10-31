@@ -1,0 +1,13 @@
+{
+  "version": "development-local-read/1",
+  "required": {
+    "domains": ["code"],
+    "availability": ["available"]
+  },
+  "allowed": {
+    "locations": ["local"],
+    "effects": ["read"],
+    "network": ["offline"]
+  },
+  "require_verified": false
+}

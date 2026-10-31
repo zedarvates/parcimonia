@@ -1,0 +1,3517 @@
+{
+  "schema_version": 1,
+  "revision": "development-inventory/3",
+  "entries": [
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:json.canonical",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "f463312add0d9fce200e41e4a6e98afe744355ea61760a52786e4e6b9302accc",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/decision_json.py"
+      },
+      "symbol": "canonical_json",
+      "description": "Serialiser et hacher un etat JSON canonique sans perdre les types et les champs.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_decision_contract_regressions.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/DECISION_CONTRACTS.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:verification.input",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/verification.py"
+      },
+      "symbol": "hash_input",
+      "description": "Empreinte et provenance des entrees de verification ; verification input hash.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_verification.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/VERIFICATION.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:verification.shape",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/verification.py"
+      },
+      "symbol": "shape_verifier",
+      "description": "Verifier la structure et les types de champs dans une reponse ; shape schema.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_verification.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/VERIFICATION.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:verification.exact",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/verification.py"
+      },
+      "symbol": "exact_match_verifier",
+      "description": "Verifier un resultat par comparaison exacte JSON ; exact match.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_verification.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/VERIFICATION.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:verification.runner",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "67380fca6de92eadf62e658c190870547887bb0246e341c5d5f8c21f77621440",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/verification.py"
+      },
+      "symbol": "runner_result_verifier",
+      "description": "Verifier un resume de tests exit code sans lancer de commande.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_verification.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/VERIFICATION.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:registry.load",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "4dade82c401227a9fc234e2ecb81e2c59c915d9eaa1eff7411be68c72e4e5655",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/registry.py"
+      },
+      "symbol": "load_route_registry",
+      "description": "Charger un registre de routes versionnees depuis un manifeste JSON local.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_registry.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/REGISTRY.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:registry.filter",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "4dade82c401227a9fc234e2ecb81e2c59c915d9eaa1eff7411be68c72e4e5655",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/registry.py"
+      },
+      "symbol": "RouteRegistry.candidates_for",
+      "description": "Filtrer les routes selon capacites risque et localite ; candidats compatibles.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_registry.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/REGISTRY.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:context.assess",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "e954b600b974daacfeaebd5c8ab3d332ebedaf860ebbcc799c95ca905be3cfba",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_context.py"
+      },
+      "symbol": "assess_context",
+      "description": "Verifier disponibilite du contexte et champs manquants ; context provenance.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_task_context.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/TASK_CONTEXT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:context.reference",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "e954b600b974daacfeaebd5c8ab3d332ebedaf860ebbcc799c95ca905be3cfba",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_context.py"
+      },
+      "symbol": "reference_payload",
+      "description": "Construire une reference de contexte liee au contrat et a sa version.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_task_context.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/TASK_CONTEXT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:profiles.validate",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "f56c378f941d26a4aba46368b105e3f5b93f7bb19c4dee5ffed3697d76f15986",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/execution_profiles.py"
+      },
+      "symbol": "validate_profile",
+      "description": "Valider les profils outils skills et domaines effets tags versions dependances.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_execution_profiles.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/EXECUTION_PROFILES.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:profiles.assess",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "f56c378f941d26a4aba46368b105e3f5b93f7bb19c4dee5ffed3697d76f15986",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/execution_profiles.py"
+      },
+      "symbol": "ExecutionCatalog.assess",
+      "description": "Filtrer profils outils locaux et dependances versionnees ; domaines effets et preuves.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_execution_profiles.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/EXECUTION_PROFILES.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:profiles.invocation",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "f56c378f941d26a4aba46368b105e3f5b93f7bb19c4dee5ffed3697d76f15986",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/execution_profiles.py"
+      },
+      "symbol": "ExecutionCatalog.bind_invocation",
+      "description": "Lier appel outil arguments empreintes et profils versionnes ; invocation trace.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_execution_profiles.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/EXECUTION_PROFILES.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:profiles.replay",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "f56c378f941d26a4aba46368b105e3f5b93f7bb19c4dee5ffed3697d76f15986",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/execution_profiles.py"
+      },
+      "symbol": "ExecutionCatalog.replay_invocation",
+      "description": "Rejouer une reference appel outil avec hash arguments profil politique et preuves.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_execution_profiles.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/EXECUTION_PROFILES.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:profiles.routes",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "ae4700fe8a242cb5266662699e9499c95de3304a152b47b099e16ae199583f4d",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/profiled_selection.py"
+      },
+      "symbol": "filter_profiled_routes",
+      "description": "Selection et filtrage des routes outils selon domaines effets profils et versions.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_profiled_selection.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/EXECUTION_PROFILES.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:skills.audit",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "078131156c7b4f57e40ae4fb3d0ed338dc4f0251bdcc909c6e9171289c6c0745",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/agent_recipes/recipes.py"
+      },
+      "symbol": "audit_skills",
+      "description": "Auditer catalogue skills doublons exacts et usage sans supprimer de fichiers.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_agent_recipes.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/AGENT_RECIPES.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:calibration.brier",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "da66f8caac1970794c00775d9c296e6a280b838a1e5e240b97fcce30ea039725",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/reflex_calibrate.py"
+      },
+      "symbol": "brier_choice",
+      "description": "Mesurer erreur de probabilites calibration choix ; Brier multiclasses.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_reflex_calibrate.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/DECISION_CONTRACTS.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:gym.generate",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "0f60d50ea4a3a0b57c8d5b0688af58bd9537d2bbaebd614ee25bb6b3bc42eddf",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/decision_gym.py"
+      },
+      "symbol": "generate_episodes",
+      "description": "Generer un corpus synthetique episodes separes par groupes et lots.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_decision_gym.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/DECISION_GYM_PILOT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:gym.verify",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "0f60d50ea4a3a0b57c8d5b0688af58bd9537d2bbaebd614ee25bb6b3bc42eddf",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/decision_gym.py"
+      },
+      "symbol": "verify_result",
+      "description": "Verifier resultat tableau somme extraction avec oracle independant.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_decision_gym.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/DECISION_GYM_PILOT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:gym.replay",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "0f60d50ea4a3a0b57c8d5b0688af58bd9537d2bbaebd614ee25bb6b3bc42eddf",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/decision_gym.py"
+      },
+      "symbol": "replay",
+      "description": "Rejouer episodes erreurs reprises budgets et couts inconnus sans modele.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_decision_gym.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/DECISION_GYM_PILOT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:backend.cache",
+        "kind": "mechanism",
+        "revision": "development/1",
+        "content_sha256": "561a9aa6d3698670c1ff5e9b27ff4b94a27abec34d52506c046411e8ef00998e",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/agent_recipes/cache.py"
+      },
+      "symbol": "CachedBackend",
+      "description": "Cache reponses modele et invalidation version contexte ; backend potentiellement distant.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "tests/test_agent_recipes.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/AGENT_RECIPES.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "skill:engineering.debug",
+        "kind": "skill",
+        "revision": "development/1",
+        "content_sha256": "e50bb92cbcb2715139f3a3cb9ff282a8f0f9ae794f8f35d81338654e2601d32a",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "engineering",
+        "path": "debug/SKILL.md"
+      },
+      "symbol": null,
+      "description": "Diagnostiquer bug erreur reproduction et correction ; debug failure.",
+      "related_files": []
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "skill:engineering.code-review",
+        "kind": "skill",
+        "revision": "development/1",
+        "content_sha256": "6303932f1b301c614a6f5a0099cd87a19e1cd1b7cbfa1a1e11e996edbca6426b",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "engineering",
+        "path": "code-review/SKILL.md"
+      },
+      "symbol": null,
+      "description": "Revue code securite performance et correction ; review diff.",
+      "related_files": []
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "skill:engineering.testing-strategy",
+        "kind": "skill",
+        "revision": "development/1",
+        "content_sha256": "5c5e95830754bbdd838213fa05fc8f07523f591fd558fd3c86031ffd479f7a9e",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "engineering",
+        "path": "testing-strategy/SKILL.md"
+      },
+      "symbol": null,
+      "description": "Concevoir strategie tests verification et criteres ; test strategy.",
+      "related_files": []
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "skill:engineering.architecture",
+        "kind": "skill",
+        "revision": "development/1",
+        "content_sha256": "de7db3170a3ae1a894c70ef6cb555fe15618ed9b9674d20895eda3d2a0a5f9a2",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/1",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "engineering",
+        "path": "architecture/SKILL.md"
+      },
+      "symbol": null,
+      "description": "Evaluer architecture et decision technique avec compromis ; architecture design.",
+      "related_files": []
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:preparation.policy",
+        "kind": "mechanism",
+        "revision": "development/2",
+        "content_sha256": "2495dd716d9ee9d726b8505f67735b7aa1505a6bc40b83b249d6fb06beed7e54",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_preparation.py"
+      },
+      "symbol": "preparation_policy",
+      "description": "Valider une politique policy JSON pour la CLI preparation des taches : contraintes domaines effets reseau et priorite strict.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "examples/prepare_development_task.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation_policy.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/TASK_PREPARATION_PILOT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:preparation.packet",
+        "kind": "mechanism",
+        "revision": "development/2",
+        "content_sha256": "2495dd716d9ee9d726b8505f67735b7aa1505a6bc40b83b249d6fb06beed7e54",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_preparation.py"
+      },
+      "symbol": "prepare_task",
+      "description": "Preparer les taches de developpement : appliquer les politiques policy JSON, filtrer les capacites et proposer fichiers et tests.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "examples/prepare_development_task.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation_policy.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/TASK_PREPARATION_PILOT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:preparation.index",
+        "kind": "mechanism",
+        "revision": "development/2",
+        "content_sha256": "2495dd716d9ee9d726b8505f67735b7aa1505a6bc40b83b249d6fb06beed7e54",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_preparation.py"
+      },
+      "symbol": "build_index",
+      "description": "Indexer les sources de preparation des taches, verifier empreintes et reutiliser le cache local pour rechercher les fichiers.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "examples/prepare_development_task.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation_policy.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/TASK_PREPARATION_PILOT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:preparation.cli",
+        "kind": "mechanism",
+        "revision": "development/2",
+        "content_sha256": "7bc778cb757e5e17ac5da9688ef1c6f20cabac0cb6a4693c8548b40688c3ef29",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read",
+              "write"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/2",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "examples/prepare_development_task.py"
+      },
+      "symbol": "main",
+      "description": "CLI preparation des taches, option policy JSON et strict ; ecriture des paquets dans runs avec manifeste.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "examples/prepare_development_task.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_preparation_policy.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/TASK_PREPARATION_PILOT.md"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:files.review",
+        "kind": "mechanism",
+        "revision": "development/3",
+        "content_sha256": "510b936ca904d01850cd721296644a567e47f689c0e4a09d16e8572fa7a5adcb",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": []
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_followup.py"
+      },
+      "symbol": "record_file_review",
+      "description": "Recueillir utilite des fichiers : utilises soutien inutiles non evalues ; manquants existants et fichiers crees ; recherches lectures supplementaires.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "examples/continue_development_task.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_followup.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/FILE_USEFULNESS_AND_FOLLOWUP.md"
+        },
+        {
+          "root": "workspace",
+          "path": "examples/fixtures/file_review_template.json"
+        }
+      ]
+    },
+    {
+      "profile": {
+        "schema_version": 1,
+        "taxonomy_version": "execution-tags/1",
+        "id": "mechanism:task.continue",
+        "kind": "mechanism",
+        "revision": "development/3",
+        "content_sha256": "510b936ca904d01850cd721296644a567e47f689c0e4a09d16e8572fa7a5adcb",
+        "facets": {
+          "domains": {
+            "status": "declared",
+            "tags": [
+              "code",
+              "data"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "operations": {
+            "status": "declared",
+            "tags": [
+              "analyze"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "environments": {
+            "status": "declared",
+            "tags": [
+              "python"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "locations": {
+            "status": "declared",
+            "tags": [
+              "local"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "effects": {
+            "status": "declared",
+            "tags": [
+              "read"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "network": {
+            "status": "declared",
+            "tags": [
+              "offline"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "availability": {
+            "status": "declared",
+            "tags": [
+              "available"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "scopes": {
+            "status": "declared",
+            "tags": [
+              "workspace"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "resources": {
+            "status": "declared",
+            "tags": [
+              "cpu"
+            ],
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          },
+          "data_classes": {
+            "status": "unknown",
+            "tags": null,
+            "source": "curation:development-inventory/3",
+            "observed_at": "2026-10-20T00:00:00+02:00",
+            "evidence": null
+          }
+        },
+        "dependencies": [
+          {
+            "id": "mechanism:preparation.packet",
+            "revision": "development/2",
+            "profile_sha256": "a5a4848aa1b1cce47275adb66acd7dc93f87f1f30f4b9fe9d558e6faca4222ec"
+          }
+        ]
+      },
+      "source": {
+        "root": "workspace",
+        "path": "src/tiberium_ai/task_followup.py"
+      },
+      "symbol": "continue_task",
+      "description": "Conserver contexte et fichiers utiles pour la suite des etapes de travail : decisions resultats de tests et references fraiches ; invalidation si les sources changent.",
+      "related_files": [
+        {
+          "root": "workspace",
+          "path": "examples/continue_development_task.py"
+        },
+        {
+          "root": "workspace",
+          "path": "tests/test_task_followup.py"
+        },
+        {
+          "root": "workspace",
+          "path": "docs/FILE_USEFULNESS_AND_FOLLOWUP.md"
+        },
+        {
+          "root": "workspace",
+          "path": "examples/fixtures/file_review_template.json"
+        }
+      ]
+    }
+  ]
+}

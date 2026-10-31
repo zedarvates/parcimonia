@@ -1,0 +1,24 @@
+{
+  "schema": "local-plugin.files/v1",
+  "files": {
+    ".codex-plugin/plugin.json": "822bf22dc9585f694ab594b64af6fb6451af59fe72c9aa141a3309782060e601",
+    ".mcp.json": "43ee9710e95489947727a84d9519602e8e6dea0fbe1d0151da2d82b8a7a2022c",
+    "LICENSE": "adfd351fe656dbacfdcdf9363e064d94028f47a8d2bfd45fcc83fc83cc2109fc",
+    "LICENSE-BOTTE-MIT": "4be2afe3d1aaa1d069d624b7fe654216565a1e1bcb3e0000d60fdb3dd92d3c61",
+    "PRIVACY.md": "78b3c8a8dd79c427929ec1db56432c9e2e645c91ce74a551002b80222644eb84",
+    "PUBLICATION.md": "f48d56f964a0391b42be2a47f556f2c175c3eacfe57caf78aa85184aece71bfa",
+    "README.md": "b440623d01e28b367679246cf5d0d832676ea2ad37145287f27b712477a39ac0",
+    "SOURCES.json": "6a115fea46cbe7845052c6f8ebf99c4137c47359d70eccd5c424c39e7d250d35",
+    "THIRD_PARTY_NOTICES.md": "1c0f5a7a4dae67a4fa1176219d0a6f1aea6b3d2f60cdeacd57ec65817ea7d3be",
+    "_vendor/__init__.py": "28aeaf7223d314ce786c06dd17fe972be70ee4a68e93b1e9786ca2c25d3f7bde",
+    "_vendor/compute_advisor.py": "c2f8c77011e55ad66ce3f784bb94bcd98bab279856eb3b2cd6a796531c415c49",
+    "_vendor/context_selection.py": "82675cac8017335a9c57af4adfb39306ff55924a9a2ec2b3ceb8baf4b61f8535",
+    "_vendor/hardware.py": "f4de93b1eeac514951b2c9e24d4abe61567e22184fdb69ce42e031ac40d1806d",
+    "_vendor/mcp_runtime.py": "5f494c4fda8b2858880a6d740b367b9b701f7a79e8cc0ab91a47c5af9af23577",
+    "assets/icon.svg": "7c026295ee41fd4db2892903bfdc07d541ceeaeeea3e5952bbfd34eadd5671c4",
+    "mcp.json": "072503529d48acfd5d028979d2de97b73a8df136dd13e4a585cf2783d2e3ab43",
+    "plugin.json": "8dc2446fbc80924f7fb2d7f972e5b99cbe177606fe51f32316986a061fef04b9",
+    "server.py": "93c5dbd488e9baf999c2b2204fe0cca259f2777f8f4e20f13c923b9582ab945a",
+    "skills/local-plan/SKILL.md": "11cd5dca57b79b557e9ea0397fe2efa986c41c19cba1de2874044957469b3091"
+  }
+}

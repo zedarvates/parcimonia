@@ -1,0 +1,12 @@
+{
+  "task_id": "replace-task-id",
+  "stage_id": "implementation",
+  "reviewer": "replace-reviewer",
+  "reviewer_kind": "human",
+  "judgments": [],
+  "missing_files": [],
+  "notes": [],
+  "review_complete": false,
+  "additional_searches": null,
+  "additional_reads": null
+}
