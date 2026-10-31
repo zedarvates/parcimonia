@@ -4,6 +4,12 @@ Cette extension recherche ce qui empêche un objectif d'être atteint et propose
 la vérification suivante. Elle réunit un moteur booléen exact dans un cadre
 fini et un inspecteur de motifs Python. Les deux restent consultatifs.
 
+Un chemin explicite supplémentaire propose une [réduction vérifiée vers
+2-SAT](VERIFIED_REDUCTIONS.md). Il répond aux questions de satisfiabilité
+jusqu'à 128 variables, avec témoins ou chemins contradictoires, dans un rapport
+séparé ; les axes de qualité et de complétude ci-dessous restent ceux du
+diagnostic exhaustif.
+
 ## Sens des conclusions
 
 | Conclusion | Portée |
