@@ -31,6 +31,10 @@ from .asset_text_extract import extract_asset_text
 from .asset_text_enrichment import enrich_asset_with_text
 from .asset_media_probe import probe_asset_media
 from .asset_media_enrichment import enrich_asset_with_media
+from .asset_relations import (
+    MAX_RELATIONS_BYTES, MAX_SEARCH_BYTES, bind_asset_relations,
+    search_asset_relations, validate_asset_relations,
+)
 from .verification import hash_input
 
 MAX_JOURNAL_BYTES = 8 * 1024 * 1024
@@ -121,6 +125,20 @@ def _read_catalog(path: str) -> dict:
     return snapshot
 
 
+def _write_relations_new(path: str, document: dict) -> dict:
+    validate_asset_relations(document)
+    payload = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    if len(payload.encode("utf-8")) > MAX_RELATIONS_BYTES:
+        raise ValueError("The serialized relation document exceeds its read/write budget.")
+    with Path(path).open("x", encoding="utf-8", newline="\n") as stream:
+        stream.write(payload)
+    return {
+        "schema": "parcimonia.asset-relations-write/v1", "output": str(Path(path)),
+        "relations_id": document["id"], "relations_hash": document["relations_hash"],
+        "relation_count": len(document["relations"]), "write": "created",
+    }
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -209,6 +227,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     catalog_search.add_argument("--state", action="append", choices=["proposed", "accepted", "rejected"])
     catalog_search.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
     catalog_search.add_argument("--limit", type=int, default=50)
+    relations_build = commands.add_parser("relations-build", help="bind caller-declared directed relations to exact catalogue reports")
+    relations_build.add_argument("input", help="existing catalogue snapshot")
+    relations_build.add_argument("declarations", help="explicit JSON array of relation declarations")
+    relations_build.add_argument("--relations-id", required=True)
+    relations_build.add_argument("--expected-head", required=True, help="exact catalogue hash used when authoring the declarations")
+    relations_build.add_argument("--out", required=True, help="new relation document; never overwritten")
+    relations_search = commands.add_parser("relations-search", help="find declared similar or complementary candidates with source references")
+    relations_search.add_argument("input", help="current catalogue snapshot")
+    relations_search.add_argument("relations", help="saved relation document")
+    relations_search.add_argument("--source-id", required=True)
+    relations_search.add_argument("--intent", required=True, choices=["similar", "complementary"])
+    relations_search.add_argument("--limit", type=int, default=50)
     arguments = parser.parse_args(argv)
     try:
         if arguments.command == "inspect":
@@ -275,6 +305,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             inspection = _read_json(arguments.input, 2 * 1024 * 1024)
             observation = _read_json(arguments.observation, 2 * 1024 * 1024)
             report = enrich_asset_with_media(inspection, observation)
+            code = 0
+        elif arguments.command == "relations-build":
+            snapshot = _read_catalog(arguments.input)
+            if arguments.expected_head != snapshot["snapshot_hash"]:
+                raise ValueError("expected_head does not match the supplied catalogue snapshot.")
+            declarations = _read_json(arguments.declarations, MAX_RELATIONS_BYTES, max_nodes=20_000)
+            document = bind_asset_relations(snapshot, declarations, relations_id=arguments.relations_id)
+            report = _write_relations_new(arguments.out, document)
+            code = 0
+        elif arguments.command == "relations-search":
+            snapshot = _read_catalog(arguments.input)
+            document = _read_json(arguments.relations, MAX_RELATIONS_BYTES, max_nodes=20_000)
+            report = search_asset_relations(
+                snapshot, document, source_id=arguments.source_id,
+                intent=arguments.intent, limit=arguments.limit,
+            )
             code = 0
         elif arguments.command == "catalog-init":
             report = _write_catalog_new(arguments.output, create_asset_catalog(arguments.catalog_id))
@@ -365,6 +411,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise ValueError("The ASCII audit output exceeds 16 MiB.")
         if arguments.command == "catalog-export" and not arguments.out and len(output.encode("ascii")) + 1 > MAX_SNAPSHOT_BYTES:
             raise ValueError("The ASCII stdout export exceeds 16 MiB; use --out for compact UTF-8 export.")
+        if arguments.command == "relations-search" and len(output.encode("ascii")) + 1 > MAX_SEARCH_BYTES:
+            raise ValueError("The ASCII relation-search output exceeds 4 MiB.")
     except (OSError, ValueError, TypeError, RecursionError) as exc:
         print(json.dumps({"error": type(exc).__name__, "detail": str(exc)}, ensure_ascii=True), file=sys.stderr)
         return 2
