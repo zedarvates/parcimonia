@@ -16,6 +16,7 @@ import re
 from typing import Any
 
 from .geo_probe import probe_geojson
+from .gpx_probe import PROFILE_ID as GPX_PROFILE_ID, probe_gpx
 from .media_probe import probe_media
 from .pattern_rules import builtin_rule_registry
 from .source_role import classify_source_role
@@ -221,9 +222,27 @@ def inspect_asset(
     if not data:
         report["reason_codes"] = ["empty_sample"]
         return report
-    probe = probe_geojson(data, complete=complete) or probe_media(data, complete=complete)
+    probe = (
+        probe_geojson(data, complete=complete)
+        or probe_media(data, complete=complete)
+        or probe_gpx(data, complete=complete)
+    )
     decoded = None
     if probe is not None:
+        if probe["format"] == "gpx":
+            report["analyser"] = {"id": "asset-gpx-inspection", "version": "1"}
+            report["input_hash"] = hash_input({
+                "source": source, "sample": sample, "topic_terms": topic_terms,
+                "gpx_profile": GPX_PROFILE_ID,
+            })
+            report["limits"].update({
+                "gpx_profile": GPX_PROFILE_ID,
+                "gpx_schema": "coordinate_profile_not_full_xsd_validation",
+                "gpx_optional_fields": "not_extracted_or_validated",
+                "external_xml_access": "not_performed",
+                "coordinates": "binary64_approximations_of_declared_positions",
+                "geometry": "point_envelope_not_route_intersection",
+            })
         report["format"].update(detected=probe["format"], media_type=probe["media_type"], basis=probe["analysis_scope"])
         for field in ("modalities", "metadata", "evidence"):
             report[field] = probe[field]

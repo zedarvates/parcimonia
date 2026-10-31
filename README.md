@@ -107,6 +107,11 @@ report per source, with explicit replacement preconditions, preserved earlier
 snapshots and review-aware search. It reuses the existing inspection reports and
 tag decisions without modifying source assets.
 
+An explicit [GPX 1.1 coordinate profile](docs/ASSET_GPX.md) reads declared GPS
+positions, retains waypoint/route/track-segment paths and computes a searchable
+2D envelope. It reuses the catalogue and tag review without claiming full GPX
+schema validation or verified real-world location.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.
