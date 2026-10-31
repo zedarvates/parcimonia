@@ -31,6 +31,15 @@ from tiberium_ai.measurement import Environment
 from tiberium_ai.reflex import ReflexKind
 from tiberium_ai.tev1_cases import agrees, corpus_revision, rule_baseline, tev1_cases
 from tiberium_ai.tev1_comparison import compare_tev1_runs
+from tiberium_ai.tev1_permutations import (
+    BASE_CORPUS,
+    CHOICE_ORDER_CORPUS,
+    CORPUS_KINDS,
+    cases_for,
+    choice_order_summary,
+    order_metadata,
+    revision_for,
+)
 from tiberium_ai.tev1_transport import (
     DEFAULT_BASE_URL,
     SUPPORTED_MODELS,
@@ -65,8 +74,16 @@ def observed_value(case, replay):
     return answer.score
 
 
-def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=None):
-    cases = tev1_cases()
+def comparison(
+    rows,
+    *,
+    identity,
+    capture_origin,
+    budget_ms=None,
+    environment=None,
+    corpus_kind=BASE_CORPUS,
+):
+    cases = cases_for(corpus_kind)
     output = []
     baseline_times = []
     for case, row in zip(cases, rows):
@@ -88,6 +105,9 @@ def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=No
                 "attempt_latency_ms": row["attempt_latency_ms"],
             }
         )
+        if corpus_kind == CHOICE_ORDER_CORPUS:
+            output[-1].update(order_metadata(case))
+            output[-1]["probabilities"] = row["probabilities"]
     if len(rows) != len(cases):
         raise ValueError("all_cases_must_be_counted")
     answered = [row for row in output if row["model"] is not None]
@@ -101,9 +121,9 @@ def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=No
             if all(type(value) is int and value >= 0 for value in values)
             else None
         )
-    return {
-        "schema_version": 2,
-        "corpus_revision": corpus_revision(),
+    report = {
+        "schema_version": 3 if corpus_kind == CHOICE_ORDER_CORPUS else 2,
+        "corpus_revision": revision_for(corpus_kind),
         "label_origin": "fixture",
         "capture_origin": capture_origin,
         "identity": asdict(identity),
@@ -142,6 +162,13 @@ def comparison(rows, *, identity, capture_origin, budget_ms=None, environment=No
         "saving_claim": False,
         "cases": output,
     }
+    if corpus_kind == CHOICE_ORDER_CORPUS:
+        report.update(
+            corpus_kind=corpus_kind,
+            observation_unit="request_variant",
+            order_stability=choice_order_summary(output),
+        )
+    return report
 
 
 def _write_json(path, value):
@@ -150,7 +177,9 @@ def _write_json(path, value):
         stream.write("\n")
 
 
-def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
+def capture_run(
+    *, model, base_url, budget_ms, out, machine_id=None, corpus_kind=BASE_CORPUS
+):
     if (
         type(budget_ms) not in (int, float)
         or not math.isfinite(budget_ms)
@@ -159,6 +188,7 @@ def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
         raise ValueError("budget_ms must be in (0, 120000].")
     if out.exists():
         raise ValueError("output_directory_already_exists")
+    cases = cases_for(corpus_kind)
     environment = None if machine_id is None else asdict(Environment(machine_id))
     identity = probe_tev1_model(model=model, base_url=base_url)
     if environment is not None:
@@ -171,7 +201,7 @@ def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
     (out / "records").mkdir()
     rows, manifest_rows = [], []
     stopped = False
-    for case in tev1_cases():
+    for case in cases:
         if stopped:
             detail = "batch_stopped_after_failed_attempt"
             rows.append(
@@ -181,6 +211,7 @@ def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
                     "detail_code": detail,
                     "attempt_latency_ms": None,
                     "usage": {},
+                    "probabilities": None,
                 }
             )
             manifest_rows.append(
@@ -216,6 +247,11 @@ def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
                 "detail_code": detail,
                 "attempt_latency_ms": elapsed,
                 "usage": {} if capture.record is None else capture.record.usage,
+                "probabilities": dict(
+                    capture.replay.batch.get("decision").probabilities
+                )
+                if capture.usable
+                else None,
             }
         )
         manifest_rows.append(
@@ -229,20 +265,23 @@ def capture_run(*, model, base_url, budget_ms, out, machine_id=None):
         )
         stopped = status != "ok"
     manifest = {
-        "schema_version": 3,
-        "corpus_revision": corpus_revision(),
+        "schema_version": 4 if corpus_kind == CHOICE_ORDER_CORPUS else 3,
+        "corpus_revision": revision_for(corpus_kind),
         "identity": asdict(identity),
         "budget_ms": budget_ms,
         "environment": environment,
         "capture_origin": "recorded",
         "cases": manifest_rows,
     }
+    if corpus_kind == CHOICE_ORDER_CORPUS:
+        manifest["corpus_kind"] = corpus_kind
     report = comparison(
         rows,
         identity=identity,
         capture_origin="recorded",
         budget_ms=budget_ms,
         environment=environment,
+        corpus_kind=corpus_kind,
     )
     _write_json(out / "run.json", manifest)
     _write_json(out / "comparison.json", report)
@@ -281,16 +320,23 @@ def replay_run(run):
         "cases",
     }
     version = manifest.get("schema_version") if isinstance(manifest, dict) else None
-    if version in (2, 3):
+    if version in (2, 3, 4):
         fields.add("environment")
+    if version == 4:
+        fields.add("corpus_kind")
     if (
         not isinstance(manifest, dict)
         or set(manifest) != fields
         or type(manifest["schema_version"]) is not int
-        or manifest["schema_version"] not in (1, 2, 3)
+        or manifest["schema_version"] not in (1, 2, 3, 4)
     ):
         raise ValueError("invalid_run_manifest")
-    if manifest["corpus_revision"] != corpus_revision():
+    corpus_kind = BASE_CORPUS
+    if version == 4:
+        corpus_kind = manifest["corpus_kind"]
+        if corpus_kind != CHOICE_ORDER_CORPUS:
+            raise ValueError("invalid_run_corpus_kind")
+    if manifest["corpus_revision"] != revision_for(corpus_kind):
         raise ValueError("corpus_revision_mismatch")
     if manifest["capture_origin"] not in ("recorded", "fixture"):
         raise ValueError("invalid_capture_origin")
@@ -312,7 +358,7 @@ def replay_run(run):
         environment = asdict(Environment(**environment))
         if environment["runtime_versions"].get("ollama") != identity.ollama_version:
             raise ValueError("environment_runtime_mismatch")
-    cases = tev1_cases()
+    cases = cases_for(corpus_kind)
     if not isinstance(manifest["cases"], list) or len(manifest["cases"]) != len(cases):
         raise ValueError("all_cases_must_be_counted")
     rows = []
@@ -334,7 +380,7 @@ def replay_run(run):
         ):
             raise ValueError("invalid_attempt_status")
         not_attempted = stored["status"] == "not_attempted"
-        if not_attempted and version != 3:
+        if not_attempted and version not in (3, 4):
             raise ValueError("invalid_attempt_status")
         latency = stored["attempt_latency_ms"]
         if (not_attempted and latency is not None) or (
@@ -353,7 +399,7 @@ def replay_run(run):
             raise ValueError("invalid_detail_code")
         if stored["has_record"] != (stored["status"] in ("ok", "unusable")):
             raise ValueError("record_status_mismatch")
-        if version == 3:
+        if version in (3, 4):
             if stopped != not_attempted:
                 raise ValueError("invalid_batch_stop_sequence")
             if stored["status"] != "ok":
@@ -363,7 +409,7 @@ def replay_run(run):
                 raise ValueError("invalid_unattempted_detail")
             if (run / "records" / f"{case.case_id}.json").exists():
                 raise ValueError("unexpected_unattempted_record")
-        observed, usage = None, {}
+        observed, usage, probabilities = None, {}, None
         if stored["has_record"]:
             path = run / "records" / f"{case.case_id}.json"
             if path.stat().st_size > 1024 * 1024:
@@ -389,6 +435,8 @@ def replay_run(run):
             ):
                 raise ValueError("record_is_not_advisory")
             observed = observed_value(case, replay)
+            if replay.usable:
+                probabilities = dict(replay.batch.get("decision").probabilities)
         rows.append(
             {
                 "observed": observed,
@@ -396,6 +444,7 @@ def replay_run(run):
                 "detail_code": stored["detail_code"],
                 "attempt_latency_ms": latency,
                 "usage": usage,
+                "probabilities": probabilities,
             }
         )
     return comparison(
@@ -404,6 +453,7 @@ def replay_run(run):
         capture_origin=manifest["capture_origin"],
         budget_ms=budget,
         environment=environment,
+        corpus_kind=corpus_kind,
     )
 
 
@@ -430,7 +480,8 @@ def preflight(base_url):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("plan", help="Show the authored corpus without any I/O.")
+    plan = commands.add_parser("plan", help="Show the authored corpus without any I/O.")
+    plan.add_argument("--corpus", choices=CORPUS_KINDS, default=BASE_CORPUS)
     probe = commands.add_parser(
         "preflight", help="Inspect both installed models without inference."
     )
@@ -445,6 +496,7 @@ def main():
         "--machine-id", help="Caller-declared label for this execution environment."
     )
     capture.add_argument("--out", type=Path, required=True)
+    capture.add_argument("--corpus", choices=CORPUS_KINDS, default=BASE_CORPUS)
     replay = commands.add_parser("replay", help="Replay saved records offline.")
     replay.add_argument("--run", type=Path, required=True)
     compare = commands.add_parser(
@@ -459,11 +511,28 @@ def main():
     try:
         if args.command == "plan":
             report = {
-                "corpus_revision": corpus_revision(),
+                "corpus_revision": revision_for(args.corpus),
                 "label_origin": "fixture",
                 "model_called": False,
                 "cases": [asdict(case) for case in tev1_cases()],
             }
+            if args.corpus == CHOICE_ORDER_CORPUS:
+                cases = cases_for(args.corpus)
+                report.update(
+                    corpus_kind=args.corpus,
+                    source_case_count=len(tev1_cases()),
+                    case_count=len(cases),
+                    base_corpus_revision=corpus_revision(),
+                    cases=[
+                        {
+                            **order_metadata(case),
+                            "family": case.family,
+                            "state": case.state,
+                            "expected": case.expected,
+                        }
+                        for case in cases
+                    ],
+                )
         elif args.command == "preflight":
             report = preflight(args.base_url)
         elif args.command == "capture":
@@ -473,6 +542,7 @@ def main():
                 budget_ms=args.budget_ms,
                 out=args.out,
                 machine_id=args.machine_id,
+                corpus_kind=args.corpus,
             )
         elif args.command == "replay":
             report = replay_run(args.run)
