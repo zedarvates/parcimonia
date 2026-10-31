@@ -19,6 +19,7 @@ ne remplace pas `docs/`, qui documente chaque mécanisme ; il relie, et il date.
 | [MEMORY_CAPTURE_2026-10-03.json](MEMORY_CAPTURE_2026-10-03.json) | capture explicite bornée : faits et absences immuables, reçus d'usage séparés, aucune issue inventée |
 | [MEMORY_EXECUTION_2026-10-04.json](MEMORY_EXECUTION_2026-10-04.json) | rattachement d'exécutions existantes : échec d'appel distinct de l'échec de journalisation, guide pilote Odin |
 | [MEMORY_TASK_IDS_2026-10-31.md](MEMORY_TASK_IDS_2026-10-31.md) | correspondance contextualisée des anciens identifiants mémoire vers TASK-111 et TASK-112 |
+| [ASSET_RELATIONS_2026-10-31.md](ASSET_RELATIONS_2026-10-31.md) | relations sourcées, séparation similaire/complémentaire et première preuve d'architecture authorée |
 
 Trois règles de lecture, les mêmes que partout ailleurs dans ce dépôt :
 

@@ -129,6 +129,12 @@ report per source, with explicit replacement preconditions, preserved earlier
 snapshots and review-aware search. It reuses the existing inspection reports and
 tag decisions without modifying source assets.
 
+An explicit [directed relation sidecar](docs/ASSET_RELATIONS.md) separates similar
+items from declared functional complements in the existing catalogue. Exact
+report revisions and hashes govern applicability; current incompatibility
+declarations block complementary candidates. References remain caller-declared,
+and no geometric compatibility, learned embedding or external proof is certified.
+
 An explicit [GPX 1.1 coordinate profile](docs/ASSET_GPX.md) reads declared GPS
 positions, retains waypoint/route/track-segment paths and computes a searchable
 2D envelope. It reuses the catalogue and tag review without claiming full GPX
