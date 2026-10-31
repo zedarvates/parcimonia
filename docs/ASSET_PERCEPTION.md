@@ -11,6 +11,10 @@ de rechercher les tags avec leur état de revue.
 La [lecture GPX 1.1](ASSET_GPX.md) ajoute les positions déclarées des points,
 itinéraires et segments de trace, avec provenance et enveloppe 2D recalculée.
 
+Le [sondage natif audio/vidéo](ASSET_NATIVE_MEDIA.md), explicitement demandé,
+complète les en-têtes par des pistes, codecs et durées rapportés par ffprobe,
+avec preuves par piste et revue des tags.
+
 Objectif : retrouver des fichiers par leur format, leurs caractéristiques, leur
 contenu proposé et leur localisation, puis préparer leur classement. Un même
 asset pourra relever de plusieurs modalités : une vidéo peut contenir image,
