@@ -44,6 +44,12 @@ intent and approval. Reflex classifies; it does not authorize. Schema emit
 constrains a tool call; it does not browse. The world-model gate is a
 heuristic energy check, not a trained JEPA. Silence is not approval.
 
+`turn_dispatch.py` est le pont de consommation : un « continuer » reconnu sur
+le texte entier consulte le kanban et les métriques puis demande une proposition
+au Director ; une nouvelle demande passe par la signature et son escalade
+budgétée. Un message court ambigu reste `unresolved`. Le pont ne livre aucune
+proposition et n'exécute aucun mécanisme.
+
 ## Typed reflex (System-1 pattern)
 
 Closed-set questions over state, evaluated in parallel, with no generated
@@ -82,8 +88,9 @@ not exist yet.
 
 ## Schema-constrained emit (tiny tool-calling pattern)
 
-A byte-level grammar compiled from a schema makes invalid JSON unrepresentable.
-Empty `function_calls` is a refusal, never a guess. Optional fields with no
+Needle 3 advertises un décodage contraint par grammaire. Notre adaptateur actuel
+valide après génération : il ne rend pas le JSON invalide impossible au moment
+du décodage. Empty `function_calls` is a refusal, never a guess. Optional fields with no
 source span are omitted. Required fields with no span are withheld, not filled.
 Confidence, when present, is `min(head, decode_probability)`. Fine-tunes that
 do not update the head report `None`.
@@ -95,6 +102,12 @@ Needle 3 weights are not downloaded.
 Tool design rules we adapt rather than copy: one tool per action, constraints
 in the schema not in prose, enums for closed sets, grounding against the source
 span. A valid call can still be ungrounded.
+
+L'étude récente distingue aussi deux « Astra » (le runtime
+MatrixOrigin et le workflow de délégation Astra/Flash), les essais Jev
+et Needle, ainsi que deux thèses différentes sur la géométrie des modèles.
+Voir [Astra, Jev, Needle 3 et les routes locales](ASTRA_JEV_NEEDLE_RESEARCH.md)
+pour le montage proposé et la porte de benchmark.
 
 ## Typed-decision adapter (wide option sets, replay, decision clock)
 
@@ -455,6 +468,13 @@ not a carried security/bug. Far-horizon items stay out of today while hot defect
 wait. `export_roadmap_views` writes `roadmap-near.md`, `roadmap-mid.md`,
 `roadmap-far.md` and an optional `daily-YYYY-MM-DD.md` as generated projections
 with a do-not-edit header.
+
+`write_daily_snapshot` conserve aussi la sélection du jour en JSON sans écraser
+un fichier existant. `orchestrate_day` relit le `kanban.md`, les rangs humains
+de `buts.md` s'il existe et l'instantané de la veille dans `planning/`.
+Les tâches achevées disparaissent du report ; celles restées ouvertes sont
+replanifiées selon leurs dépendances et la priorité actuelle. Une archive
+malformée échoue explicitement, au lieu de réinventer le contenu du chat.
 
 ## Buts ultimes
 

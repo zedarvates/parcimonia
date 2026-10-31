@@ -97,6 +97,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         out.write_text(
             json.dumps(
                 {
+                    "corpus": arguments.corpus,
+                    "revision_id": meta["revision_id"],
                     "candidates": [report.to_record() for report in reports],
                     "triage": triage,
                     "reading": LABELS_ABSENT,

@@ -12,6 +12,15 @@ Where the project stands, what was decided and what was learned — including th
 negative results — lives in [the wiki](wiki/WIKI.md). Mechanism documentation stays
 in [docs](docs/).
 
+For the opt-in, no-inference runtime diagnostic and single-task iteration
+helper, see [Local agent bootstrap](docs/LOCAL_AGENT_BOOTSTRAP.md). A bounded
+LM Studio text client and JSON worker are available for explicit local requests;
+see [the Eurekaï local LLM plan](docs/LOCAL_LLM_EUREKAI.md) and the
+[existing second-brain context connection](docs/LOCAL_KNOWLEDGE.md). Its offline
+fixture does not establish model quality, hardware readiness or token savings.
+The same worker also accepts explicit, bounded PNG/JPEG inputs through the
+[versioned local vision contract](docs/LOCAL_VISION.md); request v1 stays text-only.
+
 Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.
 
 It is not intended to be another general-purpose LLM. It sits between an agent/LLM and its execution mechanisms:
@@ -69,6 +78,14 @@ Planned adapters include:
 - ShardJEPA experiments
 - protobuf/ID based capability manifests
 
+[NVIDIA Personal AI Router (PAIR)](https://github.com/NVIDIA/Personal-AI-Router)
+fits this architecture: PAIR exposes OpenAI-compatible and Ollama-compatible
+local endpoints and routes each independent inference request to an eligible
+node. Parcimonia can treat a PAIR endpoint as a candidate for local LLM
+execution while retaining its own cost, evidence and escalation decisions.
+This is an integration path through planned adapters, not an implemented or
+end-to-end validated PAIR adapter.
+
 ## Success metrics
 
 Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, unsafe false positives, abstention, escalation, model calls, evidence completeness and reproducibility.
@@ -76,6 +93,19 @@ Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, uns
 ## Status
 
 Early design / bootstrap. No automatic routing is enabled.
+
+An opt-in [feasibility and stability diagnostic](docs/FEASIBILITY_DIAGNOSTICS.md)
+checks a bounded Boolean contract for contradictions and missing prerequisites,
+and inspects three Python code patterns for stability risks. Reports distinguish
+model proofs, caller-declared observations and static risk indicators. The
+offline CLI does not execute inspected code or change routing policy.
+
+An explicit [verified reduction to 2-SAT](docs/VERIFIED_REDUCTIONS.md) translates
+the supported Boolean requirements into clauses and checks them with an
+iterative implication-graph solver. It handles up to 128 variables and returns
+checkable assignments or contradictory paths. This is one implemented Karp
+reduction, not automatic discovery of arbitrary reductions; quality and
+completeness remain separate from the new satisfiability report.
 
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
@@ -181,6 +211,10 @@ shadow mode with its reason, and nothing executed. See the
 [flagship walkthrough](docs/FLAGSHIP.md).
 
 ## Local development
+
+New contributors and coding agents: read [AGENTS.md](AGENTS.md) and the
+[portable agent workflow](docs/AGENT_WORKFLOW.md). They describe when to consult
+the optional Botte Secrète planning tools and how to proceed without them.
 
 Requires Python 3.10 or newer. From the repository root on Windows:
 

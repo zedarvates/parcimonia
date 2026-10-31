@@ -5,7 +5,15 @@ from tiberium_ai.kanban import (
     WorkClass,
     parse_kanban_markdown,
 )
-from tiberium_ai.roadmap import close_day, export_roadmap_views, plan_day, render_daily_markdown
+from tiberium_ai.roadmap import (
+    close_day,
+    export_roadmap_views,
+    orchestrate_day,
+    plan_day,
+    read_daily_snapshot,
+    render_daily_markdown,
+    write_daily_snapshot,
+)
 
 
 BOARD = """
@@ -93,3 +101,44 @@ def test_render_daily_mentions_carry_marker():
     assert "carried" in text
     assert "carry to 2026-09-23" in text
 
+
+def test_yesterday_snapshot_drives_next_day_without_chat_history(tmp_path):
+    (tmp_path / "kanban.md").write_text(BOARD, encoding="utf-8")
+    (tmp_path / "buts.md").write_text(
+        "# Goals\n- [x] GOAL-ONE [rank: 1]\n  - title: Verify work\n",
+        encoding="utf-8",
+    )
+    planning = tmp_path / "planning"
+    planning.mkdir()
+    board = parse_kanban_markdown(BOARD)
+    first = plan_day(board, day="2026-09-21", wip_limit=2)
+    saved = write_daily_snapshot(planning / "daily-2026-09-21.json", first)
+    assert read_daily_snapshot(saved).selected_ids == first.selected_ids()
+
+    # A new critical bug arrives; one yesterday item is already done.
+    revised = BOARD.replace("- [ ] TASK-SEC", "- [x] TASK-SEC")
+    revised += (
+        "\n- [ ] TASK-NEW [P2] [class: security] [severity: critical] [horizon: near]\n"
+        "  - title: Newly reported access bug\n"
+    )
+    (tmp_path / "kanban.md").write_text(revised, encoding="utf-8")
+    second = orchestrate_day(tmp_path, day="2026-09-22", wip_limit=2)
+    assert "TASK-SEC" not in second.selected_ids()
+    assert second.selected_ids()[0] == "TASK-BUG"
+    assert "TASK-NEW" in second.selected_ids()
+    assert "TASK-BUG" in tuple(task.task_id for task in second.carried)
+    assert close_day(parse_kanban_markdown(revised), second).next_day == "2026-09-23"
+
+
+def test_snapshot_cannot_be_overwritten_or_forged(tmp_path):
+    import pytest
+
+    board = parse_kanban_markdown(BOARD)
+    first = plan_day(board, day="2026-09-21", wip_limit=2)
+    path = tmp_path / "daily.json"
+    write_daily_snapshot(path, first)
+    with pytest.raises(FileExistsError):
+        write_daily_snapshot(path, first)
+    path.write_text('{"schema_version":1,"schema_version":1}', encoding="utf-8")
+    with pytest.raises(ValueError, match="duplicate key"):
+        read_daily_snapshot(path)
