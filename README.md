@@ -190,6 +190,10 @@ shadow mode with its reason, and nothing executed. See the
 
 ## Local development
 
+New contributors and coding agents: read [AGENTS.md](AGENTS.md) and the
+[portable agent workflow](docs/AGENT_WORKFLOW.md). They describe when to consult
+the optional Botte Secrète planning tools and how to proceed without them.
+
 Requires Python 3.10 or newer. From the repository root on Windows:
 
 ```powershell
