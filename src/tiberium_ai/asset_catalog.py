@@ -136,7 +136,16 @@ def _report(value: Any) -> tuple[set[str], list[float] | None]:
     _hash(value["input_hash"], "input_hash")
     _sample(value["sample"])
     _object(value["analyser"], {"id", "version"}, "analyser")
-    if value["analyser"] != {"id": "asset-inspection", "version": "1"}:
+    analyser = value["analyser"]
+    if (
+        type(analyser["id"]) is not str or type(analyser["version"]) is not str
+        or (analyser["id"], analyser["version"]) not in {
+            ("asset-inspection", "1"), ("asset-text-enrichment", "1"),
+            ("asset-gpx-inspection", "1"),
+            ("asset-media-enrichment", "1"),
+            ("asset-ply-inspection", "1"),
+        }
+    ):
         raise ValueError("Unsupported analyser identity or version.")
     if type(value["mode"]) is not str or value["mode"] != "shadow":
         raise ValueError("Inspection mode must be shadow.")

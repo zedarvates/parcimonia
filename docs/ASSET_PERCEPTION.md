@@ -1,5 +1,28 @@
 # Perception, classification et recherche des fichiers
 
+Extension disponible : [extraction locale du texte](ASSET_TEXT_EXTRACTION.md)
+avec OCR PNG/JPEG et texte PDF, puis tags lexicaux liés aux zones ou pages et
+au journal de revue. Les limites ci-dessous décrivent l'inspection initiale.
+
+Les [snapshots de catalogue](ASSET_CATALOG_SNAPSHOTS.md) permettent ensuite de
+sauvegarder une sélection de ces rapports, de remplacer une révision précise et
+de rechercher les tags avec leur état de revue.
+
+La [lecture GPX 1.1](ASSET_GPX.md) ajoute les positions déclarées des points,
+itinéraires et segments de trace, avec provenance et enveloppe 2D recalculée.
+
+Le [sondage natif audio/vidéo](ASSET_NATIVE_MEDIA.md), explicitement demandé,
+complète les en-têtes par des pistes, codecs et durées rapportés par ffprobe,
+avec preuves par piste et revue des tags.
+
+La [lecture du corps PLY](ASSET_PLY_BODY.md) contrôle les positions locales,
+indices de faces et paramètres Gaussian des enregistrements disponibles, puis
+ajoute leurs agrégats, preuves et tags candidats.
+
+L'[audit d'attentes explicites](ASSET_EXPECTATIONS.md) compare ces rapports à
+des exigences choisies : correspondance, contradiction, inconnu ou rapport
+manquant. L'absence d'une proposition n'est pas une preuve d'absence du contenu.
+
 Objectif : retrouver des fichiers par leur format, leurs caractéristiques, leur
 contenu proposé et leur localisation, puis préparer leur classement. Un même
 asset pourra relever de plusieurs modalités : une vidéo peut contenir image,
@@ -18,10 +41,10 @@ indices lexicaux et les futures inférences de modèles restent distincts.
 | Images | En-têtes PNG, GIF, JPEG ; dimensions lorsque disponibles | Objets, textures, scènes, texte présent dans l'image |
 | Vidéo | Conteneur ISO-BMFF et Ogg ; suffixe vidéo conservé comme indice | Pistes réelles, images clés, segments, sous-titres et événements |
 | Sons | WAV PCM : métadonnées déclarées ; FLAC par signature | Parole, transcription, musique, événements sonores |
-| 3D | GLB et PLY par en-tête ; structure glTF JSON déclarée | Géométrie, unités, textures, animation et reconnaissance après rendu autorisé |
-| Gaussian splatting | Candidat d'après un ensemble précis de propriétés PLY | Validation du corps, rendu, formats splat/ksplat/spz et variantes |
+| 3D | GLB par en-tête ; profil PLY des sommets/faces ; structure glTF JSON déclarée | Autres profils géométriques, unités, textures, animation et reconnaissance après rendu autorisé |
+| Gaussian splatting | Candidat de paramètres PLY après lecture des records compatibles | Qualification des paramètres, rendu, formats splat/ksplat/spz et variantes |
 | Code | Rôles et motifs nommés Python des analyseurs existants | Autres langages et similarité fonctionnelle vérifiée |
-| Géographie | GeoJSON : coordonnées, ordre des axes, CRS et enveloppe | GPX, KML, GeoTIFF, Shapefile, reprojection et recherche géométrique exacte |
+| Géographie | GeoJSON et profil GPX 1.1 : coordonnées, ordre des axes, CRS et enveloppe | KML, GeoTIFF, Shapefile, reprojection et recherche géométrique exacte |
 
 « Gaussian splatting » est l'interprétation provisoire du terme oral reçu.
 Le nom reste à confirmer ; son support proposé ne
@@ -90,6 +113,11 @@ indice lexical. La preuve précise les octets, lignes ou caractères concernés.
 Les caractères d'un indice lexical sont comptés en points de code Unicode.
 Les identités et empreintes établissent des liens de calcul, pas une origine
 authentifiée ou la vérité des déclarations du fichier.
+
+Le [journal de revue](ASSET_TAG_REVIEW.md) peut conserver séparément les choix
+acceptés, rejetés ou réinitialisés et les utiliser dans une recherche dédiée.
+Il ne modifie pas ces propositions et ne transfère pas les choix à une nouvelle
+révision ou à un rapport d'analyse changé.
 
 L'échantillon est limité à 1 Mio. Pour un fichier plus grand, la CLI lit un
 préfixe et conserve la taille observée ; `content_sha256` reste `null`. Deux

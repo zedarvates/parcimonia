@@ -1,0 +1,94 @@
+{
+  "accepted_after_review": 1,
+  "accepted_before_review": 0,
+  "analyser": {
+    "id": "asset-gpx-inspection",
+    "version": "1"
+  },
+  "catalog_ref": {
+    "generation": 1,
+    "snapshot_hash": "18ad5280e459ab2101112a65da0fe3a52233686bc5b20f1ee4f376c37546aea4"
+  },
+  "changed_report_accepted": 0,
+  "data_origin": "authored_fixture_not_observed_gps",
+  "format": {
+    "basis": "gpx_1_1_coordinate_profile",
+    "detected": "gpx",
+    "extension_conflict": false,
+    "extension_hint": "gpx",
+    "media_type": "application/gpx+xml"
+  },
+  "invalid_late_point_matches": 0,
+  "invalid_late_point_spatial": null,
+  "model_calls": 0,
+  "old_report_still_accepted": 1,
+  "outside_bbox": 0,
+  "point_paths": [
+    "/gpx[1]/wpt[1]",
+    "/gpx[1]/rte[1]/rtept[1]",
+    "/gpx[1]/rte[1]/rtept[2]",
+    "/gpx[1]/trk[1]/trkseg[1]/trkpt[1]",
+    "/gpx[1]/trk[1]/trkseg[1]/trkpt[2]",
+    "/gpx[1]/trk[1]/trkseg[2]/trkpt[1]"
+  ],
+  "proposed_search": {
+    "count": 1,
+    "input_hash": "ccd9b088a6e9436f827ac8ce7a680d79c08b2a7d348379bcafe1aa2455ddebf9",
+    "limits": {
+      "geocoding": "not_performed",
+      "inputs": "caller_supplied_unverified",
+      "reprojection": "not_performed",
+      "spatial": "envelope_only_no_geometry_verification",
+      "tags": "proposals_only"
+    },
+    "matches": [
+      {
+        "input_hash": "145c268004347586169e50fdd5d21c84e81a3086df6cf0be8d3392aa7fd55def",
+        "matched_tags": [
+          "format:gpx"
+        ],
+        "sample_sha256": "b91a4a494b00c9608b965e009adcb9b3d88d4fc6f4102c9e239d2c6e50833e54",
+        "source": {
+          "filename": "fixture.gpx",
+          "id": "fixture:gpx",
+          "revision": "v1"
+        },
+        "spatial_match": "envelope_overlap_candidate"
+      }
+    ],
+    "query": {
+      "bbox": [
+        0.0,
+        0.0,
+        4.0,
+        4.0
+      ],
+      "limit": 50,
+      "tags": [
+        "format:gpx"
+      ]
+    },
+    "schema": "parcimonia.asset-search/v1",
+    "truncated": false
+  },
+  "reason_codes": [
+    "gpx_optional_fields_not_extracted",
+    "gpx_schema_not_fully_validated"
+  ],
+  "source_sha256": "b91a4a494b00c9608b965e009adcb9b3d88d4fc6f4102c9e239d2c6e50833e54",
+  "spatial": {
+    "axis_order": [
+      "longitude",
+      "latitude"
+    ],
+    "bbox": [
+      1.0,
+      2.0,
+      2.0,
+      3.0
+    ],
+    "crs": "OGC:CRS84",
+    "position_count": 6,
+    "units": "degrees"
+  }
+}

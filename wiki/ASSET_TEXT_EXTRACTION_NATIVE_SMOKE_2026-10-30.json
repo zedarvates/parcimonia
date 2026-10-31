@@ -1,0 +1,204 @@
+{
+  "observations": [
+    {
+      "backend": {
+        "executable": "/usr/bin/tesseract",
+        "executable_sha256": "74b76a5b994adcc18be362bf64ed5118082b2401d5d9a35242e92fc4c62e2b4b",
+        "id": "tesseract",
+        "language": "eng",
+        "version": "tesseract 5.5.0",
+        "weights_hash": null
+      },
+      "coverage": {
+        "document_complete": "not_established",
+        "selected_image": 1
+      },
+      "data_origin": "authored_fixture",
+      "elapsed_ms": 130.05617700400762,
+      "enriched_analyser": {
+        "id": "asset-text-enrichment",
+        "version": "1"
+      },
+      "enriched_model_calls": null,
+      "evidence": [
+        {
+          "bbox": [
+            27,
+            29,
+            196,
+            23
+          ],
+          "char_range": [
+            0,
+            10
+          ],
+          "id": "ocr:word:1",
+          "kind": "ocr_word",
+          "page": 1,
+          "reported_score": 91.018723,
+          "score_status": "uncalibrated"
+        },
+        {
+          "bbox": [
+            237,
+            29,
+            111,
+            23
+          ],
+          "char_range": [
+            11,
+            16
+          ],
+          "id": "ocr:word:2",
+          "kind": "ocr_word",
+          "page": 1,
+          "reported_score": 95.861008,
+          "score_status": "uncalibrated"
+        },
+        {
+          "bbox": [
+            360,
+            29,
+            132,
+            23
+          ],
+          "char_range": [
+            17,
+            23
+          ],
+          "id": "ocr:word:3",
+          "kind": "ocr_word",
+          "page": 1,
+          "reported_score": 95.684929,
+          "score_status": "uncalibrated"
+        },
+        {
+          "bbox": [
+            507,
+            29,
+            77,
+            23
+          ],
+          "char_range": [
+            24,
+            28
+          ],
+          "id": "ocr:word:4",
+          "kind": "ocr_word",
+          "page": 1,
+          "reported_score": 96.337822,
+          "score_status": "uncalibrated"
+        }
+      ],
+      "native_calls": [
+        {
+          "elapsed_ms": 18.85330700315535,
+          "error": null,
+          "phase": "version",
+          "returncode": 0,
+          "started": true,
+          "status": "completed",
+          "stderr_complete": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_complete": true,
+          "stdout_sha256": "c13172dc059595a006b9dbe5fbfdc519306ff60b7425b3d3ae1c34e320d0c5c0"
+        },
+        {
+          "elapsed_ms": 109.47524500079453,
+          "error": null,
+          "phase": "extract",
+          "returncode": 0,
+          "started": true,
+          "status": "completed",
+          "stderr_complete": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_complete": true,
+          "stdout_sha256": "6cbc6faf664ca8b616e6b13162a75b8956a8a729c955940679bb2100d6a4ee08"
+        }
+      ],
+      "sample_sha256": "0cf6020fee83881b31b55ed0aa703d7ed56b1d7185afadfd7f8330d62e8284d0",
+      "search_topic_robotique_count": 1,
+      "source": {
+        "filename": "fixture.png",
+        "id": "fixture:native-text",
+        "revision": "v1"
+      },
+      "status": "completed",
+      "text": "PARCIMONIA ROBOT GARDEN 2026"
+    },
+    {
+      "backend": {
+        "executable": "/usr/bin/pdftotext",
+        "executable_sha256": "7fe3559cac3ba61dd93650a1ba90499b9fc488184ef8d0f2f1305ddf52c0378b",
+        "id": "pdftotext",
+        "language": null,
+        "version": "pdftotext version 25.03.0",
+        "weights_hash": null
+      },
+      "coverage": {
+        "document_complete": "not_established",
+        "pages_requested": [
+          1,
+          3
+        ],
+        "pages_returned": 1
+      },
+      "data_origin": "authored_fixture",
+      "elapsed_ms": 30.338076001498848,
+      "enriched_analyser": {
+        "id": "asset-text-enrichment",
+        "version": "1"
+      },
+      "enriched_model_calls": 0,
+      "evidence": [
+        {
+          "char_range": [
+            0,
+            30
+          ],
+          "id": "pdf:page:1",
+          "kind": "pdf_page_text",
+          "page": 1
+        }
+      ],
+      "native_calls": [
+        {
+          "elapsed_ms": 14.870284998323768,
+          "error": null,
+          "phase": "version",
+          "returncode": 0,
+          "started": true,
+          "status": "completed",
+          "stderr_complete": true,
+          "stderr_sha256": "0f2ff359cb556fedcd7be481e9a06c6f25d46789094b702bd84ab4cf09ce49b0",
+          "stdout_complete": true,
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "elapsed_ms": 14.218186988728121,
+          "error": null,
+          "phase": "extract",
+          "returncode": 0,
+          "started": true,
+          "status": "completed",
+          "stderr_complete": true,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_complete": true,
+          "stdout_sha256": "127530e37ba68adbb5adf17e3638497b6508f3ef256d54500e6b9f89ae75ea09"
+        }
+      ],
+      "sample_sha256": "407512439ad2113e0bca1aaef8e0cf268b08d84db0c89ec33187f82715e56c7e",
+      "search_topic_robotique_count": 1,
+      "source": {
+        "filename": "fixture.pdf",
+        "id": "fixture:native-text",
+        "revision": "v1"
+      },
+      "status": "completed",
+      "text": "PARCIMONIA ROBOT GARDEN 2026\n\n\f"
+    }
+  ],
+  "observed_date": "2026-10-30",
+  "schema": "parcimonia.native-text-smoke-observation/v1",
+  "scope": "authored_fixtures_only_not_quality_or_performance_qualification"
+}
