@@ -5,6 +5,11 @@ d'inspection déjà produits. Cela permet de demander, par exemple, une image
 PNG d'au moins 512 pixels de large ou un PLY contenant au moins une face.
 L'audit est un avis séparé ; il ne modifie ni fichier, ni catalogue, ni revue.
 
+Un [contrôle préalable de cohérence](ASSET_EXPECTATION_CONSTRAINTS.md) peut
+détecter deux règles incompatibles sur le même fait avant toute inspection.
+Il possède son propre rapport et un vérificateur de certificats, sans changer
+les quatre résultats de l'audit ci-dessous.
+
 ## Quatre résultats distincts
 
 | Résultat d'un asset | Sens précis |
