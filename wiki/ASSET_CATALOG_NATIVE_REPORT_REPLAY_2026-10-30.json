@@ -1,0 +1,38 @@
+{
+  "accepted_after_replacement": 0,
+  "accepted_before_replacement": 1,
+  "catalog_id": "fixture:saved-native-report-replay",
+  "data_origin": "saved_native_outputs_from_authored_fixtures",
+  "declared_native_backends": [
+    {
+      "executable": "/usr/bin/tesseract",
+      "executable_sha256": "74b76a5b994adcc18be362bf64ed5118082b2401d5d9a35242e92fc4c62e2b4b",
+      "id": "tesseract",
+      "language": "eng",
+      "version": "tesseract 5.5.0",
+      "weights_hash": null
+    },
+    {
+      "executable": "/usr/bin/pdftotext",
+      "executable_sha256": "7fe3559cac3ba61dd93650a1ba90499b9fc488184ef8d0f2f1305ddf52c0378b",
+      "id": "pdftotext",
+      "language": null,
+      "version": "pdftotext version 25.03.0",
+      "weights_hash": null
+    }
+  ],
+  "export_round_trip_exact": true,
+  "input_report_hashes": [
+    "14aa6a90b4c9ec70fbfbcc7a95d3a2d28a408f84940b9bf7c33fb150bfe01146",
+    "4ed8eb5970c7ca826dc17def3826df917421a52d1192667b1f1e82109d6f9d8c"
+  ],
+  "new_native_calls": 0,
+  "old_snapshot_unchanged": true,
+  "proposed_after_replacement": 1,
+  "schema": "parcimonia.catalog-native-report-replay/v1",
+  "scope": "protocol_persistence_replay_not_new_native_extraction_or_quality_qualification",
+  "snapshot_hashes": [
+    "4d84432470124321983e423c1eb480b834162c57b40920c77990a2ab373e2fb3",
+    "1572612550c1fe384ce50105ce23fcd3fe70ea16ff81b9ed83d76e244d5679c7"
+  ]
+}
