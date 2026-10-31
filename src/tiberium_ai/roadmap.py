@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
 import json
+from typing import Any
 
 from .kanban import (
     Horizon,
@@ -79,6 +80,45 @@ class DayReport:
     carry_ids: tuple[str, ...]
     deferred: tuple[DeferredItem, ...]
     notes: str
+
+
+@dataclass(frozen=True)
+class DailySnapshot:
+    """Recorded daily selection; the kanban remains the task source of truth."""
+
+    day: str
+    project_id: str
+    wip_limit: int
+    selected_ids: tuple[str, ...]
+    source: str = "kanban.md"
+
+    def __post_init__(self) -> None:
+        date.fromisoformat(self.day)
+        if not self.project_id or not self.project_id.strip():
+            raise ValueError("project_id must be nonempty.")
+        if type(self.wip_limit) is not int or self.wip_limit < 1:
+            raise ValueError("wip_limit must be a positive integer.")
+        if len(set(self.selected_ids)) != len(self.selected_ids):
+            raise ValueError("selected_ids must be unique.")
+        if any(not isinstance(item, str) or not item.strip() for item in self.selected_ids):
+            raise ValueError("selected_ids must contain nonempty strings.")
+        if not self.source or not self.source.strip():
+            raise ValueError("source must be nonempty.")
+
+    @classmethod
+    def from_plan(cls, plan: DailyPlan) -> "DailySnapshot":
+        return cls(plan.day, plan.project_id, plan.wip_limit, plan.selected_ids())
+
+    def to_record(self) -> dict[str, Any]:
+        return {
+            "schema_version": 1,
+            "kind": "daily_snapshot",
+            "day": self.day,
+            "project_id": self.project_id,
+            "wip_limit": self.wip_limit,
+            "selected_ids": list(self.selected_ids),
+            "source": self.source,
+        }
 
 
 def plan_day(
@@ -291,3 +331,101 @@ def export_roadmap_views(
         path.write_text(render_daily_markdown(daily), encoding="utf-8", newline="\n")
         written[path.name] = path
     return written
+
+
+def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate key {key!r} in daily snapshot.")
+        result[key] = value
+    return result
+
+
+def _reject_constant(value: str) -> Any:
+    raise ValueError(f"non-finite value {value!r} in daily snapshot.")
+
+
+def write_daily_snapshot(path: str | Path, plan: DailyPlan) -> Path:
+    """Persist the selection once; never overwrite a daily snapshot."""
+    snapshot = DailySnapshot.from_plan(plan)
+    target = Path(path)
+    payload = json.dumps(snapshot.to_record(), ensure_ascii=False, indent=2) + "\n"
+    with target.open("x", encoding="utf-8", newline="\n") as handle:
+        handle.write(payload)
+    return target
+
+
+def read_daily_snapshot(path: str | Path) -> DailySnapshot:
+    raw = json.loads(
+        Path(path).read_text(encoding="utf-8"),
+        object_pairs_hook=_reject_duplicate_keys,
+        parse_constant=_reject_constant,
+    )
+    required = {
+        "schema_version",
+        "kind",
+        "day",
+        "project_id",
+        "wip_limit",
+        "selected_ids",
+        "source",
+    }
+    if not isinstance(raw, dict) or set(raw) != required:
+        raise ValueError("daily snapshot has missing or unknown fields.")
+    if type(raw["schema_version"]) is not int or raw["schema_version"] != 1:
+        raise ValueError("daily snapshot schema_version must be 1.")
+    if raw["kind"] != "daily_snapshot":
+        raise ValueError("daily snapshot kind must be daily_snapshot.")
+    if not isinstance(raw["selected_ids"], list):
+        raise ValueError("selected_ids must be a list.")
+    return DailySnapshot(
+        day=raw["day"],
+        project_id=raw["project_id"],
+        wip_limit=raw["wip_limit"],
+        selected_ids=tuple(raw["selected_ids"]),
+        source=raw["source"],
+    )
+
+
+def orchestrate_day(
+    project_dir: str | Path,
+    *,
+    day: str,
+    wip_limit: int = 3,
+    project_id: str = "parcimonia",
+) -> DailyPlan:
+    """Read project goals and yesterday's snapshot before ranking today's work.
+
+    This read-only function refuses a malformed snapshot. Missing goals mean
+    no goal ranks. A missing snapshot means no carried selection.
+    """
+    root = Path(project_dir)
+    board = parse_kanban_markdown((root / "kanban.md").read_text(encoding="utf-8"))
+    goal_path = root / "buts.md"
+    goals: GoalSet | None = load_goals(goal_path) if goal_path.is_file() else None
+    previous_day = (date.fromisoformat(day) - timedelta(days=1)).isoformat()
+    snapshot_path = root / "planning" / f"daily-{previous_day}.json"
+    previous: DailyPlan | None = None
+    if snapshot_path.is_file():
+        snapshot = read_daily_snapshot(snapshot_path)
+        if snapshot.day != previous_day or snapshot.project_id != project_id:
+            raise ValueError("yesterday's snapshot does not match this project and day.")
+        by_id = {task.task_id: task for task in board.tasks}
+        previous = DailyPlan(
+            day=snapshot.day,
+            project_id=snapshot.project_id,
+            wip_limit=snapshot.wip_limit,
+            selected=tuple(by_id[task_id] for task_id in snapshot.selected_ids if task_id in by_id),
+            carried=(),
+            deferred=(),
+            blocked=(),
+        )
+    return plan_day(
+        board,
+        day=day,
+        project_id=project_id,
+        wip_limit=wip_limit,
+        previous=previous,
+        goal_ranks=goals.ranks_for_schedule() if goals is not None else None,
+    )

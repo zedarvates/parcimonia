@@ -11,6 +11,8 @@ ne remplace pas `docs/`, qui documente chaque mécanisme ; il relie, et il date.
 | [ENSEIGNEMENTS.md](ENSEIGNEMENTS.md) | résultats, résultats négatifs et erreurs corrigées |
 | [SOURCES.md](SOURCES.md) | d'où vient la ligne technique, avec licences et frontières |
 | [RELEVE_2026-09-22.json](RELEVE_2026-09-22.json) | le relevé chiffré de cette date, citable |
+| [RELEVE_2026-09-24.json](RELEVE_2026-09-24.json) | la mesure suivante et sa réserve sur les textes longs |
+| [BEV_2026-10-04.md](BEV_2026-10-04.md) | analyse de la vidéo Bev, diagnostic d'ordre des choix et spécialisation française proposée |
 | [TEV1_2026-10-03.md](TEV1_2026-10-03.md) | transport local consultatif, corpus français et preuve réelle encore attendue |
 
 Trois règles de lecture, les mêmes que partout ailleurs dans ce dépôt :
