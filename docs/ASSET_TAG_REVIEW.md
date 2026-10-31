@@ -9,6 +9,10 @@ utilisent le même parcours de revue, avec une identité d'analyseur distincte e
 un lien au rapport d'extraction exact. Une acceptation de l'inspection initiale
 ne devient pas automatiquement une acceptation du rapport enrichi.
 
+Le [catalogue sauvegardé](ASSET_CATALOG_SNAPSHOTS.md) peut conserver une sélection
+courante de rapports. Les entrées inchangées gardent leurs décisions applicables ;
+une entrée remplacée est évaluée contre son nouveau rapport exact.
+
 Un tag accepté signifie qu'un acteur déclaré a enregistré ce jugement. Cela
 ne prouve pas son identité, le contenu réel du fichier ou l'autorisation de
 lancer une action. Aucune décision n'est enregistrée automatiquement par un modèle.
