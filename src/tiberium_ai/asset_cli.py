@@ -16,6 +16,7 @@ import sys
 from typing import Sequence
 
 from .asset_catalog import search_asset_reports
+from .asset_expectations import MAX_AUDIT_BYTES, MAX_EXPECTATIONS_BYTES, audit_asset_expectations
 from .asset_catalog_snapshot import (
     MAX_REPORT_BYTES, MAX_SNAPSHOT_BYTES, MAX_SNAPSHOT_NODES, create_asset_catalog,
     export_asset_reports, put_asset_report, remove_asset_report,
@@ -26,6 +27,8 @@ from .asset_tag_journal import append_tag_decision, create_tag_journal, validate
 from .asset_tag_review import project_tag_reviews, search_reviewed_assets
 from .asset_text_extract import extract_asset_text
 from .asset_text_enrichment import enrich_asset_with_text
+from .asset_media_probe import probe_asset_media
+from .asset_media_enrichment import enrich_asset_with_media
 from .verification import hash_input
 
 MAX_JOURNAL_BYTES = 8 * 1024 * 1024
@@ -113,6 +116,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     search.add_argument("--tag", action="append", default=[])
     search.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
     search.add_argument("--limit", type=int, default=50)
+    audit = commands.add_parser("audit-expectations", help="compare explicit expectations with supplied reports")
+    audit.add_argument("input", help="JSON report array, or catalogue snapshot with --catalog")
+    audit.add_argument("expectations", help="explicit versioned expectations JSON")
+    audit.add_argument("--catalog", action="store_true", help="read the input as a saved catalogue snapshot")
     init = commands.add_parser("review-init", help="create a new empty tag journal")
     init.add_argument("output")
     decision = commands.add_parser("review-tag", help="record one caller decision in a new journal snapshot")
@@ -148,6 +155,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     enrich.add_argument("input", help="original deterministic inspection report")
     enrich.add_argument("extraction", help="completed text extraction record")
     enrich.add_argument("--topics", help="optional explicit JSON vocabulary")
+    media_probe = commands.add_parser("probe-media", help="explicitly observe installed ffprobe stream metadata")
+    media_probe.add_argument("input")
+    media_probe.add_argument("--source-id", required=True)
+    media_probe.add_argument("--revision", required=True)
+    media_probe.add_argument("--executable", help="optional explicit local ffprobe executable")
+    media_probe.add_argument("--timeout", type=float, default=10.0)
+    media_enrich = commands.add_parser("enrich-media", help="propose tags from one exact saved media observation")
+    media_enrich.add_argument("input", help="original deterministic inspection")
+    media_enrich.add_argument("observation", help="completed ffprobe observation record")
     catalog_init = commands.add_parser("catalog-init", help="create a new empty catalogue snapshot")
     catalog_init.add_argument("output")
     catalog_init.add_argument("--catalog-id", required=True)
@@ -188,6 +204,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             reports = _read_json(arguments.input, 16 * 1024 * 1024)
             report = search_asset_reports(reports, tags=arguments.tag, bbox=arguments.bbox, limit=arguments.limit)
             code = 0
+        elif arguments.command == "audit-expectations":
+            if arguments.catalog:
+                snapshot = _read_catalog(arguments.input)
+                reports = export_asset_reports(snapshot)
+            else:
+                reports = _read_json(arguments.input, MAX_SNAPSHOT_BYTES, max_nodes=MAX_SNAPSHOT_NODES)
+            expectations = _read_json(arguments.expectations, MAX_EXPECTATIONS_BYTES, max_nodes=20_000)
+            report = audit_asset_expectations(reports, expectations)
+            if arguments.catalog:
+                reference = {
+                    "id": snapshot["catalog_id"], "generation": snapshot["generation"],
+                    "snapshot_hash": snapshot["snapshot_hash"],
+                }
+                report = {
+                    "schema": "parcimonia.asset-catalog-expectation-audit/v1", "catalog": reference,
+                    "input_hash": hash_input({"catalog": reference, "audit_input_hash": report["input_hash"]}),
+                    "result": report,
+                }
+            code = 0
         elif arguments.command == "extract-text":
             data, _, complete = _read_regular(arguments.input, MAX_SAMPLE_BYTES)
             report = extract_asset_text(
@@ -203,6 +238,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             extraction = _read_json(arguments.extraction, 2 * 1024 * 1024)
             topics = _read_json(arguments.topics, 64 * 1024, max_nodes=4096) if arguments.topics else None
             report = enrich_asset_with_text(inspection, extraction, topic_terms=topics)
+            code = 0
+        elif arguments.command == "probe-media":
+            data, _, complete = _read_regular(arguments.input, MAX_SAMPLE_BYTES)
+            report = probe_asset_media(
+                data, filename=Path(arguments.input).name, source_id=arguments.source_id,
+                revision=arguments.revision, executable=arguments.executable,
+                timeout_s=arguments.timeout, complete=complete,
+            )
+            code = 0 if report["status"] == "completed" else 4 if report["status"] == "failed" else 3
+        elif arguments.command == "enrich-media":
+            inspection = _read_json(arguments.input, 2 * 1024 * 1024)
+            observation = _read_json(arguments.observation, 2 * 1024 * 1024)
+            report = enrich_asset_with_media(inspection, observation)
             code = 0
         elif arguments.command == "catalog-init":
             report = _write_catalog_new(arguments.output, create_asset_catalog(arguments.catalog_id))
@@ -287,6 +335,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             code = 0
         output = json.dumps(report, ensure_ascii=True, sort_keys=True, allow_nan=False)
+        if arguments.command == "audit-expectations" and len(output.encode("ascii")) + 1 > MAX_AUDIT_BYTES:
+            raise ValueError("The ASCII audit output exceeds 16 MiB.")
         if arguments.command == "catalog-export" and not arguments.out and len(output.encode("ascii")) + 1 > MAX_SNAPSHOT_BYTES:
             raise ValueError("The ASCII stdout export exceeds 16 MiB; use --out for compact UTF-8 export.")
     except (OSError, ValueError, TypeError, RecursionError) as exc:

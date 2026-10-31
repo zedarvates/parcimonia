@@ -1,0 +1,748 @@
+{
+  "audit": {
+    "analyser": {
+      "id": "asset-expectation-audit",
+      "version": "1"
+    },
+    "expectations": {
+      "hash": "801e15bf11f497cf7a09aa08f8b162502372329370b9a5769c457c8974f90364",
+      "id": "fixture:delivery-requirements"
+    },
+    "input_hash": "8eeb0933e64cadfc032179da1e4516d38b45ecf5d620fa7ff1f414419154cca0",
+    "limits": {
+      "file_mutations": 0,
+      "inputs": "caller_supplied_declarations_not_authenticated_or_replayed",
+      "missing_report": "absent_from_supplied_array_not_proof_of_missing_file",
+      "model_calls": 0,
+      "review_decisions": "not_applied",
+      "satisfied": "explicit_comparison_only_not_quality_or_tag_acceptance",
+      "scope": "listed_facts_only_not_general_impossibility_or_stability_analysis",
+      "unknown": "no_negative_inference_from_missing_fact_or_tag"
+    },
+    "mode": "shadow",
+    "reports": [
+      {
+        "report_hash": "93a70abfac11dbdc2ae57426b8bbde3010607b3dbb3e032ef50a0bfddf62fe77",
+        "source": {
+          "filename": "image.png",
+          "id": "fixture:image",
+          "revision": "v1"
+        }
+      },
+      {
+        "report_hash": "e634741a6f7ca44e7378b3c8306d27e3b3a01d30662962154a1e81fc7777c6b1",
+        "source": {
+          "filename": "points.ply",
+          "id": "fixture:cloud",
+          "revision": "v1"
+        }
+      },
+      {
+        "report_hash": "a1359474c567ded556e201c08f6405e5bf510dbed0aa2e3ee933cb1746b04f81",
+        "source": {
+          "filename": "note.txt",
+          "id": "fixture:text",
+          "revision": "v1"
+        }
+      }
+    ],
+    "results": [
+      {
+        "checks": [
+          {
+            "fact": "format.detected",
+            "id": "format",
+            "observation": {
+              "basis": "header_only",
+              "evidence_refs": [],
+              "paths": [
+                "/format/detected"
+              ],
+              "value": "png"
+            },
+            "op": "eq",
+            "reason": "declared_fact_matches",
+            "status": "satisfied",
+            "value": "png"
+          },
+          {
+            "fact": "metadata.width",
+            "id": "width",
+            "observation": {
+              "basis": "parsed_header",
+              "evidence_refs": [
+                "media:png:header"
+              ],
+              "paths": [
+                "/metadata/0/value"
+              ],
+              "value": 1
+            },
+            "op": "gte",
+            "reason": "declared_fact_matches",
+            "status": "satisfied",
+            "value": 1
+          }
+        ],
+        "report_hash": "93a70abfac11dbdc2ae57426b8bbde3010607b3dbb3e032ef50a0bfddf62fe77",
+        "source": {
+          "id": "fixture:image",
+          "revision": "v1"
+        },
+        "status": "satisfied"
+      },
+      {
+        "checks": [
+          {
+            "fact": "metadata.observed_face_count",
+            "id": "faces-required",
+            "observation": {
+              "basis": "validated_record_values",
+              "evidence_refs": [
+                "ply:body"
+              ],
+              "paths": [
+                "/metadata/4/value"
+              ],
+              "value": 0
+            },
+            "op": "gte",
+            "reason": "declared_fact_conflicts",
+            "status": "contradicted",
+            "value": 1
+          }
+        ],
+        "report_hash": "e634741a6f7ca44e7378b3c8306d27e3b3a01d30662962154a1e81fc7777c6b1",
+        "source": {
+          "id": "fixture:cloud",
+          "revision": "v1"
+        },
+        "status": "contradicted"
+      },
+      {
+        "checks": [
+          {
+            "fact": "tag:topic:forest",
+            "id": "forest-proposal",
+            "observation": null,
+            "op": "eq",
+            "reason": "fact_not_available",
+            "status": "unknown",
+            "value": true
+          }
+        ],
+        "report_hash": "a1359474c567ded556e201c08f6405e5bf510dbed0aa2e3ee933cb1746b04f81",
+        "source": {
+          "id": "fixture:text",
+          "revision": "v1"
+        },
+        "status": "unknown"
+      },
+      {
+        "checks": [
+          {
+            "fact": "sample.complete",
+            "id": "complete",
+            "observation": null,
+            "op": "eq",
+            "reason": "report_not_supplied",
+            "status": "unknown",
+            "value": true
+          }
+        ],
+        "report_hash": null,
+        "source": {
+          "id": "fixture:sound",
+          "revision": "v1"
+        },
+        "status": "missing_report"
+      }
+    ],
+    "schema": "parcimonia.asset-expectation-audit/v1",
+    "summary": {
+      "contradicted": 1,
+      "missing_report": 1,
+      "satisfied": 1,
+      "unknown": 1
+    }
+  },
+  "data_origin": "authored_fixtures_not_a_personal_asset_inventory",
+  "expectations": {
+    "assets": [
+      {
+        "checks": [
+          {
+            "fact": "format.detected",
+            "id": "format",
+            "op": "eq",
+            "value": "png"
+          },
+          {
+            "fact": "metadata.width",
+            "id": "width",
+            "op": "gte",
+            "value": 1
+          }
+        ],
+        "source": {
+          "id": "fixture:image",
+          "revision": "v1"
+        }
+      },
+      {
+        "checks": [
+          {
+            "fact": "metadata.observed_face_count",
+            "id": "faces-required",
+            "op": "gte",
+            "value": 1
+          }
+        ],
+        "source": {
+          "id": "fixture:cloud",
+          "revision": "v1"
+        }
+      },
+      {
+        "checks": [
+          {
+            "fact": "tag:topic:forest",
+            "id": "forest-proposal",
+            "op": "eq",
+            "value": true
+          }
+        ],
+        "source": {
+          "id": "fixture:text",
+          "revision": "v1"
+        }
+      },
+      {
+        "checks": [
+          {
+            "fact": "sample.complete",
+            "id": "complete",
+            "op": "eq",
+            "value": true
+          }
+        ],
+        "source": {
+          "id": "fixture:sound",
+          "revision": "v1"
+        }
+      }
+    ],
+    "id": "fixture:delivery-requirements",
+    "schema": "parcimonia.asset-expectations/v1"
+  },
+  "reports": [
+    {
+      "analyser": {
+        "id": "asset-inspection",
+        "version": "1"
+      },
+      "evidence": [
+        {
+          "byte_range": [
+            0,
+            33
+          ],
+          "id": "media:png:header",
+          "kind": "header"
+        },
+        {
+          "id": "name:extension",
+          "kind": "filename_hint",
+          "suffix": ".png"
+        }
+      ],
+      "format": {
+        "basis": "header_only",
+        "detected": "png",
+        "extension_conflict": false,
+        "extension_hint": "png",
+        "media_type": "image/png"
+      },
+      "input_hash": "b27bcfcf2c741f406bf30836b72a6877ca4e3ea28968d464f75d57f2bed55f1a",
+      "limits": {
+        "file_mutations": 0,
+        "max_sample_bytes": 1048576,
+        "model_calls": 0,
+        "semantic_content": "not_assessed",
+        "sources": "caller_supplied_unverified",
+        "tag_state": "proposals_only"
+      },
+      "metadata": [
+        {
+          "basis": "parsed_header",
+          "evidence_ref": "media:png:header",
+          "name": "width",
+          "value": 1
+        },
+        {
+          "basis": "parsed_header",
+          "evidence_ref": "media:png:header",
+          "name": "height",
+          "value": 1
+        },
+        {
+          "basis": "parsed_header",
+          "evidence_ref": "media:png:header",
+          "name": "bit_depth",
+          "value": 8
+        }
+      ],
+      "modalities": [
+        "image"
+      ],
+      "mode": "shadow",
+      "reason_codes": [],
+      "sample": {
+        "bytes": 69,
+        "complete": true,
+        "content_sha256": "c47dd9465c00e9a0c8b85e9ea58d3034a0d23b9cf926113602f3460752a4eb96",
+        "sha256": "c47dd9465c00e9a0c8b85e9ea58d3034a0d23b9cf926113602f3460752a4eb96",
+        "total_bytes": 69
+      },
+      "schema": "parcimonia.asset-inspection/v1",
+      "source": {
+        "filename": "image.png",
+        "id": "fixture:image",
+        "revision": "v1"
+      },
+      "spatial": null,
+      "status": "inspected",
+      "tag_proposals": [
+        {
+          "basis": "signature",
+          "evidence_refs": [
+            "media:png:header"
+          ],
+          "namespace": "format",
+          "status": "proposed",
+          "value": "png"
+        },
+        {
+          "basis": "extension_hint",
+          "evidence_refs": [
+            "name:extension"
+          ],
+          "namespace": "format_hint",
+          "status": "proposed",
+          "value": "png"
+        },
+        {
+          "basis": "header_only",
+          "evidence_refs": [
+            "media:png:header"
+          ],
+          "namespace": "modality",
+          "status": "proposed",
+          "value": "image"
+        },
+        {
+          "basis": "extension_hint",
+          "evidence_refs": [
+            "name:extension"
+          ],
+          "namespace": "modality_hint",
+          "status": "proposed",
+          "value": "image"
+        }
+      ]
+    },
+    {
+      "analyser": {
+        "id": "asset-ply-inspection",
+        "version": "1"
+      },
+      "evidence": [
+        {
+          "byte_range": [
+            0,
+            140
+          ],
+          "id": "media:ply:header",
+          "kind": "header"
+        },
+        {
+          "byte_range": [
+            140,
+            178
+          ],
+          "encoding": "ascii",
+          "face_count": 0,
+          "field_value_count": 9,
+          "id": "ply:body",
+          "kind": "validated_ply_body",
+          "profile": "parcimonia.ply-body-profile/v1",
+          "vertex_count": 3
+        },
+        {
+          "byte_range": [
+            140,
+            178
+          ],
+          "extrema": {
+            "x_max": {
+              "byte_range": [
+                140,
+                151
+              ],
+              "field": "x",
+              "row": 1,
+              "value": 1.0
+            },
+            "x_min": {
+              "byte_range": [
+                152,
+                164
+              ],
+              "field": "x",
+              "row": 2,
+              "value": -1.0
+            },
+            "y_max": {
+              "byte_range": [
+                152,
+                164
+              ],
+              "field": "y",
+              "row": 2,
+              "value": 3.0
+            },
+            "y_min": {
+              "byte_range": [
+                140,
+                151
+              ],
+              "field": "y",
+              "row": 1,
+              "value": 2.0
+            },
+            "z_max": {
+              "byte_range": [
+                152,
+                164
+              ],
+              "field": "z",
+              "row": 2,
+              "value": 4.0
+            },
+            "z_min": {
+              "byte_range": [
+                165,
+                177
+              ],
+              "field": "z",
+              "row": 3,
+              "value": -2.0
+            }
+          },
+          "id": "ply:position_extrema",
+          "kind": "ply_position_extrema",
+          "profile": "parcimonia.ply-body-profile/v1"
+        },
+        {
+          "id": "name:extension",
+          "kind": "filename_hint",
+          "suffix": ".ply"
+        }
+      ],
+      "format": {
+        "basis": "ply_body_coordinate_profile",
+        "detected": "ply",
+        "extension_conflict": false,
+        "extension_hint": "ply",
+        "media_type": "application/octet-stream"
+      },
+      "input_hash": "d159584fa019f525621dabd6c6d3ce5e40049a0a4d7570404ad5a25a1ad3836f",
+      "limits": {
+        "file_mutations": 0,
+        "gaussian_splats": "schema_candidate_not_render_or_quality_validation",
+        "geographic_coordinates": "not_inferred_from_ply_xyz",
+        "geometry_units": "unknown",
+        "geometry_validation": "typed_records_and_indices_not_full_surface_validation",
+        "max_sample_bytes": 1048576,
+        "model_calls": 0,
+        "ply_profile": "parcimonia.ply-body-profile/v1",
+        "semantic_content": "not_assessed_3d_structure_only",
+        "sources": "caller_supplied_unverified",
+        "tag_state": "proposals_only"
+      },
+      "metadata": [
+        {
+          "basis": "declared_header",
+          "evidence_ref": "media:ply:header",
+          "name": "ply_encoding",
+          "value": "ascii"
+        },
+        {
+          "basis": "declared_header",
+          "evidence_ref": "media:ply:header",
+          "name": "declared_vertex_count",
+          "value": 3
+        },
+        {
+          "basis": "declared_header",
+          "evidence_ref": "media:ply:header",
+          "name": "vertex_properties",
+          "value": [
+            "x",
+            "y",
+            "z"
+          ]
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_ref": "ply:body",
+          "name": "observed_vertex_count",
+          "value": 3
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_ref": "ply:body",
+          "name": "observed_face_count",
+          "value": 0
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_ref": "ply:position_extrema",
+          "name": "geometry_bounds_xyz",
+          "value": {
+            "axis_order": [
+              "x",
+              "y",
+              "z"
+            ],
+            "coordinate_frame": "file_local_unspecified",
+            "max": [
+              1.0,
+              3.0,
+              4.0
+            ],
+            "min": [
+              -1.0,
+              2.0,
+              -2.0
+            ],
+            "units": "unknown"
+          }
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_ref": "ply:body",
+          "name": "observed_ply_encoding",
+          "value": "ascii"
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_ref": "ply:body",
+          "name": "observed_field_value_count",
+          "value": 9
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_ref": "ply:body",
+          "name": "gaussian_parameters",
+          "value": {
+            "record_count": 3,
+            "schema_compatible": false,
+            "zero_rotation_records": null
+          }
+        }
+      ],
+      "modalities": [
+        "3d"
+      ],
+      "mode": "shadow",
+      "reason_codes": [
+        "ply_body_profile_not_full_geometry_validation"
+      ],
+      "sample": {
+        "bytes": 178,
+        "complete": true,
+        "content_sha256": "d2146eb0f45721065a5df6ce7b923082bc7dfa826e1048ccf88a99729f6f9fa0",
+        "sha256": "d2146eb0f45721065a5df6ce7b923082bc7dfa826e1048ccf88a99729f6f9fa0",
+        "total_bytes": 178
+      },
+      "schema": "parcimonia.asset-inspection/v1",
+      "source": {
+        "filename": "points.ply",
+        "id": "fixture:cloud",
+        "revision": "v1"
+      },
+      "spatial": null,
+      "status": "partial",
+      "tag_proposals": [
+        {
+          "basis": "signature",
+          "evidence_refs": [
+            "media:ply:header"
+          ],
+          "namespace": "format",
+          "status": "proposed",
+          "value": "ply"
+        },
+        {
+          "basis": "extension_hint",
+          "evidence_refs": [
+            "name:extension"
+          ],
+          "namespace": "format_hint",
+          "status": "proposed",
+          "value": "ply"
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body",
+            "ply:position_extrema"
+          ],
+          "namespace": "geometry",
+          "status": "proposed",
+          "value": "has_local_positions"
+        },
+        {
+          "basis": "ply_body_coordinate_profile",
+          "evidence_refs": [
+            "media:ply:header"
+          ],
+          "namespace": "modality",
+          "status": "proposed",
+          "value": "3d"
+        },
+        {
+          "basis": "extension_hint",
+          "evidence_refs": [
+            "name:extension"
+          ],
+          "namespace": "modality_hint",
+          "status": "proposed",
+          "value": "3d"
+        },
+        {
+          "basis": "header_schema_candidate",
+          "evidence_refs": [
+            "media:ply:header"
+          ],
+          "namespace": "representation",
+          "status": "proposed",
+          "value": "point_cloud_candidate"
+        },
+        {
+          "basis": "validated_record_values",
+          "evidence_refs": [
+            "ply:body"
+          ],
+          "namespace": "representation",
+          "status": "proposed",
+          "value": "point_cloud_structure"
+        }
+      ]
+    },
+    {
+      "analyser": {
+        "id": "asset-inspection",
+        "version": "1"
+      },
+      "evidence": [
+        {
+          "id": "name:extension",
+          "kind": "filename_hint",
+          "suffix": ".txt"
+        },
+        {
+          "byte_range": [
+            0,
+            44
+          ],
+          "id": "text:utf8",
+          "kind": "utf8_text_sample"
+        }
+      ],
+      "format": {
+        "basis": "utf8_text",
+        "detected": "text",
+        "extension_conflict": false,
+        "extension_hint": "text",
+        "media_type": "text/plain"
+      },
+      "input_hash": "198892af576cb02c572c525d1d45d168b9be2d7a84564a1406f5f04d6210a8fd",
+      "limits": {
+        "file_mutations": 0,
+        "max_sample_bytes": 1048576,
+        "model_calls": 0,
+        "semantic_content": "not_assessed",
+        "sources": "caller_supplied_unverified",
+        "tag_state": "proposals_only"
+      },
+      "metadata": [
+        {
+          "basis": "decoded_sample",
+          "evidence_ref": "text:utf8",
+          "name": "sample_text_characters",
+          "value": 44
+        }
+      ],
+      "modalities": [
+        "text"
+      ],
+      "mode": "shadow",
+      "reason_codes": [],
+      "sample": {
+        "bytes": 44,
+        "complete": true,
+        "content_sha256": "b85e8d63c159aa9b68248397fabd7a2ca1ecef67622ea2f2773c2a109b847e8c",
+        "sha256": "b85e8d63c159aa9b68248397fabd7a2ca1ecef67622ea2f2773c2a109b847e8c",
+        "total_bytes": 44
+      },
+      "schema": "parcimonia.asset-inspection/v1",
+      "source": {
+        "filename": "note.txt",
+        "id": "fixture:text",
+        "revision": "v1"
+      },
+      "spatial": null,
+      "status": "inspected",
+      "tag_proposals": [
+        {
+          "basis": "utf8_text",
+          "evidence_refs": [
+            "text:utf8"
+          ],
+          "namespace": "format",
+          "status": "proposed",
+          "value": "text"
+        },
+        {
+          "basis": "extension_hint",
+          "evidence_refs": [
+            "name:extension"
+          ],
+          "namespace": "format_hint",
+          "status": "proposed",
+          "value": "text"
+        },
+        {
+          "basis": "utf8_text",
+          "evidence_refs": [
+            "text:utf8"
+          ],
+          "namespace": "modality",
+          "status": "proposed",
+          "value": "text"
+        },
+        {
+          "basis": "extension_hint",
+          "evidence_refs": [
+            "name:extension"
+          ],
+          "namespace": "modality_hint",
+          "status": "proposed",
+          "value": "text"
+        }
+      ]
+    }
+  ]
+}

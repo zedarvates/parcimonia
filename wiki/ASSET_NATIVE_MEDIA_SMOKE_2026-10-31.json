@@ -1,0 +1,1160 @@
+{
+  "observed_date": "2026-10-31",
+  "results": [
+    {
+      "data_origin": "authored_fixture",
+      "enriched": {
+        "analyser": {
+          "id": "asset-media-enrichment",
+          "version": "1"
+        },
+        "evidence": [
+          {
+            "byte_range": [
+              0,
+              44
+            ],
+            "id": "media:wav:header",
+            "kind": "header"
+          },
+          {
+            "id": "name:extension",
+            "kind": "filename_hint",
+            "suffix": ".wav"
+          },
+          {
+            "backend": {
+              "executable": "/usr/bin/ffprobe",
+              "executable_sha256": "cefc5f81c0b18429cdbf8fa5a89e1e9c759235e10f93f9b329ff1b2fdff26f46",
+              "id": "ffprobe",
+              "version": "ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers"
+            },
+            "coverage": {
+              "full_decode": "not_established",
+              "streams": "reported_only"
+            },
+            "id": "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:summary",
+            "kind": "native_media_observation",
+            "observation_hash": "7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae",
+            "profile": {
+              "demuxer": "wav",
+              "id": "parcimonia.ffprobe-stream-profile/v1",
+              "source_format": "wav"
+            },
+            "raw_stdout_sha256": "b6fea0a62efd178c9b2cc04c845702799a1be62928170f00760b52796b6668b3",
+            "source_sha256": "4e9cc5bbce2136140462d11c5fec6e6c1ed10602c2bca874dbb58e7b9be21092"
+          },
+          {
+            "id": "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:stream:0",
+            "kind": "native_media_stream",
+            "observation_hash": "7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae",
+            "stream": {
+              "attached_picture": false,
+              "channels": 1,
+              "codec": "pcm_s16le",
+              "duration_seconds": 0.2,
+              "height": null,
+              "index": 0,
+              "sample_rate": 8000,
+              "type": "audio",
+              "width": null
+            }
+          }
+        ],
+        "format": {
+          "basis": "header_only",
+          "detected": "wav",
+          "extension_conflict": false,
+          "extension_hint": "wav",
+          "media_type": "audio/wav"
+        },
+        "input_hash": "4f2f76c735cea7f32ff45ee03ef0ccf5579b4b27485fb76a934c3a4f61e4e46f",
+        "limits": {
+          "duration": "reported_or_estimated",
+          "file_mutations": 0,
+          "full_decode": "not_established",
+          "max_sample_bytes": 1048576,
+          "model_calls": 0,
+          "native_media_quality": "not_qualified",
+          "native_media_tool_calls": 2,
+          "observation_sources": "caller_supplied_unverified",
+          "semantic_content": "not_assessed_stream_metadata_only",
+          "sources": "caller_supplied_unverified",
+          "stream_inventory": "reported_under_probe_limits_not_exhaustive",
+          "tag_state": "proposals_only"
+        },
+        "metadata": [
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:wav:header",
+            "name": "declared_total_bytes",
+            "value": 3244
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:wav:header",
+            "name": "channels",
+            "value": 1
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:wav:header",
+            "name": "sample_rate",
+            "value": 8000
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:wav:header",
+            "name": "bits_per_sample",
+            "value": 16
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:wav:header",
+            "name": "declared_data_bytes",
+            "value": 3200
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:wav:header",
+            "name": "declared_frames",
+            "value": 1600
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:wav:header",
+            "name": "declared_duration_seconds",
+            "value": 0.2
+          },
+          {
+            "basis": "native_tool_observation",
+            "evidence_ref": "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:summary",
+            "name": "media_observation",
+            "value": {
+              "elapsed_ms": 126.42619899997953,
+              "native_calls": 2,
+              "report_hash": "7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae",
+              "stream_count": 1
+            }
+          },
+          {
+            "basis": "native_reported_or_estimated",
+            "evidence_ref": "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:summary",
+            "name": "media_format",
+            "value": {
+              "duration_seconds": 0.2,
+              "name": "wav"
+            }
+          },
+          {
+            "basis": "native_reported_or_estimated",
+            "evidence_ref": "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:stream:0",
+            "name": "media_stream",
+            "value": {
+              "attached_picture": false,
+              "channels": 1,
+              "codec": "pcm_s16le",
+              "duration_seconds": 0.2,
+              "height": null,
+              "index": 0,
+              "sample_rate": 8000,
+              "type": "audio",
+              "width": null
+            }
+          }
+        ],
+        "modalities": [
+          "audio"
+        ],
+        "mode": "shadow",
+        "reason_codes": [
+          "reported_stream_metadata_only"
+        ],
+        "sample": {
+          "bytes": 3244,
+          "complete": true,
+          "content_sha256": "4e9cc5bbce2136140462d11c5fec6e6c1ed10602c2bca874dbb58e7b9be21092",
+          "sha256": "4e9cc5bbce2136140462d11c5fec6e6c1ed10602c2bca874dbb58e7b9be21092",
+          "total_bytes": 3244
+        },
+        "schema": "parcimonia.asset-inspection/v1",
+        "source": {
+          "filename": "fixture.wav",
+          "id": "fixture:media:wav",
+          "revision": "authored-v1"
+        },
+        "spatial": null,
+        "status": "partial",
+        "tag_proposals": [
+          {
+            "basis": "signature",
+            "evidence_refs": [
+              "media:wav:header"
+            ],
+            "namespace": "format",
+            "status": "proposed",
+            "value": "wav"
+          },
+          {
+            "basis": "extension_hint",
+            "evidence_refs": [
+              "name:extension"
+            ],
+            "namespace": "format_hint",
+            "status": "proposed",
+            "value": "wav"
+          },
+          {
+            "basis": "header_only",
+            "evidence_refs": [
+              "media:wav:header"
+            ],
+            "namespace": "modality",
+            "status": "proposed",
+            "value": "audio"
+          },
+          {
+            "basis": "extension_hint",
+            "evidence_refs": [
+              "name:extension"
+            ],
+            "namespace": "modality_hint",
+            "status": "proposed",
+            "value": "audio"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:summary",
+              "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:stream:0"
+            ],
+            "namespace": "codec",
+            "status": "proposed",
+            "value": "pcm_s16le"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:summary",
+              "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:stream:0"
+            ],
+            "namespace": "modality",
+            "status": "proposed",
+            "value": "audio"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:summary",
+              "media:7226dc9a0094fc3a903d5f483a0e377109bd90c98c837c7a1f74473da32a44ae:stream:0"
+            ],
+            "namespace": "stream_type",
+            "status": "proposed",
+            "value": "audio"
+          }
+        ]
+      },
+      "generation": null,
+      "kind": "wav",
+      "observation": {
+        "backend": {
+          "executable": "/usr/bin/ffprobe",
+          "executable_sha256": "cefc5f81c0b18429cdbf8fa5a89e1e9c759235e10f93f9b329ff1b2fdff26f46",
+          "id": "ffprobe",
+          "version": "ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers"
+        },
+        "elapsed_ms": 126.42619899997953,
+        "input_hash": "76ee231900c5cf97096e85fc2196b5be64754bcfd571315062e98b06bfd96aed",
+        "limits": {
+          "deadline": "shared_monotonic_not_universal_wall_time_guarantee",
+          "duration": "reported_or_estimated",
+          "executable_identity": "observed_before_and_after_not_atomic_or_authenticated",
+          "fallback": "none",
+          "max_executable_bytes": 67108864,
+          "max_input_bytes": 1048576,
+          "max_stderr_bytes": 32768,
+          "max_stdout_bytes": 65536,
+          "model_calls": 0,
+          "native_inference": "none",
+          "native_media": "reported_streams_not_full_decode",
+          "os_sandbox": "not_provided",
+          "protocols": "file_only_not_os_sandbox"
+        },
+        "native_calls": [
+          {
+            "elapsed_ms": 62.93979900146951,
+            "error": null,
+            "phase": "version",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "02412fef1eca820a65af53c5fa03b637f92ef643783005ccf9c4b4e3a31fb699"
+          },
+          {
+            "elapsed_ms": 62.11961500230245,
+            "error": null,
+            "phase": "probe",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "b6fea0a62efd178c9b2cc04c845702799a1be62928170f00760b52796b6668b3"
+          }
+        ],
+        "profile": {
+          "demuxer": "wav",
+          "id": "parcimonia.ffprobe-stream-profile/v1",
+          "source_format": "wav"
+        },
+        "projection": {
+          "coverage": {
+            "full_decode": "not_established",
+            "streams": "reported_only"
+          },
+          "format": {
+            "duration_seconds": 0.2,
+            "name": "wav"
+          },
+          "limitations": [
+            "reported_stream_inventory_may_be_incomplete",
+            "full_decode_not_established",
+            "reported_durations_not_independently_measured",
+            "strict_projection_rejects_unrequested_nonempty_sections"
+          ],
+          "streams": [
+            {
+              "attached_picture": false,
+              "channels": 1,
+              "codec": "pcm_s16le",
+              "duration_seconds": 0.2,
+              "height": null,
+              "index": 0,
+              "sample_rate": 8000,
+              "type": "audio",
+              "width": null
+            }
+          ]
+        },
+        "raw_json": "{\n    \"programs\": [\n\n    ],\n    \"stream_groups\": [\n\n    ],\n    \"streams\": [\n        {\n            \"index\": 0,\n            \"codec_name\": \"pcm_s16le\",\n            \"codec_type\": \"audio\",\n            \"sample_rate\": \"8000\",\n            \"channels\": 1,\n            \"duration\": \"0.200000\",\n            \"disposition\": {\n                \"attached_pic\": 0\n            }\n        }\n    ],\n    \"format\": {\n        \"format_name\": \"wav\",\n        \"duration\": \"0.200000\"\n    }\n}\n",
+        "reason_codes": [],
+        "sample_sha256": "4e9cc5bbce2136140462d11c5fec6e6c1ed10602c2bca874dbb58e7b9be21092",
+        "schema": "parcimonia.asset-media-observation/v1",
+        "source": {
+          "filename": "fixture.wav",
+          "id": "fixture:media:wav",
+          "revision": "authored-v1"
+        },
+        "source_complete": true,
+        "status": "completed"
+      },
+      "search": {
+        "count": 1,
+        "input_hash": "50aa57fe2b8c2e099369bc5f040b88945770b40ef7fe1f7906bdf4be330a0fbe",
+        "limits": {
+          "geocoding": "not_performed",
+          "inputs": "caller_supplied_unverified",
+          "reprojection": "not_performed",
+          "spatial": "envelope_only_no_geometry_verification",
+          "tags": "proposals_only"
+        },
+        "matches": [
+          {
+            "input_hash": "4f2f76c735cea7f32ff45ee03ef0ccf5579b4b27485fb76a934c3a4f61e4e46f",
+            "matched_tags": [
+              "modality:audio"
+            ],
+            "sample_sha256": "4e9cc5bbce2136140462d11c5fec6e6c1ed10602c2bca874dbb58e7b9be21092",
+            "source": {
+              "filename": "fixture.wav",
+              "id": "fixture:media:wav",
+              "revision": "authored-v1"
+            },
+            "spatial_match": null
+          }
+        ],
+        "query": {
+          "bbox": null,
+          "limit": 50,
+          "tags": [
+            "modality:audio"
+          ]
+        },
+        "schema": "parcimonia.asset-search/v1",
+        "truncated": false
+      }
+    },
+    {
+      "data_origin": "authored_fixture",
+      "enriched": {
+        "analyser": {
+          "id": "asset-media-enrichment",
+          "version": "1"
+        },
+        "evidence": [
+          {
+            "byte_range": [
+              0,
+              16
+            ],
+            "id": "media:iso_bmff:header",
+            "kind": "header"
+          },
+          {
+            "id": "name:extension",
+            "kind": "filename_hint",
+            "suffix": ".mp4"
+          },
+          {
+            "backend": {
+              "executable": "/usr/bin/ffprobe",
+              "executable_sha256": "cefc5f81c0b18429cdbf8fa5a89e1e9c759235e10f93f9b329ff1b2fdff26f46",
+              "id": "ffprobe",
+              "version": "ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers"
+            },
+            "coverage": {
+              "full_decode": "not_established",
+              "streams": "reported_only"
+            },
+            "id": "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:summary",
+            "kind": "native_media_observation",
+            "observation_hash": "b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840",
+            "profile": {
+              "demuxer": "mov",
+              "id": "parcimonia.ffprobe-stream-profile/v1",
+              "source_format": "iso_bmff"
+            },
+            "raw_stdout_sha256": "1e998a1b553026d30c82c1eb4215db8e477d9aad42192274fd763f7ec22b7f8d",
+            "source_sha256": "d97a31c7d66001baf162c96f8c926e50e7c99e21292a6725cb1017c7da7b4ede"
+          },
+          {
+            "id": "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:stream:0",
+            "kind": "native_media_stream",
+            "observation_hash": "b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840",
+            "stream": {
+              "attached_picture": false,
+              "channels": 1,
+              "codec": "aac",
+              "duration_seconds": 0.2,
+              "height": null,
+              "index": 0,
+              "sample_rate": 8000,
+              "type": "audio",
+              "width": null
+            }
+          }
+        ],
+        "format": {
+          "basis": "header_only",
+          "detected": "iso_bmff",
+          "extension_conflict": false,
+          "extension_hint": "iso_bmff",
+          "media_type": "application/octet-stream"
+        },
+        "input_hash": "415e3785cd85b2624ad3ce1eefc2bb431aae0fd1874f3161cee7c59bb1c23722",
+        "limits": {
+          "duration": "reported_or_estimated",
+          "file_mutations": 0,
+          "full_decode": "not_established",
+          "max_sample_bytes": 1048576,
+          "model_calls": 0,
+          "native_media_quality": "not_qualified",
+          "native_media_tool_calls": 2,
+          "observation_sources": "caller_supplied_unverified",
+          "semantic_content": "not_assessed_stream_metadata_only",
+          "sources": "caller_supplied_unverified",
+          "stream_inventory": "reported_under_probe_limits_not_exhaustive",
+          "tag_state": "proposals_only"
+        },
+        "metadata": [
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:iso_bmff:header",
+            "name": "major_brand",
+            "value": "isom"
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:iso_bmff:header",
+            "name": "declared_ftyp_bytes",
+            "value": 28
+          },
+          {
+            "basis": "native_tool_observation",
+            "evidence_ref": "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:summary",
+            "name": "media_observation",
+            "value": {
+              "elapsed_ms": 129.17916899823467,
+              "native_calls": 2,
+              "report_hash": "b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840",
+              "stream_count": 1
+            }
+          },
+          {
+            "basis": "native_reported_or_estimated",
+            "evidence_ref": "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:summary",
+            "name": "media_format",
+            "value": {
+              "duration_seconds": 0.2,
+              "name": "mov,mp4,m4a,3gp,3g2,mj2"
+            }
+          },
+          {
+            "basis": "native_reported_or_estimated",
+            "evidence_ref": "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:stream:0",
+            "name": "media_stream",
+            "value": {
+              "attached_picture": false,
+              "channels": 1,
+              "codec": "aac",
+              "duration_seconds": 0.2,
+              "height": null,
+              "index": 0,
+              "sample_rate": 8000,
+              "type": "audio",
+              "width": null
+            }
+          }
+        ],
+        "modalities": [
+          "container",
+          "audio"
+        ],
+        "mode": "shadow",
+        "reason_codes": [
+          "reported_stream_metadata_only"
+        ],
+        "sample": {
+          "bytes": 867,
+          "complete": true,
+          "content_sha256": "d97a31c7d66001baf162c96f8c926e50e7c99e21292a6725cb1017c7da7b4ede",
+          "sha256": "d97a31c7d66001baf162c96f8c926e50e7c99e21292a6725cb1017c7da7b4ede",
+          "total_bytes": 867
+        },
+        "schema": "parcimonia.asset-inspection/v1",
+        "source": {
+          "filename": "fixture.mp4",
+          "id": "fixture:media:audio-mp4",
+          "revision": "authored-v1"
+        },
+        "spatial": null,
+        "status": "partial",
+        "tag_proposals": [
+          {
+            "basis": "signature",
+            "evidence_refs": [
+              "media:iso_bmff:header"
+            ],
+            "namespace": "format",
+            "status": "proposed",
+            "value": "iso_bmff"
+          },
+          {
+            "basis": "extension_hint",
+            "evidence_refs": [
+              "name:extension"
+            ],
+            "namespace": "format_hint",
+            "status": "proposed",
+            "value": "iso_bmff"
+          },
+          {
+            "basis": "header_only",
+            "evidence_refs": [
+              "media:iso_bmff:header"
+            ],
+            "namespace": "modality",
+            "status": "proposed",
+            "value": "container"
+          },
+          {
+            "basis": "extension_hint",
+            "evidence_refs": [
+              "name:extension"
+            ],
+            "namespace": "modality_hint",
+            "status": "proposed",
+            "value": "video"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:summary",
+              "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:stream:0"
+            ],
+            "namespace": "codec",
+            "status": "proposed",
+            "value": "aac"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:summary",
+              "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:stream:0"
+            ],
+            "namespace": "modality",
+            "status": "proposed",
+            "value": "audio"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:summary",
+              "media:b438eca0cebfbcaedf69d27bbd4f576fbfe6538a86d1f4be2b12eb01f6d96840:stream:0"
+            ],
+            "namespace": "stream_type",
+            "status": "proposed",
+            "value": "audio"
+          }
+        ]
+      },
+      "generation": {
+        "backend": "ffmpeg",
+        "diagnostic": null,
+        "executable": "/usr/bin/ffmpeg",
+        "fixture_bytes": 867,
+        "fixture_sha256": "d97a31c7d66001baf162c96f8c926e50e7c99e21292a6725cb1017c7da7b4ede",
+        "kind": "audio-mp4",
+        "max_fixture_bytes": 1048576,
+        "native_calls": [
+          {
+            "elapsed_ms": 63.12590800007456,
+            "error": null,
+            "phase": "generate",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "reason_codes": [],
+        "status": "completed",
+        "timeout_s": 5.0
+      },
+      "kind": "audio-mp4",
+      "observation": {
+        "backend": {
+          "executable": "/usr/bin/ffprobe",
+          "executable_sha256": "cefc5f81c0b18429cdbf8fa5a89e1e9c759235e10f93f9b329ff1b2fdff26f46",
+          "id": "ffprobe",
+          "version": "ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers"
+        },
+        "elapsed_ms": 129.17916899823467,
+        "input_hash": "419d0d6bbfba43d65f817b04e66f69ef70699da5a4decd1f91b04ff6fd0b2278",
+        "limits": {
+          "deadline": "shared_monotonic_not_universal_wall_time_guarantee",
+          "duration": "reported_or_estimated",
+          "executable_identity": "observed_before_and_after_not_atomic_or_authenticated",
+          "fallback": "none",
+          "max_executable_bytes": 67108864,
+          "max_input_bytes": 1048576,
+          "max_stderr_bytes": 32768,
+          "max_stdout_bytes": 65536,
+          "model_calls": 0,
+          "native_inference": "none",
+          "native_media": "reported_streams_not_full_decode",
+          "os_sandbox": "not_provided",
+          "protocols": "file_only_not_os_sandbox"
+        },
+        "native_calls": [
+          {
+            "elapsed_ms": 62.28731800001697,
+            "error": null,
+            "phase": "version",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "02412fef1eca820a65af53c5fa03b637f92ef643783005ccf9c4b4e3a31fb699"
+          },
+          {
+            "elapsed_ms": 65.83975000103237,
+            "error": null,
+            "phase": "probe",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "1e998a1b553026d30c82c1eb4215db8e477d9aad42192274fd763f7ec22b7f8d"
+          }
+        ],
+        "profile": {
+          "demuxer": "mov",
+          "id": "parcimonia.ffprobe-stream-profile/v1",
+          "source_format": "iso_bmff"
+        },
+        "projection": {
+          "coverage": {
+            "full_decode": "not_established",
+            "streams": "reported_only"
+          },
+          "format": {
+            "duration_seconds": 0.2,
+            "name": "mov,mp4,m4a,3gp,3g2,mj2"
+          },
+          "limitations": [
+            "reported_stream_inventory_may_be_incomplete",
+            "full_decode_not_established",
+            "reported_durations_not_independently_measured",
+            "strict_projection_rejects_unrequested_nonempty_sections"
+          ],
+          "streams": [
+            {
+              "attached_picture": false,
+              "channels": 1,
+              "codec": "aac",
+              "duration_seconds": 0.2,
+              "height": null,
+              "index": 0,
+              "sample_rate": 8000,
+              "type": "audio",
+              "width": null
+            }
+          ]
+        },
+        "raw_json": "{\n    \"programs\": [\n\n    ],\n    \"stream_groups\": [\n\n    ],\n    \"streams\": [\n        {\n            \"index\": 0,\n            \"codec_name\": \"aac\",\n            \"codec_type\": \"audio\",\n            \"sample_rate\": \"8000\",\n            \"channels\": 1,\n            \"duration\": \"0.200000\",\n            \"disposition\": {\n                \"attached_pic\": 0\n            }\n        }\n    ],\n    \"format\": {\n        \"format_name\": \"mov,mp4,m4a,3gp,3g2,mj2\",\n        \"duration\": \"0.200000\"\n    }\n}\n",
+        "reason_codes": [],
+        "sample_sha256": "d97a31c7d66001baf162c96f8c926e50e7c99e21292a6725cb1017c7da7b4ede",
+        "schema": "parcimonia.asset-media-observation/v1",
+        "source": {
+          "filename": "fixture.mp4",
+          "id": "fixture:media:audio-mp4",
+          "revision": "authored-v1"
+        },
+        "source_complete": true,
+        "status": "completed"
+      },
+      "search": {
+        "count": 1,
+        "input_hash": "26f1f38e42743f75027cf77f47d5e82fe6d1d6d82b9ab8b476e5584ad1f67fce",
+        "limits": {
+          "geocoding": "not_performed",
+          "inputs": "caller_supplied_unverified",
+          "reprojection": "not_performed",
+          "spatial": "envelope_only_no_geometry_verification",
+          "tags": "proposals_only"
+        },
+        "matches": [
+          {
+            "input_hash": "415e3785cd85b2624ad3ce1eefc2bb431aae0fd1874f3161cee7c59bb1c23722",
+            "matched_tags": [
+              "modality:audio"
+            ],
+            "sample_sha256": "d97a31c7d66001baf162c96f8c926e50e7c99e21292a6725cb1017c7da7b4ede",
+            "source": {
+              "filename": "fixture.mp4",
+              "id": "fixture:media:audio-mp4",
+              "revision": "authored-v1"
+            },
+            "spatial_match": null
+          }
+        ],
+        "query": {
+          "bbox": null,
+          "limit": 50,
+          "tags": [
+            "modality:audio"
+          ]
+        },
+        "schema": "parcimonia.asset-search/v1",
+        "truncated": false
+      }
+    },
+    {
+      "data_origin": "authored_fixture",
+      "enriched": {
+        "analyser": {
+          "id": "asset-media-enrichment",
+          "version": "1"
+        },
+        "evidence": [
+          {
+            "byte_range": [
+              0,
+              16
+            ],
+            "id": "media:iso_bmff:header",
+            "kind": "header"
+          },
+          {
+            "id": "name:extension",
+            "kind": "filename_hint",
+            "suffix": ".mp4"
+          },
+          {
+            "backend": {
+              "executable": "/usr/bin/ffprobe",
+              "executable_sha256": "cefc5f81c0b18429cdbf8fa5a89e1e9c759235e10f93f9b329ff1b2fdff26f46",
+              "id": "ffprobe",
+              "version": "ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers"
+            },
+            "coverage": {
+              "full_decode": "not_established",
+              "streams": "reported_only"
+            },
+            "id": "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:summary",
+            "kind": "native_media_observation",
+            "observation_hash": "0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f",
+            "profile": {
+              "demuxer": "mov",
+              "id": "parcimonia.ffprobe-stream-profile/v1",
+              "source_format": "iso_bmff"
+            },
+            "raw_stdout_sha256": "491ee895e12ed21c1c3fcf6665290a053ee5891f69c2de4aa5f9c1e952fd8e2d",
+            "source_sha256": "da8b1ddf0b9cf539aee38c5a878acd086184793fee928d1f26246871bceb6dcb"
+          },
+          {
+            "id": "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:stream:0",
+            "kind": "native_media_stream",
+            "observation_hash": "0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f",
+            "stream": {
+              "attached_picture": false,
+              "channels": null,
+              "codec": "mpeg4",
+              "duration_seconds": 0.2,
+              "height": 16,
+              "index": 0,
+              "sample_rate": null,
+              "type": "video",
+              "width": 16
+            }
+          }
+        ],
+        "format": {
+          "basis": "header_only",
+          "detected": "iso_bmff",
+          "extension_conflict": false,
+          "extension_hint": "iso_bmff",
+          "media_type": "application/octet-stream"
+        },
+        "input_hash": "4b8ad67fdbb882ddcfe09c609cd922511fce88c5b098cb4d6bdd0686c789624e",
+        "limits": {
+          "duration": "reported_or_estimated",
+          "file_mutations": 0,
+          "full_decode": "not_established",
+          "max_sample_bytes": 1048576,
+          "model_calls": 0,
+          "native_media_quality": "not_qualified",
+          "native_media_tool_calls": 2,
+          "observation_sources": "caller_supplied_unverified",
+          "semantic_content": "not_assessed_stream_metadata_only",
+          "sources": "caller_supplied_unverified",
+          "stream_inventory": "reported_under_probe_limits_not_exhaustive",
+          "tag_state": "proposals_only"
+        },
+        "metadata": [
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:iso_bmff:header",
+            "name": "major_brand",
+            "value": "isom"
+          },
+          {
+            "basis": "declared_header",
+            "evidence_ref": "media:iso_bmff:header",
+            "name": "declared_ftyp_bytes",
+            "value": 28
+          },
+          {
+            "basis": "native_tool_observation",
+            "evidence_ref": "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:summary",
+            "name": "media_observation",
+            "value": {
+              "elapsed_ms": 129.66572000004817,
+              "native_calls": 2,
+              "report_hash": "0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f",
+              "stream_count": 1
+            }
+          },
+          {
+            "basis": "native_reported_or_estimated",
+            "evidence_ref": "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:summary",
+            "name": "media_format",
+            "value": {
+              "duration_seconds": 0.2,
+              "name": "mov,mp4,m4a,3gp,3g2,mj2"
+            }
+          },
+          {
+            "basis": "native_reported_or_estimated",
+            "evidence_ref": "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:stream:0",
+            "name": "media_stream",
+            "value": {
+              "attached_picture": false,
+              "channels": null,
+              "codec": "mpeg4",
+              "duration_seconds": 0.2,
+              "height": 16,
+              "index": 0,
+              "sample_rate": null,
+              "type": "video",
+              "width": 16
+            }
+          }
+        ],
+        "modalities": [
+          "container",
+          "video"
+        ],
+        "mode": "shadow",
+        "reason_codes": [
+          "reported_stream_metadata_only"
+        ],
+        "sample": {
+          "bytes": 880,
+          "complete": true,
+          "content_sha256": "da8b1ddf0b9cf539aee38c5a878acd086184793fee928d1f26246871bceb6dcb",
+          "sha256": "da8b1ddf0b9cf539aee38c5a878acd086184793fee928d1f26246871bceb6dcb",
+          "total_bytes": 880
+        },
+        "schema": "parcimonia.asset-inspection/v1",
+        "source": {
+          "filename": "fixture.mp4",
+          "id": "fixture:media:video-mp4",
+          "revision": "authored-v1"
+        },
+        "spatial": null,
+        "status": "partial",
+        "tag_proposals": [
+          {
+            "basis": "signature",
+            "evidence_refs": [
+              "media:iso_bmff:header"
+            ],
+            "namespace": "format",
+            "status": "proposed",
+            "value": "iso_bmff"
+          },
+          {
+            "basis": "extension_hint",
+            "evidence_refs": [
+              "name:extension"
+            ],
+            "namespace": "format_hint",
+            "status": "proposed",
+            "value": "iso_bmff"
+          },
+          {
+            "basis": "header_only",
+            "evidence_refs": [
+              "media:iso_bmff:header"
+            ],
+            "namespace": "modality",
+            "status": "proposed",
+            "value": "container"
+          },
+          {
+            "basis": "extension_hint",
+            "evidence_refs": [
+              "name:extension"
+            ],
+            "namespace": "modality_hint",
+            "status": "proposed",
+            "value": "video"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:summary",
+              "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:stream:0"
+            ],
+            "namespace": "codec",
+            "status": "proposed",
+            "value": "mpeg4"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:summary",
+              "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:stream:0"
+            ],
+            "namespace": "modality",
+            "status": "proposed",
+            "value": "video"
+          },
+          {
+            "basis": "native_stream_observation",
+            "evidence_refs": [
+              "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:summary",
+              "media:0e8537672dbd069fb6ef1a115c62826eb46790df6bcbbd9d1405411c76460e1f:stream:0"
+            ],
+            "namespace": "stream_type",
+            "status": "proposed",
+            "value": "video"
+          }
+        ]
+      },
+      "generation": {
+        "backend": "ffmpeg",
+        "diagnostic": null,
+        "executable": "/usr/bin/ffmpeg",
+        "fixture_bytes": 880,
+        "fixture_sha256": "da8b1ddf0b9cf539aee38c5a878acd086184793fee928d1f26246871bceb6dcb",
+        "kind": "video-mp4",
+        "max_fixture_bytes": 1048576,
+        "native_calls": [
+          {
+            "elapsed_ms": 60.06431399873691,
+            "error": null,
+            "phase": "generate",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "reason_codes": [],
+        "status": "completed",
+        "timeout_s": 5.0
+      },
+      "kind": "video-mp4",
+      "observation": {
+        "backend": {
+          "executable": "/usr/bin/ffprobe",
+          "executable_sha256": "cefc5f81c0b18429cdbf8fa5a89e1e9c759235e10f93f9b329ff1b2fdff26f46",
+          "id": "ffprobe",
+          "version": "ffprobe version 7.1.5-0+deb13u1 Copyright (c) 2007-2026 the FFmpeg developers"
+        },
+        "elapsed_ms": 129.66572000004817,
+        "input_hash": "cb3f13df3b0400a322dfe53069c4b3a2f12eaa2a1976c261d33d63e492761df4",
+        "limits": {
+          "deadline": "shared_monotonic_not_universal_wall_time_guarantee",
+          "duration": "reported_or_estimated",
+          "executable_identity": "observed_before_and_after_not_atomic_or_authenticated",
+          "fallback": "none",
+          "max_executable_bytes": 67108864,
+          "max_input_bytes": 1048576,
+          "max_stderr_bytes": 32768,
+          "max_stdout_bytes": 65536,
+          "model_calls": 0,
+          "native_inference": "none",
+          "native_media": "reported_streams_not_full_decode",
+          "os_sandbox": "not_provided",
+          "protocols": "file_only_not_os_sandbox"
+        },
+        "native_calls": [
+          {
+            "elapsed_ms": 70.02534300045227,
+            "error": null,
+            "phase": "version",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "02412fef1eca820a65af53c5fa03b637f92ef643783005ccf9c4b4e3a31fb699"
+          },
+          {
+            "elapsed_ms": 58.51875000007567,
+            "error": null,
+            "phase": "probe",
+            "returncode": 0,
+            "started": true,
+            "status": "completed",
+            "stderr_complete": true,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_complete": true,
+            "stdout_sha256": "491ee895e12ed21c1c3fcf6665290a053ee5891f69c2de4aa5f9c1e952fd8e2d"
+          }
+        ],
+        "profile": {
+          "demuxer": "mov",
+          "id": "parcimonia.ffprobe-stream-profile/v1",
+          "source_format": "iso_bmff"
+        },
+        "projection": {
+          "coverage": {
+            "full_decode": "not_established",
+            "streams": "reported_only"
+          },
+          "format": {
+            "duration_seconds": 0.2,
+            "name": "mov,mp4,m4a,3gp,3g2,mj2"
+          },
+          "limitations": [
+            "reported_stream_inventory_may_be_incomplete",
+            "full_decode_not_established",
+            "reported_durations_not_independently_measured",
+            "strict_projection_rejects_unrequested_nonempty_sections"
+          ],
+          "streams": [
+            {
+              "attached_picture": false,
+              "channels": null,
+              "codec": "mpeg4",
+              "duration_seconds": 0.2,
+              "height": 16,
+              "index": 0,
+              "sample_rate": null,
+              "type": "video",
+              "width": 16
+            }
+          ]
+        },
+        "raw_json": "{\n    \"programs\": [\n\n    ],\n    \"stream_groups\": [\n\n    ],\n    \"streams\": [\n        {\n            \"index\": 0,\n            \"codec_name\": \"mpeg4\",\n            \"codec_type\": \"video\",\n            \"width\": 16,\n            \"height\": 16,\n            \"duration\": \"0.200000\",\n            \"disposition\": {\n                \"attached_pic\": 0\n            }\n        }\n    ],\n    \"format\": {\n        \"format_name\": \"mov,mp4,m4a,3gp,3g2,mj2\",\n        \"duration\": \"0.200000\"\n    }\n}\n",
+        "reason_codes": [],
+        "sample_sha256": "da8b1ddf0b9cf539aee38c5a878acd086184793fee928d1f26246871bceb6dcb",
+        "schema": "parcimonia.asset-media-observation/v1",
+        "source": {
+          "filename": "fixture.mp4",
+          "id": "fixture:media:video-mp4",
+          "revision": "authored-v1"
+        },
+        "source_complete": true,
+        "status": "completed"
+      },
+      "search": {
+        "count": 1,
+        "input_hash": "a8b7c19d6107d543ca730f17044a19b0d07188465276fbe83d5d2f9467d5cc04",
+        "limits": {
+          "geocoding": "not_performed",
+          "inputs": "caller_supplied_unverified",
+          "reprojection": "not_performed",
+          "spatial": "envelope_only_no_geometry_verification",
+          "tags": "proposals_only"
+        },
+        "matches": [
+          {
+            "input_hash": "4b8ad67fdbb882ddcfe09c609cd922511fce88c5b098cb4d6bdd0686c789624e",
+            "matched_tags": [
+              "modality:video"
+            ],
+            "sample_sha256": "da8b1ddf0b9cf539aee38c5a878acd086184793fee928d1f26246871bceb6dcb",
+            "source": {
+              "filename": "fixture.mp4",
+              "id": "fixture:media:video-mp4",
+              "revision": "authored-v1"
+            },
+            "spatial_match": null
+          }
+        ],
+        "query": {
+          "bbox": null,
+          "limit": 50,
+          "tags": [
+            "modality:video"
+          ]
+        },
+        "schema": "parcimonia.asset-search/v1",
+        "truncated": false
+      }
+    }
+  ],
+  "schema": "parcimonia.native-media-smoke/v1",
+  "scope": "authored_fixtures_only_not_quality_or_performance_qualification"
+}
