@@ -45,7 +45,7 @@ _ENTRIES = (
     "stream_disposition=attached_pic:format=format_name,duration"
 )
 _VERSION = re.compile(
-    r"ffprobe version ([0-9]{1,3})(?:\.[0-9A-Za-z.+_~-]+)(?: [\x20-\x7e]*)?\Z",
+    r"ffprobe version n?([0-9]{1,3})(?:\.[0-9A-Za-z.+_~-]+)(?: [\x20-\x7e]*)?\Z",
     re.ASCII,
 )
 

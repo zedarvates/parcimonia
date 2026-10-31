@@ -194,12 +194,24 @@ def test_incomplete_or_failed_transport_is_never_a_media_success(monkeypatch, to
     assert not Path(calls[-1][1]["cwd"]).exists()
 
 
-@pytest.mark.parametrize("version", [b"", b"ffprobe version 3.4.9\n", b"not ffprobe\n", b"\nffprobe version 7.1\n", b"ffprobe version N-12345-gabc\n", b"\xff", b"ffprobe version 7.1 \x00\n"])
+@pytest.mark.parametrize("version", [b"", b"ffprobe version 3.4.9\n", b"ffprobe version n3.4.9\n", b"not ffprobe\n", b"\nffprobe version 7.1\n", b"ffprobe version N-12345-gabc\n", b"\xff", b"ffprobe version 7.1 \x00\n"])
 def test_unknown_version_stops_before_media_probe(monkeypatch, tool, version):
     calls = _fake(monkeypatch, [_result(version)])
     report = probe_asset_media(**_request(tool))
     assert report["status"] == "failed" and report["reason_codes"] == ["backend_version_unusable"]
     assert len(calls) == 1
+
+
+@pytest.mark.parametrize("version", [
+    b"ffprobe version n9.0.2-39-g7adfbe40dc-20261031\n",
+    b"ffprobe version n8.1.0\n",
+])
+def test_numbered_release_tag_versions_keep_observed_identity(monkeypatch, tool, version):
+    calls = _fake(monkeypatch, [_result(version), _result(_payload())])
+    report = probe_asset_media(**_request(tool))
+    assert report["status"] == "completed"
+    assert report["backend"]["version"] == version.decode().strip()
+    assert len(calls) == 2
 
 
 @pytest.mark.parametrize("payload", [b"", b"not JSON", b"\xff", b'{"format":{"format_name":"ogg"},"streams":[]}', b'{"format":{"format_name":"wav"},"streams":[],"extra":1}'])

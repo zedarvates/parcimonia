@@ -14,6 +14,8 @@
   deterministic without depending on host TCP refusal timing.
 - Report expected platform/absent-native-tool test skips explicitly; installed
   native-tool failures and unexpected skips still fail archive qualification.
+- Accept numbered FFprobe release-tag versions such as `n9.0.2` while retaining
+  the observed version, minimum major version and existing resource limits.
 
 ## 0.5.0 — 2026-10-31
 

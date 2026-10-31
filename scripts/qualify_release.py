@@ -26,6 +26,7 @@ EXPECTED_SKIP_REASONS = {
     "Host cannot create symlinks",
     "Optional native integration requires installed tesseract.",
     "Optional native integration requires installed pdftotext.",
+    "Optional Tesseract integration requires installed eng language data.",
     "Optional native media integration requires installed ffprobe.",
     "Optional MP4 fixture requires installed ffmpeg; WAV remains independent.",
 }
