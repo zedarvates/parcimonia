@@ -1,0 +1,26 @@
+{
+  "base_commit": "0575e1af491b45d29eee9e4c633d06ddc75f96cb",
+  "base_tree": "009bd93abb3e855af2efafbadd112520700821c7",
+  "source_files_verified": 126,
+  "missing": [],
+  "python": "3.12.14",
+  "unique_targeted_tests": 44,
+  "targeted_exit_code": 0,
+  "test_wall_seconds": 1.25,
+  "python_310_grammar": "passed_6_files",
+  "full_pytest_suite": "not_run_pytest_unavailable",
+  "candidate_file_sha256": {
+    "src/tiberium_ai/knowledge_crosswalk.py": "b3139ba076442de24e10fbe9e0bb164910658e67ed6aa8a792e5b7ae04524f8b",
+    "src/tiberium_ai/knowledge_cli.py": "a90cfacccda2cb5ef5e31f5ee5be6334b5eb220137e26252a9d5b81b032c379e",
+    "scripts/parcimonia_knowledge.py": "5cabefea8bdea17ff4798993ba392f862df1fb24f0b7d7a21b0191d013559c51",
+    "examples/knowledge_crosswalk_demo.py": "f2f256dee36fc888ef967b794916350990a9189025b2b96fe7ed9d7898b58e45",
+    "tests/test_knowledge_cli.py": "992411a4a09f49cd87f3a2359054e50c740827ddd93bb6a1f1365e176c00b503",
+    "tests/test_knowledge_crosswalk.py": "18f5267aabcfcfed99f1d1cd92ff4f61e9baa1934294c739a5b0ef12b99ca337"
+  },
+  "remote_workstations": "not_accessed",
+  "private_wiki_and_memory_store": "not_accessed",
+  "semantic_quality": "not_measured",
+  "token_cost_savings": "not_measured",
+  "speed_improvement": "not_measured",
+  "activation": false
+}
