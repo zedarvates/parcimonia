@@ -191,7 +191,11 @@ ajouter ces champs silencieusement au contrat texte fermé. Le transport Tev1
 est spécifique à ses modèles et à SystemOne ; changer son nom de modèle ne
 le transforme pas en transport LFM3.
 
-### Jeu comparatif à constituer : 24 cas français
+### Jeu comparatif : 24 fixtures françaises
+
+Le [pilote texte exécutable](LOCAL_TEXT_EVAL.md) fournit maintenant ces fixtures,
+une capture bornée et une relecture hors ligne. Il mesure des propositions
+d'outils en JSON, pas les appels d'outils natifs de l'étape B.
 
 | Bloc | Nombre | Couverture et attendu |
 | --- | ---: | --- |
@@ -200,7 +204,9 @@ le transforme pas en transport LFM3.
 | Extraction JSON | 4 | tâche structurée ; champ inconnu à null ; enum fermé ; tags limités aux métadonnées fournies |
 | Limites et abstention | 4 | PR non prouvée fusionnée ; image absente ; performance matérielle inconnue ; mutation absente des outils disponibles |
 
-Les fixtures et leurs réponses attendues restent à écrire et à relire.
+Les fixtures et leurs réponses attendues sont authorées et publiques ; elles
+ne constituent pas un holdout indépendant. Aucun modèle réel n'a été évalué
+pendant leur préparation.
 Pour les outils, utiliser des fonctions de lecture simulées et des réponses
 fixes ; ne pas brancher un shell ou un service réel au premier lot.
 Évaluer les noms/champs nécessaires, sans imposer la même reformulation de
