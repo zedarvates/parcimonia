@@ -53,6 +53,7 @@ def main():
     parser.add_argument("--codex", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--source-commit")
+    parser.add_argument("--expected-codex-version", default="0.166.0")
     args = parser.parse_args()
     report = {"schema": "parcimonia.codex-plugin-host-preparation/1", "status": "not_run",
               "candidate_version": "0.4.2", "model_turn_submitted": False,
@@ -75,6 +76,9 @@ def main():
         env.update(PYTHONUTF8="1", PYTHONIOENCODING="utf-8")
         codex = args.codex.resolve(strict=True)
         version = command([codex, "--version"], marketplace, env).strip()
+        require(version == "codex-cli " + args.expected_codex_version, "Unexpected Codex version")
+        report.update(codex_version=version,
+                      version_command_created_profile=profile.exists() and any(profile.iterdir()))
         command([codex, "plugin", "marketplace", "add", marketplace, "--json"], marketplace, env)
         command([codex, "plugin", "add", "parcimonia-local@parcimonia-submission-local", "--json"], marketplace, env)
         with tempfile.TemporaryDirectory(prefix="parcimonia-codex-host-") as temporary:

@@ -51,11 +51,12 @@ jobs:
           codex, = natives
           env = {k:v for k,v in os.environ.items() if k not in {'PYTHONPATH','PYTHONHOME'}}
           env['PATH'] = str(pathlib.Path(sys.executable).parent) + os.pathsep + str(codex.parent) + os.pathsep + str(codex.parent.parent / 'path') + os.pathsep + env['PATH']
-          assert subprocess.check_output([str(codex),'--version'],env=env,text=True).strip() == 'codex-cli ' + os.environ['CODEX_TEST_VERSION']
-          # No HOME/CODEX_HOME mutation; host_probe refuses an existing profile.
+          # The probe checks the empty profile before its first Codex command.
+          # Even --version can initialize profile directories.
           subprocess.run([sys.executable,'-I','-B',str(repo/'codex-submission-prep/validation/host_probe.py'),
                           '--marketplace',str(repo/'codex-submission-prep/marketplace'), '--codex',str(codex),
                           '--source-commit',os.environ['CANDIDATE_HEAD'],
+                          '--expected-codex-version',os.environ['CODEX_TEST_VERSION'],
                           '--output',str(work/'codex-host-report.json')],cwd=work,env=env,check=True)
       - name: Retain host proof
         if: always()
