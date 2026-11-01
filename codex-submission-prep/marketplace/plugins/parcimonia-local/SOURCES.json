@@ -1,0 +1,22 @@
+{
+  "_vendor/hardware.py": {
+    "source": "skills/local_compute/hardware.py",
+    "project": "botte-secrete",
+    "sha256": "f4de93b1eeac514951b2c9e24d4abe61567e22184fdb69ce42e031ac40d1806d"
+  },
+  "_vendor/mcp_runtime.py": {
+    "source": "skills/local_compute/mcp_runtime.py",
+    "project": "botte-secrete",
+    "sha256": "5f494c4fda8b2858880a6d740b367b9b701f7a79e8cc0ab91a47c5af9af23577"
+  },
+  "_vendor/context_selection.py": {
+    "source": "src/tiberium_ai/context_selection.py",
+    "project": "parcimonia",
+    "sha256": "82675cac8017335a9c57af4adfb39306ff55924a9a2ec2b3ceb8baf4b61f8535"
+  },
+  "_vendor/compute_advisor.py": {
+    "source": "src/tiberium_ai/local_compute.py",
+    "project": "parcimonia",
+    "sha256": "c2f8c77011e55ad66ce3f784bb94bcd98bab279856eb3b2cd6a796531c415c49"
+  }
+}

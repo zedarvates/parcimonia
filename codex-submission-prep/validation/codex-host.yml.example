@@ -1,0 +1,65 @@
+# Prepared template only. Not added to a repository or executed by this dossier.
+# Assumes codex-submission-prep/ is placed at the repository root after review.
+name: Parcimonia candidate Codex host validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  host:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    env:
+      PYTHONUTF8: '1'
+      CODEX_TEST_VERSION: '0.166.0'
+      CANDIDATE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install pinned host and qualify the bundled plugin in a fresh profile
+        shell: python
+        run: |
+          import os, pathlib, shutil, subprocess, sys
+          repo = pathlib.Path(os.environ['GITHUB_WORKSPACE'])
+          work = pathlib.Path(os.environ['RUNNER_TEMP']) / 'parcimonia-plugin-host'
+          work.mkdir()
+          node, npm = shutil.which('node'), shutil.which('npm')
+          assert node and npm
+          npm_path = pathlib.Path(npm)
+          candidates = [npm_path.resolve(), npm_path.parent / 'node_modules/npm/bin/npm-cli.js']
+          npm_cli = next(p for p in candidates if p.name == 'npm-cli.js' and p.is_file())
+          prefix = work / 'codex'
+          subprocess.run([node, str(npm_cli), 'install', '--prefix', str(prefix), '--no-audit', '--no-fund',
+                          '@openai/codex@' + os.environ['CODEX_TEST_VERSION']], cwd=work, check=True)
+          natives = []
+          for path in prefix.rglob('codex.exe' if os.name == 'nt' else 'codex'):
+              if path.is_file():
+                  with path.open('rb') as stream:
+                      magic = stream.read(4)
+                  if (magic.startswith(b'MZ') if os.name == 'nt' else magic == b'\x7fELF'):
+                      natives.append(path)
+          codex, = natives
+          env = {k:v for k,v in os.environ.items() if k not in {'PYTHONPATH','PYTHONHOME'}}
+          env['PATH'] = str(pathlib.Path(sys.executable).parent) + os.pathsep + str(codex.parent) + os.pathsep + str(codex.parent.parent / 'path') + os.pathsep + env['PATH']
+          assert subprocess.check_output([str(codex),'--version'],env=env,text=True).strip() == 'codex-cli ' + os.environ['CODEX_TEST_VERSION']
+          # No HOME/CODEX_HOME mutation; host_probe refuses an existing profile.
+          subprocess.run([sys.executable,'-I','-B',str(repo/'codex-submission-prep/validation/host_probe.py'),
+                          '--marketplace',str(repo/'codex-submission-prep/marketplace'), '--codex',str(codex),
+                          '--source-commit',os.environ['CANDIDATE_HEAD'],
+                          '--output',str(work/'codex-host-report.json')],cwd=work,env=env,check=True)
+      - name: Retain host proof
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: parcimonia-host-${{ matrix.os }}
+          path: ${{ runner.temp }}/parcimonia-plugin-host/codex-host-report.json
+          if-no-files-found: warn
+          retention-days: 14

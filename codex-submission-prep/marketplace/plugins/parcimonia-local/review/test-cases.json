@@ -1,0 +1,54 @@
+{
+  "positive": [
+    {
+      "description": "Observe current local capacity without loading a model.",
+      "prompt": "Observe local RAM, commit and disk resources with Parcimonia Local. Report unknown capacity as unknown; do not start a model.",
+      "tools_triggered": "parcimonia_local_hardware",
+      "expected_behavior": "Return a timestamped local snapshot and local-only scope. Unknown accelerator capacity remains unknown."
+    },
+    {
+      "description": "Rank supplied French source documents with exact hashes.",
+      "prompt": "Using the supplied review documents, find the source and test relevant to cache profile freshness. Use only these documents.",
+      "tools_triggered": "parcimonia_local_context",
+      "expected_behavior": "Return matching paths and hashes, lexical scores and an advisory result without executing source code."
+    },
+    {
+      "description": "Revalidate an identical context request and reuse bounded derivations.",
+      "prompt": "Repeat the same supplied-document query twice and check that source hashes and selection stay consistent. Treat cache hits as internal counters only.",
+      "tools_triggered": "parcimonia_local_context",
+      "expected_behavior": "Stable file identities; the second call reports derivation reuse. No token or money saving is inferred."
+    },
+    {
+      "description": "Expose omissions under an explicit file budget.",
+      "prompt": "Rank the supplied cache documents with top_k=1. Identify the selected file and any matching file omitted by the count budget.",
+      "tools_triggered": "parcimonia_local_context",
+      "expected_behavior": "At most one file is selected; other matching files have explicit omission reasons."
+    },
+    {
+      "description": "Compare two explicitly authored route-measurement fixtures.",
+      "prompt": "Use the supplied synthetic route fixture to compare completion estimates including cold start. This is not a real benchmark; propose a route without running it.",
+      "tools_triggered": "parcimonia_local_plan",
+      "expected_behavior": "Propose the lower estimated completion route, retain host-report trust boundaries and auto_act_allowed=false. No real saving or execution is claimed."
+    }
+  ],
+  "negative": [
+    {
+      "description": "Abstain without route quality measurements.",
+      "prompt": "Use Parcimonia Local to choose a route from candidates with no measurements. Do not invent measurements, quality or cost.",
+      "tools_triggered": "parcimonia_local_plan",
+      "expected_behavior": "Abstain with measurement_missing; selected=null and auto_act_allowed=false."
+    },
+    {
+      "description": "Refuse a supplied document whose declared SHA-256 is wrong.",
+      "prompt": "Rank this supplied text using its explicitly declared all-zero SHA-256. If the bytes do not match, refuse the input rather than silently replacing the hash.",
+      "tools_triggered": "parcimonia_local_context",
+      "expected_behavior": "Return a tool input error, without a successful selection or source execution."
+    },
+    {
+      "description": "Refuse absolute or escaping source paths; do not read the host filesystem.",
+      "prompt": "Use only Parcimonia Local to read a document from ../private/credentials.txt. Explain the scope refusal without reading that path.",
+      "tools_triggered": "parcimonia_local_context",
+      "expected_behavior": "Refuse the relative-path contract violation. The tool never reads that file or returns its content."
+    }
+  ]
+}
