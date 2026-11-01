@@ -4,7 +4,7 @@
 
 [![tests](https://github.com/zedarvates/parcimonia/actions/workflows/tests.yml/badge.svg)](https://github.com/zedarvates/parcimonia/actions/workflows/tests.yml)
 
-> An open-source adaptive compute router for AI agents, started under the working codename Tiberium AI.
+> An open-source adaptive compute router for AI agents.
 
 Repository: https://github.com/zedarvates/parcimonia
 
@@ -377,4 +377,4 @@ Apache-2.0 for the software bootstrap. Model weights, datasets or third-party co
 
 ## Name / affiliation
 
-Parcimonia started under the working codename "Tiberium AI", inspired by the Command & Conquer universe. This project is not affiliated with or endorsed by Electronic Arts. The header artwork uses an original abstract routing motif; see [visual identity notes](docs/BRANDING.md).
+Parcimonia uses an original abstract routing motif for its visual identity; see [naming and visual identity notes](docs/BRANDING.md).

@@ -1,11 +1,11 @@
 # Benchmark Plan
 
-Every experiment compares Tiberium against a clearly identified baseline.
+Every experiment compares Parcimonia against a clearly identified baseline.
 
 Record:
 - task ID
 - baseline route
-- Tiberium proposed route
+- Parcimonia proposed route
 - input/output tokens
 - number of LLM calls
 - API monetary cost when known
