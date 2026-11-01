@@ -105,6 +105,21 @@ class TestKnowledgeCli(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertEqual(source.read_bytes(), original)
 
+    def test_dangling_output_symlink_refused_without_creating_target(self):
+        source = self.root / "missing.json"
+        link = self.root / "dangling.json"
+        try:
+            link.symlink_to(source)
+        except (OSError, NotImplementedError):
+            self.skipTest("Symlinks unavailable on this host")
+        original_target = link.readlink()
+        code, _, err = self.run_cli("create", "new", "--out", str(link))
+        self.assertEqual(code, 2)
+        self.assertTrue(err)
+        self.assertTrue(link.is_symlink())
+        self.assertEqual(link.readlink(), original_target)
+        self.assertFalse(source.exists())
+
     def test_oversized_input_refused_before_json(self):
         path = self.root / "large.json"
         with path.open("wb") as stream:

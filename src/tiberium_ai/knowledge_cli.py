@@ -58,8 +58,16 @@ def _encoded(value: Any) -> bytes:
 
 def _write_new(path: str, value: Any) -> None:
     payload = _encoded(value)
-    # Exclusive creation refuses both existing files and symlinks. Mode 0600
-    # is advisory on Windows; the caller owns the containing directory/ACL.
+    # Windows O_EXCL can follow a dangling symlink. lstat observes the link
+    # itself and refuses every existing final directory entry before opening.
+    # Keep O_EXCL too; these checks do not sandbox a hostile directory owner.
+    try:
+        Path(path).lstat()
+    except FileNotFoundError:
+        pass
+    else:
+        raise FileExistsError("Output path already exists, including a dangling link.")
+    # Mode 0600 is advisory on Windows; the caller owns the directory/ACL.
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0)
     descriptor = os.open(path, flags, 0o600)
     created = None
