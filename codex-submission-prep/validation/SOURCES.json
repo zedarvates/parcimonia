@@ -1,0 +1,11 @@
+{
+  "source_project": "Botte Secrete",
+  "source_repository": "https://github.com/zedarvates/botte-secrete",
+  "source_component": "AppServer transport from scripts/verify_codex_plugin_host.py",
+  "observed_source_sha256": "02334e3beb3dba4b877d2b34da9769b859a31f7e257515c4244178aa85ca5961",
+  "source_state": "local candidate snapshot; do not treat as an independently requalified public release",
+  "license": "MIT",
+  "license_file": "LICENSE-BOTTE-MIT",
+  "derived_transport_sha256": "d27de2ee36b5b2925a0b8442e25fa1b04bad0cf8248d21f1875e7f05cc9b0884",
+  "changes": "Parcimonia client label; source provenance comment; method allowlist excludes model turns"
+}
