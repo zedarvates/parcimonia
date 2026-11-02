@@ -173,6 +173,9 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
   - Avancement du 02/11 : premier préflight de bibliothèque en préparation sur `feat/runtime-preflight-20261102`, basé sur la PR #40 ; réemploi du filtre de profils, du contrôle d’observations et du conseiller local. Guide `docs/RUNTIME_PREFLIGHT.md`. Aucun bail acquis ; la réservation atomique et la qualification réelle restent requises.
   - Vérification du raccord : Python 3.12.14, 4 200 tests et 100 sous-tests réussis ; 34 tests du nouveau module, revue indépendante et corrections des contradictions de ressources et de la date des mesures. Le critère d’exclusion entre deux consommateurs reste ouvert.
+  - CI du préflight : PR #41 head `c7133c0d030c6acd552d2315668cd0cd3608ac09`, Linux et Windows Python 3.10/3.14 réussis ; proposition non fusionnée.
+  - Raccord RAM du 02/11 : attente privée ancrée sur le préflight puis contrôle pur du snapshot atomique du garde existant, préparés sur `feat/host-reservation-receipts-20261102`, basé sur la PR #41. Guide `docs/HOST_MEMORY_RECEIPTS.md` ; aucune acquisition effectuée par la bibliothèque, aucune propriété/expiration/exclusivité native inventée.
+  - Vérification des reçus : Python 3.12.14, 4 259 tests et 100 sous-tests réussis, dont 59 cas du nouveau contrôle. Revue indépendante : précision temporelle tronquée et snapshot antérieur au préflight corrigés. Démonstrateur normal et `-O` avec le vrai backend épinglé de la PR Botte #166 : absent, réservé, puis libéré dans des fichiers temporaires ; capacité construite. Test concurrent natif existant réussi avec quatre processus, une admission et 4 Gio comptés. La PR fournisseur n'est pas fusionnée ; matériel réel, slot lourd, reprise et portée multi-postes restent à qualifier.
 
 - [ ] TASK-060 [P3] [difficulté: compact] [class: feature] [horizon: near]
   - Intitulé : Round-trip WebBrain MCP réel en ASK only
