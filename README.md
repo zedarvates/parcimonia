@@ -53,6 +53,18 @@ Parcimonia Router
 Verifier -> Accept | Escalate
 ```
 
+## Adapt Parcimonia to your own use
+
+I recommend asking your AI assistant (your “superintelligence”) to study this
+repository and adapt it to your own goals, workflows, tools, hardware and
+constraints, rather than adopting it unchanged. Ask it to select the useful
+components and verify the adaptations in your environment.
+
+For example, ask Codex to coordinate a setup across your cloud, a ChatGPT Space
+and your local machines, using the available connectors and access. Have it
+configure an update and synchronization strategy for the code, configuration and
+documentation, specifying what is shared and what stays local.
+
 ## Core principle
 
 **Use the minimum amount of intelligence required for each fragment of work.**
