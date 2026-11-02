@@ -130,7 +130,7 @@ def _write_relations_new(path: str, document: dict) -> dict:
     payload = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
     if len(payload.encode("utf-8")) > MAX_RELATIONS_BYTES:
         raise ValueError("The serialized relation document exceeds its read/write budget.")
-    with Path(path).open("x", encoding="utf-8", newline="\n") as stream:
+    with _new_output(path) as stream:
         stream.write(payload)
     return {
         "schema": "parcimonia.asset-relations-write/v1", "output": str(Path(path)),
