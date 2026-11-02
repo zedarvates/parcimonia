@@ -229,6 +229,17 @@ def test_no_slots_withhold_start_and_stop_unused():
     assert plan.executed is False
 
 
+def test_unknown_required_vram_withholds_browser_start():
+    expectation = TaskExpectation(task_id="unknown-vram", required=("mcp:webbrain",))
+    plan = plan_runtime(
+        _surface(), expectation, {"mcp:webbrain": RuntimeState.STOPPED},
+        capacity=LocalCapacity(vram_free_mb=None, min_vram_for_local_mb=256.0),
+    )
+
+    assert plan.actions()["mcp:webbrain"] is RuntimeAction.KEEP
+    assert plan.executed is False
+
+
 def test_pipeline_ingests_turn_report():
     director = AstralDirector(mode=DirectorMode.AUTO)
     pipeline = ContinuityPipeline(director=director)

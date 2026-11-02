@@ -11,7 +11,8 @@ Repository: https://github.com/zedarvates/parcimonia
 [Release **0.5.1**](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1) includes the qualified Python library and the
 installed `parcimonia` JSON command. See [installation and release
 qualification](docs/RELEASE.md) and [changes](CHANGELOG.md). The separate local
-Codex plugin remains at 0.4.1. Python imports retain the name `tiberium_ai`.
+Codex plugin has a 0.4.3 source candidate with advisory observation review;
+its released baseline remains 0.4.1 and no installed profile is changed. Python imports retain the name `tiberium_ai`.
 
 This release packages the current `main`, including its asset catalogues,
 bounded local text/vision clients, memory capture/replay and feasibility checks.

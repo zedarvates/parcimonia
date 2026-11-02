@@ -99,6 +99,76 @@ def test_low_vram_blocks_local_models():
     assert verdict.action == ContinuationAction.REQUIRE_HUMAN
 
 
+def test_unknown_required_vram_blocks_compact_browser_and_local_fallback():
+    arbiter = ContinuationArbiter()
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    task = Task(task_id="unknown-vram", kind="code", inputs={})
+    capacity = LocalCapacity(vram_free_mb=None, min_vram_for_local_mb=256.0)
+
+    compact = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, capacity=capacity)
+    browser = arbiter.evaluate(
+        task, quota, TaskDifficulty.COMPACT, requires_browser=True, capacity=capacity
+    )
+    fallback = arbiter.evaluate(
+        task, quota, TaskDifficulty.REASONING, capacity=capacity,
+        time_budget=TimeBudget(remaining_seconds=20.0, interactive=True),
+    )
+
+    for verdict in (compact, browser, fallback):
+        assert verdict.action == ContinuationAction.REQUIRE_HUMAN
+        assert verdict.target_route == RouteKind.NONE
+
+
+def test_unknown_required_vram_preserves_rules_and_frontier_routes():
+    arbiter = ContinuationArbiter()
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    task = Task(task_id="unknown-vram-independent", kind="code", inputs={})
+    capacity = LocalCapacity(vram_free_mb=None, min_vram_for_local_mb=256.0)
+
+    rule = arbiter.evaluate(task, quota, TaskDifficulty.DETERMINISTIC, capacity=capacity)
+    frontier = arbiter.evaluate(task, quota, TaskDifficulty.REASONING, capacity=capacity)
+
+    assert rule.action == ContinuationAction.CONTINUE
+    assert rule.target_route == RouteKind.RULE
+    assert frontier.action == ContinuationAction.CONTINUE
+    assert frontier.target_route == RouteKind.FRONTIER
+
+
+def test_explicit_cpu_route_can_start_without_vram_observation():
+    arbiter = ContinuationArbiter()
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    task = Task(task_id="cpu-only", kind="code", inputs={})
+    capacity = LocalCapacity(vram_free_mb=None, min_vram_for_local_mb=0.0)
+
+    assert capacity.can_start_local() is True
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, capacity=capacity)
+    assert verdict.action == ContinuationAction.CONTINUE
+    assert verdict.target_route == RouteKind.LOCAL_SMALL
+    assert LocalCapacity(
+        vram_free_mb=None, min_vram_for_local_mb=0.0, concurrent_slots=0
+    ).can_start_local() is False
+
+
+def test_local_capacity_accepts_exact_vram_requirement_and_rejects_less():
+    assert LocalCapacity(
+        vram_free_mb=256.0, min_vram_for_local_mb=256.0
+    ).can_start_local() is True
+    assert LocalCapacity(
+        vram_free_mb=255.0, min_vram_for_local_mb=256.0
+    ).can_start_local() is False
+
+
+def test_omitted_capacity_retains_legacy_advisory_route_selection():
+    arbiter = ContinuationArbiter()
+    quota = QuotaMetrics(remaining_percent=80.0, window_duration_mins=300)
+    task = Task(task_id="legacy-advisory", kind="code", inputs={})
+
+    verdict = arbiter.evaluate(task, quota, TaskDifficulty.COMPACT, capacity=None)
+
+    assert verdict.action == ContinuationAction.CONTINUE
+    assert verdict.target_route == RouteKind.LOCAL_SMALL
+
+
 def test_arbiter_critical_quota_compact_fallback_disabled():
     arbiter = ContinuationArbiter(critical_quota_percent=15.0)
     task = Task(task_id="t4", kind="syntax_fix", inputs={})

@@ -1,7 +1,7 @@
 {
   "name": "parcimonia-local",
-  "version": "0.4.1",
-  "description": "Proposer des routes de calcul et des fichiers utiles à partir de mesures et de sources vérifiées par empreinte.",
+  "version": "0.4.3",
+  "description": "Proposer calcul et contexte, puis contrôler la fraîcheur et la cohérence des observations fournies.",
   "author": {
     "name": "Sylvain Galliez"
   },
@@ -12,7 +12,7 @@
   "interface": {
     "displayName": "Parcimonia Local",
     "shortDescription": "Conseiller le calcul local",
-    "longDescription": "Proposer des routes de calcul et des fichiers utiles à partir de mesures et de sources vérifiées par empreinte. Python 3.10+ requis. Aucun appel de modèle, aucune télémétrie réseau. Les résultats ne prouvent aucune économie facturée.",
+    "longDescription": "Proposer des routes de calcul et des fichiers utiles, puis contrôler dates, versions et cohérence des observations fournies. Python 3.10+ requis. Aucun appel de modèle, aucune télémétrie réseau. Les rapports hôte ne sont pas attestés et aucune action n’est autorisée.",
     "developerName": "Sylvain Galliez",
     "category": "Developer Tools",
     "capabilities": [
