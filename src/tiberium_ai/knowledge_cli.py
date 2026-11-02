@@ -21,6 +21,8 @@ from .knowledge_crosswalk import (
     MAX_INDEX_BYTES, UPDATE_SCHEMA, create_knowledge_index,
     find_knowledge_candidates, update_knowledge_index,
 )
+from .knowledge_import import prepare_knowledge_import, prepare_unavailable_import
+from .knowledge_local_export import export_local_documents
 
 
 def _signature(info: os.stat_result) -> tuple[int, int, int, int]:
@@ -113,6 +115,27 @@ def main(argv: Sequence[str] | None = None) -> int:
     candidates.add_argument("index")
     candidates.add_argument("--fragment-id", required=True)
     candidates.add_argument("--limit", type=int, default=5)
+    ingest = commands.add_parser("import", help="Prepare an explicit source projection or document batch")
+    ingest.add_argument("index")
+    ingest.add_argument("input")
+    ingest.add_argument("--source-kind", required=True,
+                        choices=("second_brain", "knowledge_inbox", "documents"))
+    ingest.add_argument("--feed-id", required=True)
+    ingest.add_argument("--observed-at", required=True)
+    ingest.add_argument("--channel", choices=("cloud", "local", "memory", "wiki"), default="cloud")
+    ingest.add_argument("--parameters", help="Optional JSON object identifying the performed read")
+    ingest.add_argument("--out", required=True)
+    unavailable = commands.add_parser("unavailable", help="Prepare an unavailable-feed update without deletions")
+    unavailable.add_argument("index")
+    unavailable.add_argument("--feed-id", required=True)
+    unavailable.add_argument("--observed-at", required=True)
+    unavailable.add_argument("--reason-code", required=True,
+                             choices=("unavailable", "read_failed", "not_connected", "invalid_response"))
+    unavailable.add_argument("--out", required=True)
+    export = commands.add_parser("export-documents", help="Read explicitly selected, pinned local text files")
+    export.add_argument("catalog")
+    export.add_argument("--root", required=True)
+    export.add_argument("--out", required=True)
     arguments = parser.parse_args(argv)
     try:
         if arguments.command == "create":
@@ -135,6 +158,38 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             _write_new(arguments.out, result["index"])
             report = {"index_hash": result["index"]["index_hash"], "delta": result["delta"], "write": "created", "output": arguments.out}
+        elif arguments.command == "export-documents":
+            prepared = export_local_documents(_read_json(arguments.catalog), root=arguments.root)
+            report = {"schema": prepared["schema"], "manifest": prepared["manifest"],
+                      "write": "created", "output": arguments.out}
+            console = json.dumps(report, ensure_ascii=True, sort_keys=True,
+                                 separators=(",", ":"), allow_nan=False)
+            if len(console.encode("ascii")) > MAX_INDEX_BYTES:
+                raise ValueError("Export manifest exceeds the console output budget.")
+            _write_new(arguments.out, prepared["documents"])
+        elif arguments.command in {"import", "unavailable"}:
+            snapshot = _read_json(arguments.index)
+            if arguments.command == "import":
+                prepared = prepare_knowledge_import(
+                    snapshot, _read_json(arguments.input), source_kind=arguments.source_kind,
+                    feed_id=arguments.feed_id, observed_at=arguments.observed_at,
+                    channel=arguments.channel,
+                    parameters=_read_json(arguments.parameters) if arguments.parameters else None,
+                )
+            else:
+                prepared = prepare_unavailable_import(
+                    snapshot, feed_id=arguments.feed_id, observed_at=arguments.observed_at,
+                    reason_code=arguments.reason_code,
+                )
+            report = {"schema": prepared["schema"], "manifest": prepared["manifest"],
+                      "write": "created", "output": arguments.out}
+            # Validate the actual console envelope before creating its batch.
+            # A refused read/manifest must not leave a misleading output file.
+            console = json.dumps(report, ensure_ascii=True, sort_keys=True,
+                                 separators=(",", ":"), allow_nan=False)
+            if len(console.encode("ascii")) > MAX_INDEX_BYTES:
+                raise ValueError("Import manifest exceeds the console output budget.")
+            _write_new(arguments.out, prepared["batch"])
         else:
             report = find_knowledge_candidates(
                 _read_json(arguments.index), fragment_id=arguments.fragment_id,

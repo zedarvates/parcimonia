@@ -28,3 +28,18 @@ conservées dans le [rapport](../docs/validation/knowledge-crosswalk-2026-11-01.
 Prochaine épreuve : raccorder une source réelle par import incrémental explicite,
 puis faire évaluer des pistes retenues et rejetées sur des cas réservés.
 La pertinence sémantique, le gain de vitesse et les économies restent à mesurer.
+
+## Extension du 2 novembre : collecte explicite
+
+Les [importeurs](../docs/KNOWLEDGE_COLLECTION.md) préparent des projections
+Second Brain/réception et des exports locaux sélectionnés. La provenance garde
+les dates de source séparées de l’heure de collecte ; les fenêtres citées restent
+partielles. Une réimportation identique ne modifie pas le snapshot.
+
+La clé native de réception reste stable quand son type de source est corrigé.
+Les pannes préservent les données et n’inventent pas un canal cloud. L’export
+local vérifie les pins bruts et refuse les liens et reparse-points ; ses deux
+épreuves natives de jonctions NTFS nécessitent un hôte Windows.
+
+Le démonstrateur public utilise trois records de fixture. Aucun historique
+privé, agent distant, cron ou routage automatique n’est distribué ni activé.

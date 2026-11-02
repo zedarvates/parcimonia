@@ -61,6 +61,94 @@ class TestKnowledgeCli(unittest.TestCase):
         self.assertEqual(result["matches"][0]["target"]["id"], "wiki")
         self.assertEqual(json.loads(initial.read_text(encoding="utf-8"))["generation"], 0)
 
+    def test_import_prepares_batch_without_changing_index(self):
+        initial, head = self.initial()
+        source = self.root / "source.json"
+        source.write_text(json.dumps({"documents": [{"id": "fixture-note", "version": "v1",
+            "project": "fixture", "uri": "fixture:note", "timestamp": "not_provided",
+            "state": "active", "text": "toiture escalier dimensions"}]}), encoding="utf-8")
+        output = self.root / "prepared.json"
+        original = initial.read_bytes()
+        code, out, err = self.run_cli("import", str(initial), str(source),
+            "--source-kind", "documents", "--feed-id", "fixture-local", "--channel", "local",
+            "--observed-at", "2026-11-02", "--out", str(output))
+        self.assertEqual((code, err), (0, ""))
+        self.assertEqual(initial.read_bytes(), original)
+        manifest = json.loads(out)["manifest"]
+        self.assertEqual(manifest["expected_head"], head)
+        batch = json.loads(output.read_text(encoding="utf-8"))
+        self.assertEqual(batch["schema"], "parcimonia.knowledge-update/v1")
+        self.assertEqual(batch["upserts"][0]["text"], "toiture escalier dimensions")
+        updated = self.root / "updated.json"
+        code, _, err = self.run_cli("update", str(initial), str(output),
+                                    "--expected-head", head, "--out", str(updated))
+        self.assertEqual((code, err), (0, ""))
+        self.assertEqual(len(json.loads(updated.read_text(encoding="utf-8"))["fragments"]), 1)
+
+    def test_failed_source_import_creates_no_batch(self):
+        initial, _ = self.initial()
+        source = self.root / "invalid-response.json"
+        source.write_text('{"results":[],"unrecognized":true}', encoding="utf-8")
+        output = self.root / "refused.json"
+        code, _, _ = self.run_cli("import", str(initial), str(source),
+            "--source-kind", "second_brain", "--feed-id", "cloud", "--observed-at", "2026-11-02",
+            "--out", str(output))
+        self.assertEqual(code, 2)
+        self.assertFalse(output.exists())
+
+    def test_unavailable_prepares_no_deletions(self):
+        initial, head = self.initial()
+        output = self.root / "unavailable.json"
+        code, out, err = self.run_cli("unavailable", str(initial), "--feed-id", "Odin",
+            "--observed-at", "2026-11-02", "--reason-code", "not_connected", "--out", str(output))
+        self.assertEqual((code, err), (0, ""))
+        batch = json.loads(output.read_text(encoding="utf-8"))
+        self.assertEqual(batch["removals"], [])
+        self.assertEqual(batch["upserts"], [])
+        self.assertEqual(batch["coverage"], [{"id": "Odin", "status": "unavailable"}])
+        self.assertEqual(json.loads(out)["manifest"]["expected_head"], head)
+
+    def test_import_parameters_are_preserved_in_manifest(self):
+        initial, _ = self.initial()
+        source, params = self.root / "empty.json", self.root / "parameters.json"
+        source.write_text('{"results":[]}', encoding="utf-8")
+        params.write_text('{"query":"fixture","limit":12}', encoding="utf-8")
+        output = self.root / "prepared.json"
+        code, out, err = self.run_cli("import", str(initial), str(source),
+            "--source-kind", "second_brain", "--feed-id", "cloud", "--observed-at", "2026-11-02",
+            "--parameters", str(params), "--out", str(output))
+        self.assertEqual((code, err), (0, ""))
+        self.assertEqual(json.loads(out)["manifest"]["parameters"], {"query": "fixture", "limit": 12})
+
+    def test_export_documents_writes_an_import_compatible_response(self):
+        import hashlib
+        raw = "toiture escalier\r\né🐈\n".encode("utf-8")
+        (self.root / "note.md").write_bytes(raw)
+        catalog = self.root / "catalog.json"
+        catalog.write_text(json.dumps({"schema": "parcimonia.local-knowledge-catalog/v1",
+            "documents": [{"id": "note", "file": "note.md", "sha256": hashlib.sha256(raw).hexdigest(),
+                "version": "v1", "project": "fixture", "uri": "fixture:note",
+                "timestamp": "not_provided", "state": "active"}]}), encoding="utf-8")
+        output = self.root / "documents.json"
+        code, out, err = self.run_cli("export-documents", str(catalog), "--root", str(self.root),
+                                      "--out", str(output))
+        self.assertEqual((code, err), (0, ""))
+        self.assertEqual(json.loads(out)["manifest"]["file_count"], 1)
+        self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["documents"][0]["text"].encode("utf-8"), raw)
+
+    def test_failed_export_writes_no_response(self):
+        (self.root / "note.md").write_text("fixture", encoding="utf-8")
+        catalog = self.root / "catalog.json"
+        catalog.write_text(json.dumps({"schema": "parcimonia.local-knowledge-catalog/v1",
+            "documents": [{"id": "note", "file": "note.md", "sha256": "0" * 64,
+                "version": "v1", "project": "fixture", "uri": "fixture:note",
+                "timestamp": "not_provided", "state": "active"}]}), encoding="utf-8")
+        output = self.root / "refused.json"
+        code, _, _ = self.run_cli("export-documents", str(catalog), "--root", str(self.root),
+                                  "--out", str(output))
+        self.assertEqual(code, 2)
+        self.assertFalse(output.exists())
+
     def test_existing_output_is_never_overwritten(self):
         path, _ = self.initial()
         before = path.read_bytes()

@@ -4,19 +4,24 @@
   "source_files_verified": 126,
   "missing": [],
   "python": "3.12.14",
-  "unique_targeted_tests": 45,
+  "unique_targeted_tests": 93,
   "targeted_exit_code": 0,
-  "test_wall_seconds": 1.25,
-  "python_310_grammar": "passed_6_files",
+  "test_wall_seconds": 0.799,
+  "python_310_grammar": "passed_12_files",
   "full_pytest_suite": "not_run_pytest_unavailable",
   "candidate_file_sha256": {
     "src/tiberium_ai/knowledge_crosswalk.py": "b3139ba076442de24e10fbe9e0bb164910658e67ed6aa8a792e5b7ae04524f8b",
-    "src/tiberium_ai/knowledge_cli.py": "29d0ed29672491a36c727270b7f0b08010a73602fe81eec984696b0929a8240d",
+    "src/tiberium_ai/knowledge_cli.py": "e71b11db8608d3099638deecc6e34d6f5eda4e1cbf6dca9847833ce467a43eed",
     "scripts/parcimonia_knowledge.py": "5cabefea8bdea17ff4798993ba392f862df1fb24f0b7d7a21b0191d013559c51",
     "examples/knowledge_crosswalk_demo.py": "f2f256dee36fc888ef967b794916350990a9189025b2b96fe7ed9d7898b58e45",
-    "tests/test_knowledge_cli.py": "f8c5181fe5971b23121527888707f4a75d598396b9ffed95109a8a25f49d4eba",
+    "tests/test_knowledge_cli.py": "1a74501f22673b64ffbcc127dd25f67a481af0ede6fa3da026421e9b1525f5fe",
     "tests/test_knowledge_crosswalk.py": "18f5267aabcfcfed99f1d1cd92ff4f61e9baa1934294c739a5b0ef12b99ca337",
-    "src/tiberium_ai/asset_cli.py": "d149b6a92a08cdbdaae7820a1e2303225771d9932d36409a42bc1e5cb6b1b202"
+    "src/tiberium_ai/asset_cli.py": "d149b6a92a08cdbdaae7820a1e2303225771d9932d36409a42bc1e5cb6b1b202",
+    "src/tiberium_ai/knowledge_import.py": "539b8cb0963c4748b33a3bf29b6aa9bd7e4fe803e87c439d1b2ceed5b42c5639",
+    "src/tiberium_ai/knowledge_local_export.py": "52d64863585dcb526ee0de02ada7acc6cb4936b695f0023c6bc12497bb57dece",
+    "tests/test_knowledge_import.py": "8fcbc046aaffd342dcbcdf9f93d86fb1cc4a35faf380ce255c087bf54da6a81d",
+    "tests/test_knowledge_local_export.py": "875f5f44f3e1116387fbdb95ece6b6373a06d83d85c7d08d660a0bbe9279ecc6",
+    "examples/knowledge_collection_demo.py": "c5c7cc5dec7336f099b8102c415a0ea88ee364fd86d266a848faa151f9624608"
   },
   "remote_workstations": "not_accessed",
   "private_wiki_and_memory_store": "not_accessed",
@@ -32,5 +37,27 @@
     "before_sha256": "016c7229589f1b50b40a6c7b726922999d8bdfccff45e9a46e1d99073bd30df3",
     "new_cli_test": "test_dangling_output_symlink_refused",
     "windows_hosted_qualification": "pending_new_commit"
+  },
+  "targeted_skipped": 2,
+  "collection_extension": {
+    "observed_date": "2026-11-02",
+    "parent_pr_head": "d1c6be48bb36caa879785328a6a1db70af5b2cd5",
+    "main_rechecked": "79ff14ccf43cd74c904ab359c986ffd7c894da14",
+    "main_changes_since_source_baseline": [
+      "README.md"
+    ],
+    "native_windows_junction_tests": "pending_hosted_run",
+    "source_kinds": [
+      "second_brain",
+      "knowledge_inbox",
+      "documents"
+    ],
+    "fixture_demo": "examples/knowledge_collection_demo.py",
+    "private_corpus_distributed": false,
+    "real_workstations_qualified": false,
+    "private_wiki_and_memory_store_qualified": false,
+    "semantic_quality": "not_measured",
+    "token_or_speed_savings": "not_measured",
+    "activation": false
   }
 }

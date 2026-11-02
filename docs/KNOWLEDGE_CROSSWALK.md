@@ -11,6 +11,9 @@ Le périmètre couvre quatre canaux : `cloud`, `local`, `memory`, `wiki`.
 conversation particulier n'est requis. Ce module ne collecte aucun historique,
 ne contacte aucun poste et n'appelle aucun modèle.
 
+Les [importeurs et exports locaux explicites](KNOWLEDGE_COLLECTION.md) préparent
+désormais ces entrées à partir de projections cloud et de fichiers sélectionnés.
+
 ## Ce qui est obtenu
 
 - Index inversé de termes normalisés, avec stopwords français et anglais.
