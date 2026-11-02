@@ -135,6 +135,7 @@ def test_relation_output_refuses_dangling_link_when_exclusive_open_would_follow_
         output.symlink_to(target)
     except OSError:
         pytest.skip("Host does not support symlinks")
+    original_link_target = output.readlink()
     original_open = Path.open
 
     def following_exclusive_open(path, mode="r", *args, **kwargs):
@@ -147,7 +148,7 @@ def test_relation_output_refuses_dangling_link_when_exclusive_open_would_follow_
     error = _call(capsys, "relations-build", catalog, declared, "--relations-id", "fixture:relations",
                   "--expected-head", snapshot["snapshot_hash"], "--out", output, code=2)
     assert error["error"] == "FileExistsError"
-    assert output.is_symlink() and output.readlink() == target
+    assert output.is_symlink() and output.readlink() == original_link_target
     assert not target.exists()
     assert relations.read_bytes() == before
 
