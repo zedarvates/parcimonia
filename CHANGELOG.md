@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Compare declared observation probes through complete hypothesis partitions,
+  exact estimate budgets and an explicit information/latency/cost frontier.
+  Unknown costs remain incomparable; unmodelled outcomes and current failures
+  prevent selection. This library-only advice does not execute a probe or
+  establish measured information gain or savings.
 - Review task observations against exact task/source/input/verifier identities and
   caller-selected freshness limits. Retain recent failure, unknown outcomes,
   stale reports and simultaneous conflicts; propose one declared observation

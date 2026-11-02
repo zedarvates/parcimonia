@@ -105,6 +105,11 @@ probabilité de succès, qualité de sonde, coût total ni économie. Elle ne r�
 aucune ressource. Le contrôle de capacité et l'admission de l'hôte restent
 nécessaires avant de lancer une lecture réelle.
 
+Un [comparateur optionnel des résultats attendus](OBSERVATION_PROBE_PLANNING.md)
+prolonge cette heuristique avec un modèle fini d'hypothèses, des plafonds et un
+front de compromis explicites. Il recalcule ce contrôle depuis la requête
+originale, sans modifier ce contrat ni la copie vendue dans le plugin.
+
 ## Exemple authoré : préparer un contrôle de reconnexion
 
 Cet exemple est une fixture écrite pour expliquer le contrat. Aucun client ou
