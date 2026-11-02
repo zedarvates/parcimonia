@@ -126,6 +126,32 @@ def test_relation_output_never_overwrites_existing_path(tmp_path, capsys, existi
         assert not target.exists()
 
 
+def test_relation_output_refuses_dangling_link_when_exclusive_open_would_follow_it(tmp_path, capsys, monkeypatch):
+    """Exercise the Windows CRT behavior even on a POSIX test host."""
+    snapshot, catalog, declared, relations = _build(tmp_path, capsys)
+    target = tmp_path / "missing-target.json"
+    output = tmp_path / "output-link.json"
+    try:
+        output.symlink_to(target)
+    except OSError:
+        pytest.skip("Host does not support symlinks")
+    original_open = Path.open
+
+    def following_exclusive_open(path, mode="r", *args, **kwargs):
+        if path == output and mode == "x":
+            return original_open(target, mode, *args, **kwargs)
+        return original_open(path, mode, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", following_exclusive_open)
+    before = relations.read_bytes()
+    error = _call(capsys, "relations-build", catalog, declared, "--relations-id", "fixture:relations",
+                  "--expected-head", snapshot["snapshot_hash"], "--out", output, code=2)
+    assert error["error"] == "FileExistsError"
+    assert output.is_symlink() and output.readlink() == target
+    assert not target.exists()
+    assert relations.read_bytes() == before
+
+
 @pytest.mark.parametrize("which", ["catalog", "declarations", "relations"])
 def test_relation_commands_refuse_symlink_inputs(tmp_path, capsys, which):
     snapshot, catalog, declared, relations = _build(tmp_path, capsys)
