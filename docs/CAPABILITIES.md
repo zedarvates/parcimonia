@@ -1,0 +1,311 @@
+# Parcimonia capability details and evidence
+
+[English README](../README.md) · [Présentation française](../README.fr.md)
+
+This reference keeps the detailed implementation notes, evidence boundaries and
+Python examples from the README. Run example commands from the repository root.
+
+Stable release [0.5.1](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1)
+was built from `576b617ca5ca0b3918116b14c034ba12d25018db`. Later additions on
+`main`, including directed asset relations, are not in that release's archives.
+For installation and qualification, see [the release guide](RELEASE.md).
+
+## Implemented mechanisms and their limits
+
+The stable library release is 0.5.1; this page documents the repository's
+current mechanisms, including later additions on `main`. No automatic production
+routing is enabled. Archive qualification covers installation, compatibility and
+existing behavior; real-world quality and savings remain subject to evidence gates.
+
+An opt-in [feasibility and stability diagnostic](FEASIBILITY_DIAGNOSTICS.md)
+checks a bounded Boolean contract for contradictions and missing prerequisites,
+and inspects three Python code patterns for stability risks. Reports distinguish
+model proofs, caller-declared observations and static risk indicators. The
+offline CLI does not execute inspected code or change routing policy.
+
+An explicit [verified reduction to 2-SAT](VERIFIED_REDUCTIONS.md) translates
+the supported Boolean requirements into clauses and checks them with an
+iterative implication-graph solver. It handles up to 128 variables and returns
+checkable assignments or contradictory paths. This is one implemented Karp
+reduction, not automatic discovery of arbitrary reductions; quality and
+completeness remain separate from the new satisfiability report.
+
+An opt-in [asset inspection and catalogue](ASSET_PERCEPTION.md) proposes
+source-bound tags from media headers, structured text, existing Python rules and
+GeoJSON coordinates. It supports exact-tag and spatial-envelope search while
+keeping extension hints, parsed metadata and lexical suggestions separate.
+No semantic image/audio/scene recognition, model call or source reorganization
+is performed by this first foundation.
+
+An explicit [tag review journal](ASSET_TAG_REVIEW.md) records acceptance,
+rejection and reset decisions against exact inspection reports, with new
+snapshot files and review-aware search. Changed reports retain their proposals
+without silently inheriting earlier decisions; actor identities remain declared.
+
+An explicit [local text extraction](ASSET_TEXT_EXTRACTION.md) step connects
+installed Tesseract OCR and embedded-PDF text extraction to proposed lexical
+tags, image word boxes or PDF pages, and the same review journal. Native tools
+are opt-in; their quality and OCR weights remain unqualified.
+
+A portable [catalogue snapshot](ASSET_CATALOG_SNAPSHOTS.md) saves a current
+report per source, with explicit replacement preconditions, preserved earlier
+snapshots and review-aware search. It reuses the existing inspection reports and
+tag decisions without modifying source assets.
+
+**Added on `main` after 0.5.1:** an explicit [directed relation sidecar](ASSET_RELATIONS.md) separates similar
+items from declared functional complements in the existing catalogue. Exact
+report revisions and hashes govern applicability; current incompatibility
+declarations block complementary candidates. References remain caller-declared,
+and no geometric compatibility, learned embedding or external proof is certified.
+
+An explicit [GPX 1.1 coordinate profile](ASSET_GPX.md) reads declared GPS
+positions, retains waypoint/route/track-segment paths and computes a searchable
+2D envelope. It reuses the catalogue and tag review without claiming full GPX
+schema validation or verified real-world location.
+
+An explicit [native audio/video probe](ASSET_NATIVE_MEDIA.md) uses installed
+ffprobe to record reported streams, codecs and durations. Proposed tags retain
+stream evidence and distinguish attached pictures from ordinary video streams,
+then reuse the same catalogue and review flow.
+
+A bounded [PLY body profile](ASSET_PLY_BODY.md) reads declared vertex and
+face records, computes local XYZ bounds with source evidence, and proposes
+mesh/point-cloud or Gaussian-parameter candidates. Local coordinates remain
+separate from GPS and no rendering quality is inferred.
+
+A bounded [GLB resource inventory](ASSET_GLB_RESOURCES.md) reads chunk
+framing and core buffer/image declarations, including exact embedded byte ranges
+and external URI references. Linked resources are never opened; their existence,
+decoded contents and rendering quality remain unverified.
+
+An explicit [asset expectation audit](ASSET_EXPECTATIONS.md) compares
+supplied reports with caller-written requirements. It separates matching
+declarations, contradictions, unknown facts and missing exact report revisions,
+without treating a missing tag as proof of absent content.
+
+A separate [expectation consistency check](ASSET_EXPECTATION_CONSTRAINTS.md)
+finds incompatible same-fact rules before inspection, with independently checked
+candidate assignments or two-rule conflict certificates. It does not model
+relations between facts or guarantee that a matching file exists.
+
+An opt-in bounded-context experiment retrieves exact versioned facts and compares
+full history, compact context and limited temporal persistence on 14 authored
+sequences. [Explicit capture](MEMORY_CAPTURE.md) exports bounded observed
+episodes and separate usage receipts; [existing-run attachment](MEMORY_EXECUTION.md)
+keeps execution and logging outcomes distinct. Replay preserves missing-proof abstentions and reports context bytes
+separately from unmeasured tokens/cost. See [Bounded context](COMPACT_MEMORY.md).
+
+V1 is organised as a sequence of evidence gates rather than a list of modules;
+see [V1 gates](V1_GATES.md) for the order, the exit criteria and the
+explicit non-goals.
+
+The first gate is implemented: `run_baseline` executes a **caller-supplied**
+callable exactly once, measures wall clock through an injected clock, and writes
+a `measurement/1` record carrying the method, environment and outcome. See
+[Baseline measurements](MEASUREMENT.md).
+
+The second gate is implemented: a verifier registry binds every verdict to a
+named and versioned verifier and to the hash of the verified input, abstains on
+an unknown identity, and marks evidence built from it as schema version 2. See
+[Deterministic verification](VERIFICATION.md).
+
+Both gates run end to end on a deterministic fixture corpus:
+
+```powershell
+python examples/fixture_suite.py --out runs/fixtures
+```
+
+The suite executes 20 local tasks twice, records 40 measured runs and 20
+attributed observations, and includes one deliberate route failure. Fixture
+results prove provenance and replay, not representative cost.
+
+The third gate is implemented: an escalation policy decides between `ACCEPT`,
+`RETRY`, `ESCALATE`, `ABSTAIN` and `FAIL_HARD` inside cumulative budgets, with a
+loop guard, a fail-closed rule for unknown cost and a reason code on every
+decision. See [Escalation policy](ESCALATION.md).
+
+The fourth gate is implemented: routes come from a versioned JSON manifest that
+declares capabilities, estimates, task constraints and the verifier each route
+requires, and the registry version is part of the recorded policy version. See
+[Route registry](REGISTRY.md).
+
+The fifth gate is implemented: a resource vector keeps tokens,
+latency, VRAM and energy apart from constraints, routes are compared on a Pareto
+front instead of a weighted scalar, and a seeded benchmark splits cases into
+development and held-out sets before any claim is allowed. See the
+[benchmark plan](BENCHMARKS.md).
+
+The sixth gate is implemented: active mode refuses to start without a policy,
+budgets, a sandbox and a kill switch; it requires a single-use human
+authorization for any class outside the automatic set and an idempotency key per
+execution, and it returns an audit trail linking the authorization, the attempts
+and a replayable observation. See [Active mode](ESCALATION.md).
+
+The first System-1 route is implemented: a deterministic static audit that
+classifies a file's structural role, runs named pattern rules, scores a deficit
+from four ratio dimensions, and stores the verdict in a local, content-addressed
+database. It needs no model, no network and no clock, and a second pass over the
+same text reuses the stored verdict instead of recomputing it. Every verdict can
+be recomputed by a named verifier before it is accepted as evidence. It is shadow
+only, its weights are declared defaults rather than calibrated values, and it
+claims no saving. See the [static audit](STATIC_AUDIT.md).
+
+An adapter boundary for typed-decision routes is implemented: an option set
+wider than one call offers is either cut into balanced stages or scored option by
+option before one explicit choice, one response is recorded with the provenance
+that replays it offline, and the recomposed decision is verified by recomputation
+instead of being trusted. A decision clock keeps a missed deadline and a stale
+snapshot apart from decision quality. The core adapter calls no model on its own
+and claims no cost. See
+[Typed-decision adapters](DECISION_ADAPTER.md).
+
+An optional local Tev1 transport now implements that boundary through Ollama.
+It is explicitly invoked, pins runtime and model identity, bounds the HTTP call,
+and keeps every decision advisory. A 24-case French corpus compares rules and
+captured decisions, with offline replay and no saving claim. No real model was
+evaluated for this integration. See [Tev1 local shadow](TEV1_SHADOW.md).
+The paired comparator revalidates both captures, counts every failure and keeps
+total cost unknown. A [local run guide](TEV1_LOCAL_RUN.md) prepares execution
+on an existing model server.
+
+A prompt-signature predictor is implemented: it reads an input and names what that
+input is about, the kind of task, the capabilities it needs, the fields worth
+reading and which declared goal it serves. A keyword rule, a KNN over labelled
+cases and a micro-NN sit behind one protocol, so the rule stays the baseline a
+learner has to beat on the same corpus. The vocabulary is caller-declared,
+abstention is a value rather than an exception, and strictness stays
+caller-declared because a prompt is weak evidence for it. The candidates are
+measured apart on an authored corpus, on a held-out public slice whose labels were
+written by strangers, and on the prompts already on disk, which the ingest lane
+turns into a content-addressed corpus revision without writing anything into this
+repository. A public corpus can measure a mechanism and never opens the
+authorization gate, and no accuracy is claimable while the labels are not
+outcomes. See [Task signatures](INTEGRATIONS.md).
+
+The current `ShadowRouter` validates confidence and cost estimates, applies a
+configurable confidence threshold (default `0.9`), and proposes the lowest known
+estimated cost among eligible candidates. Equal costs use higher confidence,
+then lexical route ID, so input order does not change the decision.
+
+Unknown costs are never treated as zero. If all eligible costs are unknown,
+the router uses confidence and explicitly reports that no cost comparison is
+possible. Unsupported task requirements and ambiguous route IDs cause abstention.
+
+For the shadow router's proposals, confidence is caller-declared and uncalibrated.
+Integrated independent verification, capability matching and real baseline
+comparisons remain roadmap work;
+the prototype does not yet demonstrate cost savings.
+
+See the [routing policy](SHADOW_ROUTING.md) for exact rules and limitations.
+
+## Local runtime entry points
+
+For the opt-in, no-inference runtime diagnostic and single-task iteration
+helper, see [Local agent bootstrap](LOCAL_AGENT_BOOTSTRAP.md). A bounded
+LM Studio text client and JSON worker are available for explicit local requests;
+see [the Eurekaï local LLM plan](LOCAL_LLM_EUREKAI.md) and the
+[existing second-brain context connection](LOCAL_KNOWLEDGE.md). Its offline
+fixture does not establish model quality, hardware readiness or token savings.
+The same worker also accepts explicit, bounded PNG/JPEG inputs through the
+[versioned local vision contract](LOCAL_VISION.md); request v1 stays text-only.
+
+## Core principle
+
+**Use the minimum amount of intelligence required for each fragment of work.**
+
+Parcimonia's planned routing criteria include:
+- expected token/API cost
+- local compute and VRAM
+- latency
+- confidence
+- historical success evidence
+- task risk
+- required proof level
+- privacy / locality constraints
+- available hardware and models
+
+## Broader integration targets
+
+These are broader integration targets. The bounded local clients described above
+already implement specific surfaces; this list does not claim production routing
+or end-to-end validation for each target.
+
+Planned adapters include:
+- Botte Secrète / CapabilityAtlas
+- OpenAI-compatible APIs
+- Ollama and local LLM runtimes
+- MCP and CLI tools
+- KNN memory/retrieval
+- nano-NN and micro-NN registries
+- ShardJEPA experiments
+- protobuf/ID based capability manifests
+
+[NVIDIA Personal AI Router (PAIR)](https://github.com/NVIDIA/Personal-AI-Router)
+fits this architecture: PAIR exposes OpenAI-compatible and Ollama-compatible
+local endpoints and routes each independent inference request to an eligible
+node. Parcimonia can treat a PAIR endpoint as a candidate for local LLM
+execution while retaining its own cost, evidence and escalation decisions.
+This is an integration path through planned adapters, not an implemented or
+end-to-end validated PAIR adapter.
+
+## Success metrics
+
+Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, unsafe false positives, abstention, escalation, model calls, evidence completeness and reproducibility.
+
+## Shadow observations
+
+Each proposal can be stored as a replayable JSON observation that records the
+task identity, candidate estimates, policy version, decision and any evidence
+bound to the baseline and proposed routes. Replay re-runs the policy and rejects
+a record whose stored decision no longer matches.
+
+```python
+from pathlib import Path
+
+from tiberium_ai import (
+    CandidateRoute, Evidence, Task,
+    compare_observation, read_observation, record_observation, write_observation,
+)
+
+task = Task("format-001", "format", {"text": "example"})
+record = record_observation(
+    task,
+    [
+        CandidateRoute("baseline", ["model:baseline"], 1.0, 900, 0.99),
+        CandidateRoute("rule", ["rule:format"], 0.01, 5, 0.95),
+    ],
+    baseline_route_id="baseline",
+    cost_unit="USD per 1k tasks",
+    data_origin="synthetic",
+    baseline_evidence=Evidence("format-001", "baseline", True, 900, 1.0),
+    proposal_evidence=Evidence("format-001", "rule", True, 5, 0.01),
+)
+Path("observations").mkdir(exist_ok=True)
+write_observation("observations/format-001.json", record)
+print(compare_observation(read_observation("observations/format-001.json"))["status"])
+```
+
+Estimated and measured costs stay in separate fields, and a missing measurement
+is never replaced by an estimate. See the [observation format](OBSERVATIONS.md)
+for the stored fields, the comparison statuses and the privacy exclusions.
+`write_observation` requires the target directory to exist and never overwrites
+an existing file.
+
+## Minimal example
+
+These are synthetic estimates in a shared arbitrary cost unit, not benchmark
+measurements. No model or tool is called.
+
+```python
+from tiberium_ai.contracts import CandidateRoute, Task
+from tiberium_ai.router import ShadowRouter
+
+task = Task("format-001", "format", {"text": "example"})
+candidates = [
+    CandidateRoute("baseline", ["model:baseline"], estimated_cost=1.0, confidence=0.99),
+    CandidateRoute("rule", ["rule:format"], estimated_cost=0.01, confidence=0.95),
+]
+decision = ShadowRouter(min_confidence=0.9).propose(task, candidates)
+print(decision.selected_route_id)  # rule
+print(decision.mode)               # shadow
+```
