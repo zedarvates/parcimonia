@@ -1,57 +1,116 @@
-![Parcimonia — Adaptive compute for AI agents. A mint-green route connects selected nodes within a dark network.](docs/assets/parcimonia-header.png)
+![Parcimonia — Adaptive compute for AI agents.](docs/assets/parcimonia-header.png)
 
 # Parcimonia
 
+[English](README.md) · [Français](README.fr.md) ·
 [![tests](https://github.com/zedarvates/parcimonia/actions/workflows/tests.yml/badge.svg)](https://github.com/zedarvates/parcimonia/actions/workflows/tests.yml)
 
-> An open-source adaptive compute router for AI agents, started under the working codename Tiberium AI.
+> Choose a sufficient compute mechanism for each task, and keep the evidence.
 
-Repository: https://github.com/zedarvates/parcimonia
+Parcimonia is an open-source Python toolkit for AI agents. Its shadow router
+compares caller-supplied options by estimated cost and declared confidence,
+then proposes a route or explains why it abstains. The aim is to spend less
+compute while preserving required quality; real-world savings remain unmeasured.
 
-[Release **0.5.1**](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1) includes the qualified Python library and the
-installed `parcimonia` JSON command. See [installation and release
-qualification](docs/RELEASE.md) and [changes](CHANGELOG.md). The separate local
-Codex plugin remains at 0.4.1. Python imports retain the name `tiberium_ai`.
+You can use it to:
 
-This release packages the current `main`, including its asset catalogues,
-bounded local text/vision clients, memory capture/replay and feasibility checks.
-The earlier `v0.5.0` tag and its archives remain the original qualified snapshot.
+- inspect a proposed routing decision without executing the selected route;
+- catalogue asset metadata with source-bound tags and review decisions;
+- capture and replay bounded observations while separating estimates from measurements.
 
-Where the project stands, what was decided and what was learned — including the
-negative results — lives in [the wiki](wiki/WIKI.md). Mechanism documentation stays
-in [docs](docs/).
+**Stable library: [0.5.1](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1).
+Separate local Codex plugin: 0.4.1. No automatic production routing is enabled.**
 
-For the opt-in, no-inference runtime diagnostic and single-task iteration
-helper, see [Local agent bootstrap](docs/LOCAL_AGENT_BOOTSTRAP.md). A bounded
-LM Studio text client and JSON worker are available for explicit local requests;
-see [the Eurekaï local LLM plan](docs/LOCAL_LLM_EUREKAI.md) and the
-[existing second-brain context connection](docs/LOCAL_KNOWLEDGE.md). Its offline
-fixture does not establish model quality, hardware readiness or token savings.
-The same worker also accepts explicit, bounded PNG/JPEG inputs through the
-[versioned local vision contract](docs/LOCAL_VISION.md); request v1 stays text-only.
+[Try it](#try-the-stable-demo) · [Capabilities](#available-capabilities) ·
+[Adapt it](#adapt-parcimonia-to-your-own-use) · [Contribute](#contributing)
 
-Parcimonia aims to reduce token, API, latency and local-compute costs by selecting the **least expensive mechanism that can satisfy the required confidence, evidence and safety constraints** for each task or sub-task.
+## Try the stable demo
 
-It is not intended to be another general-purpose LLM. It sits between an agent/LLM and its execution mechanisms:
+Requires **Python 3.10+** and Git. From your chosen working directory:
+
+```sh
+git clone --branch v0.5.1 --depth 1 https://github.com/zedarvates/parcimonia.git
+cd parcimonia
+python -m venv .venv
+```
+
+On Windows, use the virtual environment's Python:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install .
+.\.venv\Scripts\python.exe examples/flagship.py
+```
+
+On Linux:
+
+```sh
+.venv/bin/python -m pip install .
+.venv/bin/python examples/flagship.py
+```
+
+If your system calls Python 3 `python3`, use that for creating the environment.
+Installation may download the build backend; the library has no external Python
+runtime dependencies. The demo itself calls no model or network provider.
+
+Expected summary, extracted from the longer output:
 
 ```text
-Agent / LLM
-    |
-    v
-Parcimonia Router
-    |
-    +-- deterministic rules / state machines / calculators
-    +-- cache / proof reuse
-    +-- KNN retrieval
-    +-- nano-NN classifiers / routers
-    +-- micro-NN specialized predictors
-    +-- ShardJEPA-style predictive modules
-    +-- small local LLM
-    +-- large local or cloud LLM
-    |
-    v
-Verifier -> Accept | Escalate
+6 fragments: 3 proposed, 3 abstained
+   PROPOSED   normalise-date -> rule:date-parse
+   PROPOSED   summarise-ticket -> micro-llm:fr
+   PROPOSED   extract-invoice-total -> knn:invoice
+   ABSTAINED  review-contract-clause
+   ABSTAINED  diagnose-regression
+   ABSTAINED  classify-tone
 ```
+
+The invoice example rejects a free option with declared confidence 0.88 and
+proposes a 0.03-cost option at 0.94, above the demo's 0.9 threshold. These are
+**synthetic estimates**, not measured prices or proof that an option is correct.
+No selected route is executed. See the [walkthrough](docs/FLAGSHIP.md);
+add `--json` to the demo command for structured decisions.
+
+## Choose an installation
+
+| Need | Starting point |
+| --- | --- |
+| Use the stable library or installed `parcimonia` command | The demo above, or the wheel and checksums in [release 0.5.1](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1); follow the [installation guide](docs/RELEASE.md). |
+| Explore newer source or contribute | Clone the default branch; see [contributing](#contributing). `main` can contain changes absent from the stable archives. |
+| Try the separate local Codex plugin | Follow [Parcimonia Local](plugins/parcimonia-local/README.md). Its version is 0.4.1; a library installation does not install or activate it in Codex. |
+
+**Compatibility:** Python 3.10+; installation paths for Windows and Linux are
+shown above. The Python distribution is still `tiberium-ai` and imports use
+`tiberium_ai` for compatibility. The project and installed CLI are Parcimonia.
+[Release qualification](docs/RELEASE.md) distinguishes archive checks, CI results
+and native Codex validation.
+
+## Available capabilities
+
+| Capability | Current scope | Guide |
+| --- | --- | --- |
+| Shadow routing | Advisory proposals or abstentions; caller-declared confidence and estimated cost | [Routing policy](docs/SHADOW_ROUTING.md) |
+| Asset catalogue | Header/structured-data inspection, proposed tags, review and snapshots; not general semantic recognition | [Asset perception](docs/ASSET_PERCEPTION.md) |
+| Memory and observations | Bounded capture/replay with versioned evidence; no automatic ingestion of every conversation | [Memory capture](docs/MEMORY_CAPTURE.md) |
+| Feasibility checks | Bounded Boolean requirements and explicit 2-SAT reduction | [Diagnostics](docs/FEASIBILITY_DIAGNOSTICS.md) |
+| Local text/vision clients | Explicit, bounded requests; model quality and hardware readiness require local evaluation | [Text](docs/LOCAL_LLM_EUREKAI.md) · [Vision](docs/LOCAL_VISION.md) |
+| Similar and complementary asset relations | Added on `main` **after 0.5.1**; declared references, not certified geometric compatibility | [Relations](docs/ASSET_RELATIONS.md) |
+
+The [detailed capability and evidence notes](docs/CAPABILITIES.md) retain the
+per-mechanism limits, experiments and Python examples. Separate active execution
+APIs require a policy, budgets, a sandbox and a kill switch; their presence does
+not turn shadow proposals into automatic execution.
+
+## Parcimonia and Botte Secrète
+
+| Component | Responsibility |
+| --- | --- |
+| This Python library | Routing proposals, evidence contracts, verification and explicitly gated execution APIs |
+| Parcimonia Local plugin | Separate local tools for advisory compute planning, host observations and supplied-context selection |
+| [Botte Secrète](https://github.com/zedarvates/botte-secrete) | Optional `assess_task` and `plan_github_research` tools when the connected runtime exposes them |
+
+Cloning this library does not supply Botte Secrète's connected tools or intercept
+all of an agent's tasks. See the [portable agent workflow](docs/AGENT_WORKFLOW.md)
+for the integration boundaries and fallback when optional tools are unavailable.
 
 ## Adapt Parcimonia to your own use
 
@@ -62,331 +121,67 @@ components and verify the adaptations in your environment.
 
 For example, ask Codex to coordinate a setup across your cloud, a ChatGPT Space
 and your local machines, using the available connectors and access. Have it
-configure an update and synchronization strategy for the code, configuration and
-documentation, specifying what is shared and what stays local.
+configure an update and synchronization strategy for code, configuration and
+documentation, specifying what is shared and what stays local. This is a setup
+to design with your assistant; the repository does not provide automatic
+cross-environment synchronization.
 
-## Core principle
+Prompt to fill in:
 
-**Use the minimum amount of intelligence required for each fragment of work.**
-
-Parcimonia's planned routing criteria include:
-- expected token/API cost
-- local compute and VRAM
-- latency
-- confidence
-- historical success evidence
-- task risk
-- required proof level
-- privacy / locality constraints
-- available hardware and models
-
-## V0: shadow mode only
-
-The current router receives a task and caller-supplied candidates and returns
-an observation-only proposal. It does not execute a route or replace a baseline.
-Collecting real task observations and comparing proposals with actual execution
-are the next steps; production routing must remain unchanged.
-
-## Initial integrations
-
-Planned adapters include:
-- Botte Secrète / CapabilityAtlas
-- OpenAI-compatible APIs
-- Ollama and local LLM runtimes
-- MCP and CLI tools
-- KNN memory/retrieval
-- nano-NN and micro-NN registries
-- ShardJEPA experiments
-- protobuf/ID based capability manifests
-
-[NVIDIA Personal AI Router (PAIR)](https://github.com/NVIDIA/Personal-AI-Router)
-fits this architecture: PAIR exposes OpenAI-compatible and Ollama-compatible
-local endpoints and routes each independent inference request to an eligible
-node. Parcimonia can treat a PAIR endpoint as a candidate for local LLM
-execution while retaining its own cost, evidence and escalation decisions.
-This is an integration path through planned adapters, not an implemented or
-end-to-end validated PAIR adapter.
-
-## Success metrics
-
-Benchmarks track tokens, API cost, compute time, VRAM/RAM, latency, quality, unsafe false positives, abstention, escalation, model calls, evidence completeness and reproducibility.
-
-## Status
-
-Library release 0.5.1. No automatic production routing is enabled.
-Archive qualification covers installation, compatibility and existing behavior;
-real-world quality and savings remain subject to the evidence gates below.
-
-An opt-in [feasibility and stability diagnostic](docs/FEASIBILITY_DIAGNOSTICS.md)
-checks a bounded Boolean contract for contradictions and missing prerequisites,
-and inspects three Python code patterns for stability risks. Reports distinguish
-model proofs, caller-declared observations and static risk indicators. The
-offline CLI does not execute inspected code or change routing policy.
-
-An explicit [verified reduction to 2-SAT](docs/VERIFIED_REDUCTIONS.md) translates
-the supported Boolean requirements into clauses and checks them with an
-iterative implication-graph solver. It handles up to 128 variables and returns
-checkable assignments or contradictory paths. This is one implemented Karp
-reduction, not automatic discovery of arbitrary reductions; quality and
-completeness remain separate from the new satisfiability report.
-
-An opt-in [asset inspection and catalogue](docs/ASSET_PERCEPTION.md) proposes
-source-bound tags from media headers, structured text, existing Python rules and
-GeoJSON coordinates. It supports exact-tag and spatial-envelope search while
-keeping extension hints, parsed metadata and lexical suggestions separate.
-No semantic image/audio/scene recognition, model call or source reorganization
-is performed by this first foundation.
-
-An explicit [tag review journal](docs/ASSET_TAG_REVIEW.md) records acceptance,
-rejection and reset decisions against exact inspection reports, with new
-snapshot files and review-aware search. Changed reports retain their proposals
-without silently inheriting earlier decisions; actor identities remain declared.
-
-An explicit [local text extraction](docs/ASSET_TEXT_EXTRACTION.md) step connects
-installed Tesseract OCR and embedded-PDF text extraction to proposed lexical
-tags, image word boxes or PDF pages, and the same review journal. Native tools
-are opt-in; their quality and OCR weights remain unqualified.
-
-A portable [catalogue snapshot](docs/ASSET_CATALOG_SNAPSHOTS.md) saves a current
-report per source, with explicit replacement preconditions, preserved earlier
-snapshots and review-aware search. It reuses the existing inspection reports and
-tag decisions without modifying source assets.
-
-An explicit [directed relation sidecar](docs/ASSET_RELATIONS.md) separates similar
-items from declared functional complements in the existing catalogue. Exact
-report revisions and hashes govern applicability; current incompatibility
-declarations block complementary candidates. References remain caller-declared,
-and no geometric compatibility, learned embedding or external proof is certified.
-
-An explicit [GPX 1.1 coordinate profile](docs/ASSET_GPX.md) reads declared GPS
-positions, retains waypoint/route/track-segment paths and computes a searchable
-2D envelope. It reuses the catalogue and tag review without claiming full GPX
-schema validation or verified real-world location.
-
-An explicit [native audio/video probe](docs/ASSET_NATIVE_MEDIA.md) uses installed
-ffprobe to record reported streams, codecs and durations. Proposed tags retain
-stream evidence and distinguish attached pictures from ordinary video streams,
-then reuse the same catalogue and review flow.
-
-A bounded [PLY body profile](docs/ASSET_PLY_BODY.md) reads declared vertex and
-face records, computes local XYZ bounds with source evidence, and proposes
-mesh/point-cloud or Gaussian-parameter candidates. Local coordinates remain
-separate from GPS and no rendering quality is inferred.
-
-A bounded [GLB resource inventory](docs/ASSET_GLB_RESOURCES.md) reads chunk
-framing and core buffer/image declarations, including exact embedded byte ranges
-and external URI references. Linked resources are never opened; their existence,
-decoded contents and rendering quality remain unverified.
-
-An explicit [asset expectation audit](docs/ASSET_EXPECTATIONS.md) compares
-supplied reports with caller-written requirements. It separates matching
-declarations, contradictions, unknown facts and missing exact report revisions,
-without treating a missing tag as proof of absent content.
-
-A separate [expectation consistency check](docs/ASSET_EXPECTATION_CONSTRAINTS.md)
-finds incompatible same-fact rules before inspection, with independently checked
-candidate assignments or two-rule conflict certificates. It does not model
-relations between facts or guarantee that a matching file exists.
-
-An opt-in bounded-context experiment retrieves exact versioned facts and compares
-full history, compact context and limited temporal persistence on 14 authored
-sequences. [Explicit capture](docs/MEMORY_CAPTURE.md) exports bounded observed
-episodes and separate usage receipts; [existing-run attachment](docs/MEMORY_EXECUTION.md)
-keeps execution and logging outcomes distinct. Replay preserves missing-proof abstentions and reports context bytes
-separately from unmeasured tokens/cost. See [Bounded context](docs/COMPACT_MEMORY.md).
-
-V1 is organised as a sequence of evidence gates rather than a list of modules;
-see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
-explicit non-goals.
-
-The first gate is implemented: `run_baseline` executes a **caller-supplied**
-callable exactly once, measures wall clock through an injected clock, and writes
-a `measurement/1` record carrying the method, environment and outcome. See
-[Baseline measurements](docs/MEASUREMENT.md).
-
-The second gate is implemented: a verifier registry binds every verdict to a
-named and versioned verifier and to the hash of the verified input, abstains on
-an unknown identity, and marks evidence built from it as schema version 2. See
-[Deterministic verification](docs/VERIFICATION.md).
-
-Both gates run end to end on a deterministic fixture corpus:
-
-```powershell
-python examples/fixture_suite.py --out runs/fixtures
+```text
+Study Parcimonia and propose an adaptation for my environment.
+Goals and workflows: [...]
+Hardware and operating systems: [...]
+Available tools, models and connectors: [...]
+Budget and latency limits: [...]
+Privacy: what may leave each machine, and what must stay local: [...]
+Identify useful components, prerequisites and current limits.
+Propose how to verify the result, update it and synchronize approved parts.
+Explain the plan before making changes; respect my existing permissions.
 ```
 
-The suite executes 20 local tasks twice, records 40 measured runs and 20
-attributed observations, and includes one deliberate route failure. Fixture
-results prove provenance and replay, not representative cost.
+## Evidence and limits
 
-The third gate is implemented: an escalation policy decides between `ACCEPT`,
-`RETRY`, `ESCALATE`, `ABSTAIN` and `FAIL_HARD` inside cumulative budgets, with a
-loop guard, a fail-closed rule for unknown cost and a reason code on every
-decision. See [Escalation policy](docs/ESCALATION.md).
+- The demo demonstrates the decision rule and explicit abstention on authored
+  inputs. It does not establish real model quality, billed savings or performance.
+- Confidence is caller-declared and uncalibrated. Unknown cost is not zero;
+  unsupported requirements and ambiguous route IDs cause abstention.
+- Published archive qualification covers installation and existing behavior.
+  See the [release report](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1)
+  and [benchmark plan](docs/BENCHMARKS.md) for what was checked and what remains.
+- A configured adapter or a passing offline fixture does not establish that a
+  model, GPU, live service or native Codex session works in your environment.
 
-The fourth gate is implemented: routes come from a versioned JSON manifest that
-declares capabilities, estimates, task constraints and the verifier each route
-requires, and the registry version is part of the recorded policy version. See
-[Route registry](docs/REGISTRY.md).
+## Contributing
 
-The fifth gate is implemented: a resource vector keeps tokens,
-latency, VRAM and energy apart from constraints, routes are compared on a Pareto
-front instead of a weighted scalar, and a seeded benchmark splits cases into
-development and held-out sets before any claim is allowed. See the
-[benchmark plan](docs/BENCHMARKS.md).
+For development, clone the default branch instead of the stable tag above.
+Read [AGENTS.md](AGENTS.md), [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[agent workflow](docs/AGENT_WORKFLOW.md). From the repository root, create a
+virtual environment with `python -m venv .venv`, then run:
 
-The sixth gate is implemented: active mode refuses to start without a policy,
-budgets, a sandbox and a kill switch; it requires a single-use human
-authorization for any class outside the automatic set and an idempotency key per
-execution, and it returns an audit trail linking the authorization, the attempts
-and a replayable observation. See [Active mode](docs/ESCALATION.md).
-
-The first System-1 route is implemented: a deterministic static audit that
-classifies a file's structural role, runs named pattern rules, scores a deficit
-from four ratio dimensions, and stores the verdict in a local, content-addressed
-database. It needs no model, no network and no clock, and a second pass over the
-same text reuses the stored verdict instead of recomputing it. Every verdict can
-be recomputed by a named verifier before it is accepted as evidence. It is shadow
-only, its weights are declared defaults rather than calibrated values, and it
-claims no saving. See the [static audit](docs/STATIC_AUDIT.md).
-
-An adapter boundary for typed-decision routes is implemented: an option set
-wider than one call offers is either cut into balanced stages or scored option by
-option before one explicit choice, one response is recorded with the provenance
-that replays it offline, and the recomposed decision is verified by recomputation
-instead of being trusted. A decision clock keeps a missed deadline and a stale
-snapshot apart from decision quality. The core adapter calls no model on its own
-and claims no cost. See
-[Typed-decision adapters](docs/DECISION_ADAPTER.md).
-
-An optional local Tev1 transport now implements that boundary through Ollama.
-It is explicitly invoked, pins runtime and model identity, bounds the HTTP call,
-and keeps every decision advisory. A 24-case French corpus compares rules and
-captured decisions, with offline replay and no saving claim. No real model was
-evaluated for this integration. See [Tev1 local shadow](docs/TEV1_SHADOW.md).
-The paired comparator revalidates both captures, counts every failure and keeps
-total cost unknown. A [local run guide](docs/TEV1_LOCAL_RUN.md) prepares execution
-on an existing model server.
-
-A prompt-signature predictor is implemented: it reads an input and names what that
-input is about, the kind of task, the capabilities it needs, the fields worth
-reading and which declared goal it serves. A keyword rule, a KNN over labelled
-cases and a micro-NN sit behind one protocol, so the rule stays the baseline a
-learner has to beat on the same corpus. The vocabulary is caller-declared,
-abstention is a value rather than an exception, and strictness stays
-caller-declared because a prompt is weak evidence for it. The candidates are
-measured apart on an authored corpus, on a held-out public slice whose labels were
-written by strangers, and on the prompts already on disk, which the ingest lane
-turns into a content-addressed corpus revision without writing anything into this
-repository. A public corpus can measure a mechanism and never opens the
-authorization gate, and no accuracy is claimable while the labels are not
-outcomes. See [Task signatures](docs/INTEGRATIONS.md).
-
-The current `ShadowRouter` validates confidence and cost estimates, applies a
-configurable confidence threshold (default `0.9`), and proposes the lowest known
-estimated cost among eligible candidates. Equal costs use higher confidence,
-then lexical route ID, so input order does not change the decision.
-
-Unknown costs are never treated as zero. If all eligible costs are unknown,
-the router uses confidence and explicitly reports that no cost comparison is
-possible. Unsupported task requirements and ambiguous route IDs cause abstention.
-
-Confidence is caller-declared and uncalibrated. Independent verification,
-capability matching and real baseline comparisons remain roadmap work;
-the prototype does not yet demonstrate cost savings.
-
-See the [routing policy](docs/SHADOW_ROUTING.md) for exact rules and limitations.
-
-## One command
+Windows:
 
 ```powershell
-python examples/flagship.py
-```
-
-Six fragments of an ordinary development day, each one proposed or refused in
-shadow mode with its reason, and nothing executed. See the
-[flagship walkthrough](docs/FLAGSHIP.md).
-
-## Local development
-
-New contributors and coding agents: read [AGENTS.md](AGENTS.md) and the
-[portable agent workflow](docs/AGENT_WORKFLOW.md). They describe when to consult
-the optional Botte Secrète planning tools and how to proceed without them.
-
-Requires Python 3.10 or newer. From the repository root on Windows:
-
-```powershell
-python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-The Python distribution and import name remain `tiberium-ai` and `tiberium_ai`
-for compatibility with the bootstrap. Parcimonia is the repository and project
-name; a package rename can be handled separately.
+Linux:
 
-## Shadow observations
-
-Each proposal can be stored as a replayable JSON observation that records the
-task identity, candidate estimates, policy version, decision and any evidence
-bound to the baseline and proposed routes. Replay re-runs the policy and rejects
-a record whose stored decision no longer matches.
-
-```python
-from pathlib import Path
-
-from tiberium_ai import (
-    CandidateRoute, Evidence, Task,
-    compare_observation, read_observation, record_observation, write_observation,
-)
-
-task = Task("format-001", "format", {"text": "example"})
-record = record_observation(
-    task,
-    [
-        CandidateRoute("baseline", ["model:baseline"], 1.0, 900, 0.99),
-        CandidateRoute("rule", ["rule:format"], 0.01, 5, 0.95),
-    ],
-    baseline_route_id="baseline",
-    cost_unit="USD per 1k tasks",
-    data_origin="synthetic",
-    baseline_evidence=Evidence("format-001", "baseline", True, 900, 1.0),
-    proposal_evidence=Evidence("format-001", "rule", True, 5, 0.01),
-)
-Path("observations").mkdir(exist_ok=True)
-write_observation("observations/format-001.json", record)
-print(compare_observation(read_observation("observations/format-001.json"))["status"])
+```sh
+.venv/bin/python -m pip install -e ".[dev]"
+.venv/bin/python -m pytest -q
 ```
 
-Estimated and measured costs stay in separate fields, and a missing measurement
-is never replaced by an estimate. See the [observation format](docs/OBSERVATIONS.md)
-for the stored fields, the comparison statuses and the privacy exclusions.
-`write_observation` requires the target directory to exist and never overwrites
-an existing file.
+Keep estimates separate from measurements and experimental learned routing in
+shadow mode until its evidence gates are met.
 
-## Minimal example
+## Documentation and license
 
-These are synthetic estimates in a shared arbitrary cost unit, not benchmark
-measurements. No model or tool is called.
+[Detailed capabilities](docs/CAPABILITIES.md) · [Release guide](docs/RELEASE.md) ·
+[Roadmap](ROADMAP.md) · [Wiki and lessons learned](wiki/WIKI.md) ·
+[Changes](CHANGELOG.md) · [Security](SECURITY.md)
 
-```python
-from tiberium_ai.contracts import CandidateRoute, Task
-from tiberium_ai.router import ShadowRouter
-
-task = Task("format-001", "format", {"text": "example"})
-candidates = [
-    CandidateRoute("baseline", ["model:baseline"], estimated_cost=1.0, confidence=0.99),
-    CandidateRoute("rule", ["rule:format"], estimated_cost=0.01, confidence=0.95),
-]
-decision = ShadowRouter(min_confidence=0.9).propose(task, candidates)
-print(decision.selected_route_id)  # rule
-print(decision.mode)               # shadow
-```
-
-## License
-
-Apache-2.0 for the software bootstrap. Model weights, datasets or third-party components may require separate licensing.
-
-## Name / affiliation
-
-Parcimonia started under the working codename "Tiberium AI", inspired by the Command & Conquer universe. This project is not affiliated with or endorsed by Electronic Arts. The header artwork uses an original abstract routing motif; see [visual identity notes](docs/BRANDING.md).
+Code: [Apache-2.0](LICENSE). Model weights, datasets and third-party components
+may require separate licenses. The header uses an original abstract routing
+motif; see [visual identity notes](docs/BRANDING.md).
