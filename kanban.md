@@ -163,6 +163,8 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Notes : les rapports fournis restent non attestés ; le scénario reconnexion est authoré. `capacity=None` conserve le comportement historique et ne vaut pas admission matérielle. Une route CPU peut déclarer explicitement un besoin VRAM nul.
 
   - Vérification du 02/11 : Python 3.12.14, 4 165 tests et 100 sous-tests réussis ; découverte et appels stdio isolés ; défaut d’arrondi détecté en revue indépendante puis corrigé et contrôlé sur 864 cas numériques. Source candidate non fusionnée, qualification du consommateur réel et installation Codex séparées.
+  - Prolongement du 02/11 : comparateur consultatif de sondes préparé sur `feat/observation-probe-planning-20261102`, basé sur la PR #40. Modèle d'hypothèses lié à la requête, résultats attendus, plafonds exacts et front information/latence/coût ; une issue non modélisée ou un coût inconnu sous plafond empêche la sélection de la sonde concernée, un échec actuel bloque toute proposition. Guide `docs/OBSERVATION_PROBE_PLANNING.md`. Qualité des sondes et gain réel restent à mesurer sur le consommateur.
+  - Qualification du comparateur : Python 3.12.14, 4 228 tests et 100 sous-tests réussis, dont 62 nouveaux cas ; oracle indépendant sur 300 cas générés, démonstrateur normal et `-O`. Amplification du parcours par objets Python partagés corrigée et conservée dans une régression avec délai maximal ; bornes valides contrôlées. Aucun test métier, modèle ou hôte réel exécuté par ce comparateur, aucune activation.
 
 - [ ] TASK-060 [P3] [difficulté: compact] [class: feature] [horizon: near]
   - Intitulé : Round-trip WebBrain MCP réel en ASK only
