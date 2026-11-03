@@ -1,7 +1,7 @@
 # Essai réel : politique structurée dans la CLI Parcimonia
 
 Le 20 octobre 2026, une tâche de développement réelle a été réalisée dans
-TiberiumAI : ajouter `--policy <JSON>` au préparateur de tâches, conserver la
+Parcimonia : ajouter `--policy <JSON>` au préparateur de tâches, conserver la
 priorité de `--strict` et vérifier les entrées invalides. Le code, les tests et
 la documentation sont modifiés ; aucune proposition de route n'est exécutée.
 

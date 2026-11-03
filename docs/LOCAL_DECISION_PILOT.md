@@ -1,7 +1,7 @@
 # Pilote local de decision : Laya, Jeff et baselines
 
 Le 2 octobre 2026, Laya multilingue a ete charge et execute sur CPU dans
-TiberiumAI. Ce premier essai ne justifie pas de remplacer la baseline : sur
+Parcimonia. Ce premier essai ne justifie pas de remplacer la baseline : sur
 six paraphrases francaises, Laya couvre correctement trois types de tache au
 seuil existant de 0,90, contre quatre pour l'analyse par verbes et objets.
 Ses champs predits ne correspondent pas aux champs attendus du corpus.
