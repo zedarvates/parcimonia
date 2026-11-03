@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cache",
+    "path": "src/cache_policy.py",
+    "text": "def validate_cache_profile():\n    return 'profils cache mémoire fraîcheur'\n",
+    "content_sha256": "fd7147bc2fadc015fc6a643c39d2e2bfce472575c1d35d679a7d12cef93d7348"
+  },
+  {
+    "id": "cache-test",
+    "path": "tests/test_cache_policy.py",
+    "text": "def test_cache_profile_freshness():\n    assert 'cache profils mémoire'\n",
+    "content_sha256": "f0ca7acc130dbd1308da65beb71b014d910a48d8e87de299d8b71d26d71bc285"
+  },
+  {
+    "id": "unrelated",
+    "path": "docs/garden.md",
+    "text": "Jardin, rosiers et arrosage du matin.\n",
+    "content_sha256": "3679d7a6c77cf96c7f483f3ed469ed5ceb8557269790a7a954f7aafe0f3be663"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "schema": "local-plugin.files/v1",
+  "files": {
+    ".codex-plugin/plugin.json": "58aecc6f29e180fd77dc40cd4d88652c8a183b24ae010462f91d521055195fe6",
+    ".mcp.json": "6a1533dae8020c0e39bbadee0212ac5fed29689d74348d83b4d6f210fe0459d9",
+    "LICENSE": "adfd351fe656dbacfdcdf9363e064d94028f47a8d2bfd45fcc83fc83cc2109fc",
+    "LICENSE-BOTTE-MIT": "4be2afe3d1aaa1d069d624b7fe654216565a1e1bcb3e0000d60fdb3dd92d3c61",
+    "PRIVACY.md": "3567791286932235e2fad989f91a8d4ee0f7337093d72d59d2e6d9a875e003a3",
+    "PUBLICATION.md": "6b07a54a0cacceddf5f6fe23074128ecb2f00e9e270f73e624ae571871ce96c9",
+    "README.md": "469c68d5853390239a4ea09c7ce08745b7e0911910e6cca9fb3736ee43b7c909",
+    "SOURCES.json": "6a115fea46cbe7845052c6f8ebf99c4137c47359d70eccd5c424c39e7d250d35",
+    "TERMS.md": "86962210d72e67b7407ee51d4ee612ed7f4b70f36e768264852f1a503503a8a3",
+    "THIRD_PARTY_NOTICES.md": "1c0f5a7a4dae67a4fa1176219d0a6f1aea6b3d2f60cdeacd57ec65817ea7d3be",
+    "_vendor/__init__.py": "28aeaf7223d314ce786c06dd17fe972be70ee4a68e93b1e9786ca2c25d3f7bde",
+    "_vendor/compute_advisor.py": "c2f8c77011e55ad66ce3f784bb94bcd98bab279856eb3b2cd6a796531c415c49",
+    "_vendor/context_selection.py": "82675cac8017335a9c57af4adfb39306ff55924a9a2ec2b3ceb8baf4b61f8535",
+    "_vendor/hardware.py": "f4de93b1eeac514951b2c9e24d4abe61567e22184fdb69ce42e031ac40d1806d",
+    "_vendor/mcp_runtime.py": "5f494c4fda8b2858880a6d740b367b9b701f7a79e8cc0ab91a47c5af9af23577",
+    "assets/icon.svg": "7c026295ee41fd4db2892903bfdc07d541ceeaeeea3e5952bbfd34eadd5671c4",
+    "docs/validation-scope.md": "34cdaf99cc5739914dc0c1379381107b7ba178d4c303c11cf8b7f5b529bda230",
+    "mcp.json": "072503529d48acfd5d028979d2de97b73a8df136dd13e4a585cf2783d2e3ab43",
+    "plugin.json": "da17dda83139056f57538138ab40d288137c6bc51a7b286648c1d467f596b398",
+    "review/generate_inputs.py": "b30e6dc28e407a5ab4819214c9d781acb5c929a36596dab0c73b21288812994f",
+    "review/supplied-documents.json": "b2f62611208f4c0865f58c693acdb38265b092f083acf00226e5e7f486250702",
+    "review/test-cases.json": "a2dc4a99e439a7e77b82fd3f0b80f2e1ec5ad3c970c8e74efd80fe1994efe9af",
+    "server.py": "bd29b85b4244fec551af8cc678d9c526b0300c7c75bf8612fefac0a631cb7b47",
+    "skills/get-started/SKILL.md": "36bf76edf01ed08bdba16bb7f8ca6847993073c4a8b23b29585eb76bb0d166d5",
+    "skills/local-plan/SKILL.md": "7262efbf0b6201f61c4aad6f472525c28d7c308c30d58e35219aceaa482de357"
+  }
+}
