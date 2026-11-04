@@ -195,6 +195,13 @@ episodes and separate usage receipts; [existing-run attachment](docs/MEMORY_EXEC
 keeps execution and logging outcomes distinct. Replay preserves missing-proof abstentions and reports context bytes
 separately from unmeasured tokens/cost. See [Bounded context](docs/COMPACT_MEMORY.md).
 
+[Inception discussion continuity](docs/INCEPTION.md) adds an opt-in durable
+journal, fresh-session checkpoints and explicit event exchange between replicas.
+It preserves failed attempts, uncertain causes and concurrent decisions, and
+reuses the knowledge crosswalk for unverified link candidates. The CLI exchanges
+bounded files; a live cloud/local transport and host slash command are separate
+integrations.
+
 V1 is organised as a sequence of evidence gates rather than a list of modules;
 see [V1 gates](docs/V1_GATES.md) for the order, the exit criteria and the
 explicit non-goals.
