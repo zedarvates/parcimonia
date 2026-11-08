@@ -99,6 +99,10 @@ Planned adapters include:
 - ShardJEPA experiments
 - protobuf/ID based capability manifests
 
+### Example: connect a Hugging Face model locally
+
+For a concrete local-model example, start with the [official LFM3-VL-2B model card](https://huggingface.co/LiquidAI/LFM3-VL-2B) and its [official GGUF repository](https://huggingface.co/LiquidAI/LFM3-VL-2B-GGUF). Load a supported GGUF in LM Studio, then call its OpenAI-compatible local endpoint with Parcimonia's documented [local LLM worker](docs/LOCAL_LLM_EUREKAI.md). This demonstrates the existing client path; it does not mean the Parcimonia LoRA is already published or that model quality or cost savings have been established.
+
 [NVIDIA Personal AI Router (PAIR)](https://github.com/NVIDIA/Personal-AI-Router)
 fits this architecture: PAIR exposes OpenAI-compatible and Ollama-compatible
 local endpoints and routes each independent inference request to an eligible
