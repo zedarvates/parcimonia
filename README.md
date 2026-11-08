@@ -101,7 +101,7 @@ Planned adapters include:
 
 ### Example: connect a Hugging Face model locally
 
-For a concrete local-model example, start with the [official LFM3-VL-2B model card](https://huggingface.co/LiquidAI/LFM3-VL-2B) and its [official GGUF repository](https://huggingface.co/LiquidAI/LFM3-VL-2B-GGUF). Load a supported GGUF in LM Studio, then call its OpenAI-compatible local endpoint with Parcimonia's documented [local LLM worker](docs/LOCAL_LLM_EUREKAI.md). This demonstrates the existing client path; it does not mean the Parcimonia LoRA is already published or that model quality or cost savings have been established.
+For a concrete Parcimonia model artifact, see the published [Parcimonia v3 LFM3-VL-2B LoRA on Hugging Face](https://huggingface.co/zedgamer/parcimonia-lfm3-vl-2b-lora). It is an experimental PEFT adapter and requires the [LFM3-VL-2B base model](https://huggingface.co/LiquidAI/LFM3-VL-2B); follow the model card's Transformers/PEFT example. The adapter is not a standalone GGUF. For a quick LM Studio route, use the [upstream LFM3-VL-2B GGUF](https://huggingface.co/LiquidAI/LFM3-VL-2B-GGUF) with Parcimonia's documented [local LLM worker](docs/LOCAL_LLM_EUREKAI.md). Model quality and cost savings have not been established.
 
 [NVIDIA Personal AI Router (PAIR)](https://github.com/NVIDIA/Personal-AI-Router)
 fits this architecture: PAIR exposes OpenAI-compatible and Ollama-compatible
