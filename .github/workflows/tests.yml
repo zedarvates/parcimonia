@@ -42,7 +42,7 @@ jobs:
           wheelhouse = temporary / "release-wheelhouse"
           output = temporary / "parcimonia-release"
           subprocess.run([sys.executable, "-m", "pip", "download", "--only-binary=:all:",
-                          "--dest", str(wheelhouse), "pytest==9.1.1", "tomli", "exceptiongroup",
+                          "--dest", str(wheelhouse), "pytest==9.1.1", "pytest-cov==7.1.0", "tomli", "exceptiongroup",
                           "typing_extensions", "colorama"], check=True)
           subprocess.run([sys.executable, "scripts/qualify_release.py", "--output", str(output),
                           "--wheelhouse", str(wheelhouse), "--python", sys.executable], check=True)

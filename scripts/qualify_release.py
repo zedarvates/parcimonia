@@ -144,7 +144,7 @@ def qualify(output, interpreters, wheelhouse):
             python = home / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
             run(label + "-install", [sys.executable, "-m", "pip", "--python", python, "install",
                                     "--no-compile", "--no-index", "--find-links", wheelhouse,
-                                    wheel, "pytest==9.1.1"])
+                                    wheel, "pytest==9.1.1", "pytest-cov==7.1.0"])
             run(label + "-pip-check", [sys.executable, "-m", "pip", "--python", python, "check"])
             probe = run(label + "-imports", [python, "-I", "-c",
                 "import importlib,importlib.metadata,json,pkgutil,sys,tiberium_ai; "
