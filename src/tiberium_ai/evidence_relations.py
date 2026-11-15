@@ -66,12 +66,84 @@ def _bound_names(node):
     return []
 
 
+def _expression_bindings(node):
+    """Names assigned by expressions evaluated in the enclosing scope."""
+    def defaults(args):
+        return [*args.defaults, *(v for v in args.kw_defaults if v is not None)]
+
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        args = node.args
+        parameters = [*args.posonlyargs, *args.args, *args.kwonlyargs, args.vararg, args.kwarg]
+        stack = [*node.decorator_list, *defaults(args),
+                 *(p.annotation for p in parameters if p and p.annotation),
+                 *([node.returns] if node.returns else [])]
+    elif isinstance(node, ast.ClassDef):
+        stack = [*node.decorator_list, *node.bases, *(k.value for k in node.keywords)]
+    elif isinstance(node, ast.Lambda):
+        stack = defaults(node.args)
+    elif isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
+        stack = [node]
+    else:
+        return
+    while stack:
+        part = stack.pop()
+        if isinstance(part, ast.Lambda):
+            stack.extend(defaults(part.args))
+            continue
+        if isinstance(part, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
+            stack.extend([part.key, part.value] if isinstance(part, ast.DictComp) else [part.elt])
+            for generator in part.generators:
+                stack.append(generator.iter)
+                stack.extend(generator.ifs)
+            continue
+        if isinstance(part, ast.NamedExpr) and isinstance(part.target, ast.Name):
+            yield part.target.id
+        stack.extend(ast.iter_child_nodes(part))
+
+
 def _call_name(node):
     if isinstance(node, ast.Name):
         return node.id
     if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
         return node.value.id + "." + node.attr
     return None
+
+
+def _evaluated_expression_calls(node):
+    """Calls in definition headers and eager expressions, with local shadowing."""
+    def defaults(args):
+        return [*args.defaults, *(x for x in args.kw_defaults if x is not None)]
+
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        expressions = [*node.decorator_list, *defaults(node.args)]
+    elif isinstance(node, ast.ClassDef):
+        expressions = [*node.decorator_list, *node.bases, *(x.value for x in node.keywords)]
+    elif isinstance(node, (ast.Lambda, ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
+        expressions = [node]
+    else:
+        return
+    stack = [(expr, frozenset()) for expr in expressions]
+    while stack:
+        part, hidden = stack.pop()
+        if isinstance(part, ast.Lambda):
+            stack.extend((x, hidden) for x in defaults(part.args))
+            continue
+        if isinstance(part, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
+            # Only the first iterable of a generator expression is eager.
+            stack.append((part.generators[0].iter, hidden))
+            if isinstance(part, ast.GeneratorExp):
+                continue
+            targets = {n.id for g in part.generators for n in ast.walk(g.target)
+                       if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
+            inner = hidden | targets
+            stack.extend((g.iter, inner) for g in part.generators[1:])
+            stack.extend((x, inner) for g in part.generators for x in g.ifs)
+            values = [part.key, part.value] if isinstance(part, ast.DictComp) else [part.elt]
+            stack.extend((x, inner) for x in values)
+            continue
+        if isinstance(part, ast.Call):
+            yield part, hidden
+        stack.extend((x, hidden) for x in ast.iter_child_nodes(part))
 
 
 def _test_edges(tree, targets, *, follow_paths=False):
@@ -92,6 +164,7 @@ def _test_edges(tree, targets, *, follow_paths=False):
             wrapper = ast.Module(body=[stmt], type_ignores=[])
             for node in _scope_nodes(wrapper):
                 shadowed.update(_bound_names(node))
+                shadowed.update(_expression_bindings(node))
     if "*" in aliases or "*" in shadowed:
         return
     # Only a plain, unique module-level function can be a local bridge.
@@ -101,22 +174,27 @@ def _test_edges(tree, targets, *, follow_paths=False):
         for node in _scope_nodes(tree):
             for name in _bound_names(node):
                 bindings[name] += 1
+            for name in _expression_bindings(node):
+                bindings[name] += 1
         helpers = {fn.name: fn for fn in tree.body if isinstance(fn, ast.FunctionDef)
                    and not fn.name.startswith("test_") and not fn.decorator_list
                    and bindings[fn.name] == 1}
 
     def calls(fn):
         nodes = list(_scope_nodes(fn))
-        excluded = (ast.Global, ast.Nonlocal, ast.Yield, ast.YieldFrom) if follow_paths else (ast.Global, ast.Nonlocal)
+        excluded = (ast.Global, ast.Nonlocal, ast.Yield, ast.YieldFrom)
         if any(isinstance(n, excluded) for n in nodes):
             return
         args = fn.args
         local = {a.arg for a in [*args.posonlyargs, *args.args, *args.kwonlyargs, args.vararg, args.kwarg] if a}
         local.update(name for node in nodes for name in _bound_names(node))
-        for node in nodes:
-            if isinstance(node, ast.Call) and (called := _call_name(node.func)):
+        local.update(name for node in nodes for name in _expression_bindings(node))
+        candidates = ((node, frozenset()) for node in nodes if isinstance(node, ast.Call))
+        candidates = [*candidates, *(pair for node in nodes for pair in _evaluated_expression_calls(node))]
+        for node, hidden in candidates:
+            if called := _call_name(node.func):
                 base, _, attr = called.partition(".")
-                if base not in local:
+                if base not in local and base not in hidden:
                     yield node.lineno, base, attr
 
     def resolve(base, attr):
@@ -133,9 +211,12 @@ def _test_edges(tree, targets, *, follow_paths=False):
         bridge[name] = [(line, target) for line, base, attr in calls(fn)
                         if (target := resolve(base, attr)) in targets]
     for parent in tree.body:
+        if isinstance(parent, ast.ClassDef) and parent.decorator_list:
+            continue
         functions = parent.body if isinstance(parent, ast.ClassDef) and parent.name.startswith("Test") else [parent]
         for test in functions:
-            if not isinstance(test, (ast.FunctionDef, ast.AsyncFunctionDef)) or not test.name.startswith("test_"):
+            if (not isinstance(test, (ast.FunctionDef, ast.AsyncFunctionDef))
+                    or not test.name.startswith("test_") or test.decorator_list):
                 continue
             for line, base, attr in calls(test):
                 if (target := resolve(base, attr)) in targets:
@@ -236,12 +317,20 @@ def discover(docs, seeds, roles, *, selected_paths=(), follow_paths=False):
         for node in tree.body:
             if isinstance(node, DEFS):
                 defs[node.name].append(node)
-        assigned = {name for node in _scope_nodes(tree) if not isinstance(node, DEFS)
+        direct_defs = {node for node in tree.body if isinstance(node, DEFS)}
+        # Definitions inside module-level control flow also bind names, but
+        # definitions nested inside functions or classes are separate scopes.
+        scope_nodes = list(_scope_nodes(tree))
+        assigned = {name for node in scope_nodes if node not in direct_defs
                     for name in _bound_names(node)}
+        assigned.update(name for node in scope_nodes for name in _expression_bindings(node))
         for name, nodes in defs.items():
-            if len(nodes) != 1 or name in assigned:
+            if len(nodes) != 1 or name in assigned or nodes[0].decorator_list:
                 continue
             node = nodes[0]
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and any(
+                    isinstance(part, (ast.Yield, ast.YieldFrom)) for part in _scope_nodes(node)):
+                continue
             hits = [e for e in excerpts if e["start"] <= node.end_lineno and node.lineno <= e["end"]]
             if hits:
                 targets[module, name] = (hits[0], node.lineno)
