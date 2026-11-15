@@ -7,6 +7,61 @@ import pytest
 from tiberium_ai import repo_evidence as evidence
 
 
+@pytest.mark.parametrize('follow_paths', [False, True])
+@pytest.mark.parametrize('test_source', [
+    b'import pytest\nfrom demo.store import put\n@pytest.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+    b'import pytest as pt\nfrom demo.store import put\n@pt.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+])
+def test_known_pytest_parametrization_preserves_static_relation(test_source, follow_paths):
+    result = evidence.select_repository_evidence(
+        'Archive canonical transaction receipts',
+        {'src/demo/store.py': b"def put():\n    return 'Archive canonical transaction receipts'\n",
+         'tests/test_a.py': test_source}, required_roles=('code', 'tests'), follow_paths=follow_paths)
+    assert [x['kind'] for x in result['source_relations']] == ['test_calls_code']
+    assert not result['proof_verified']
+
+
+@pytest.mark.parametrize('test_source', [
+    b'import pytest\npytest = object()\nfrom demo.store import put\n@pytest.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+    b'import fake as pytest\nfrom demo.store import put\n@pytest.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+    b'import pytest\npytest.mark.parametrize = replace\nfrom demo.store import put\n@pytest.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+    b'import pytest\npytest.__dict__["mark"] = fake\nfrom demo.store import put\n@pytest.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+    b'import pytest\nsetattr(pytest, "mark", fake)\nfrom demo.store import put\n@pytest.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+    b'import pytest\nfrom demo.store import put\nclass TestArchive:\n    pytest = fake\n    @pytest.mark.parametrize("v", [1])\n    def test_archive(self, v):\n        assert put()\n',
+    b'import pytest\nfrom demo.store import put\n@pytest.mark.parametrize("v", [])\ndef test_archive(v):\n    assert put()\n',
+    b'import pytest\nfrom demo.store import put\n@replace\n@pytest.mark.parametrize("v", [1])\ndef test_archive(v):\n    assert put()\n',
+])
+def test_unknown_or_shadowed_decorators_remain_ambiguous(test_source):
+    result = evidence.select_repository_evidence(
+        'Archive canonical transaction receipts',
+        {'src/demo/store.py': b"def put():\n    return 'Archive canonical transaction receipts'\n",
+         'tests/test_a.py': test_source}, required_roles=('code', 'tests'), follow_paths=True)
+    assert not result['source_relations']
+
+
+@pytest.mark.parametrize('expression', ['[put() for _ in ()]', '[put() for _ in {}]',
+                                        '[put() for _ in (1,) if False]', '[put() for _ in (1,) if 0]'])
+@pytest.mark.parametrize('follow_paths', [False, True])
+def test_statically_unreachable_comprehension_call_is_not_linked(expression, follow_paths):
+    test_source = ('from demo.store import put\ndef test_archive():\n    ' + expression + '\n').encode()
+    result = evidence.select_repository_evidence(
+        'Archive canonical transaction receipts',
+        {'src/demo/store.py': b"def put():\n    return 'Archive canonical transaction receipts'\n",
+         'tests/test_a.py': test_source}, required_roles=('code', 'tests'), follow_paths=follow_paths)
+    assert not result['source_relations']
+
+
+@pytest.mark.parametrize('expression', ['[1 for _ in (1,) if put() if False]',
+                                        '[put() for _ in (1,) if FLAG]'])
+def test_comprehension_reachable_or_unknown_calls_are_retained(expression):
+    test_source = ('from demo.store import put\ndef test_archive():\n    ' + expression + '\n').encode()
+    result = evidence.select_repository_evidence(
+        'Archive canonical transaction receipts',
+        {'src/demo/store.py': b"def put():\n    return 'Archive canonical transaction receipts'\n",
+         'tests/test_a.py': test_source}, required_roles=('code', 'tests'), follow_paths=True)
+    assert [x['kind'] for x in result['source_relations']] == ['test_calls_code']
+
+
 @pytest.mark.parametrize("mode", [False, True])
 @pytest.mark.parametrize("case", ["decorated_target", "decorated_test", "generator_test", "decorated_class", "generator_target"])
 def test_ambiguous_executable_relationship_is_not_claimed(case, mode):
@@ -577,3 +632,16 @@ def test_related_doc_cites_enclosing_heading_even_when_the_link_is_farther_down(
     edge = out["source_relations"][0]
     assert edge["section"]["start"] == 1 and edge["source"]["start"] == 9
     assert any(e["text"] == "# Operator" for e in out["roles"]["docs"][0]["excerpts"])
+
+@pytest.mark.parametrize('follow_paths', [False, True])
+@pytest.mark.parametrize('test_source,extra', [
+    (b'import pytest\nfrom demo.store import put\nclass TestArchive:\n    setattr(pytest, "mark", fake_mark)\n    @pytest.mark.parametrize("x", [1])\n    def test_archive(self, x):\n        put()\n', {}),
+    (b'from demo.store import put\ndef test_archive():\n    [x for x in (1,) if False and put()]\n', {}),
+    (b'from demo.store import put\ndef test_archive():\n    [put() for x in (1,) if False and flag]\n', {}),
+    (b'import pytest\nfrom demo.store import put\n@pytest.mark.parametrize("x", [1])\ndef test_archive(x):\n    put()\n', {'pytest.py': b'mark = None\n'}),
+])
+def test_ambiguous_pytest_or_unreachable_short_circuit_abstains(follow_paths, test_source, extra):
+    files = {'src/demo/store.py': b"def put():\n    return 'Archive canonical transaction receipts'\n", 'tests/test_a.py': test_source, **extra}
+    out = evidence.select_repository_evidence('Archive canonical transaction receipts', files, required_roles=('code', 'tests'), follow_paths=follow_paths)
+    assert not out['source_relations']
+    assert not out['proof_verified']

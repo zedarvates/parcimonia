@@ -52,9 +52,12 @@ def _scope_nodes(node):
 def _bound_names(node):
     if isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)):
         return [node.id]
-    if (isinstance(node, ast.Attribute) and isinstance(node.ctx, (ast.Store, ast.Del))
-            and isinstance(node.value, ast.Name)):
-        return [node.value.id]
+    if isinstance(node, (ast.Attribute, ast.Subscript)) and isinstance(node.ctx, (ast.Store, ast.Del)):
+        base = node.value
+        while isinstance(base, (ast.Attribute, ast.Subscript)):
+            base = base.value
+        if isinstance(base, ast.Name):
+            return [base.id]
     if isinstance(node, DEFS):
         return [node.name]
     if isinstance(node, (ast.Import, ast.ImportFrom)):
@@ -136,17 +139,47 @@ def _evaluated_expression_calls(node):
             targets = {n.id for g in part.generators for n in ast.walk(g.target)
                        if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
             inner = hidden | targets
-            stack.extend((g.iter, inner) for g in part.generators[1:])
-            stack.extend((x, inner) for g in part.generators for x in g.ifs)
-            values = [part.key, part.value] if isinstance(part, ast.DictComp) else [part.elt]
-            stack.extend((x, inner) for x in values)
+            reachable = True
+            for index, generator in enumerate(part.generators):
+                if index:
+                    stack.append((generator.iter, inner))
+                empty_sequence = isinstance(generator.iter, (ast.List, ast.Tuple, ast.Set)) and not generator.iter.elts
+                empty_mapping = isinstance(generator.iter, ast.Dict) and not generator.iter.keys
+                if empty_sequence or empty_mapping:
+                    reachable = False
+                    break
+                for condition in generator.ifs:
+                    stack.append((condition, inner))
+                    if ((isinstance(condition, ast.Constant) and not condition.value) or
+                            (isinstance(condition, ast.BoolOp) and isinstance(condition.op, ast.And)
+                             and any(isinstance(value, ast.Constant) and not value.value
+                                     for value in condition.values))):
+                        reachable = False
+                        break
+                if not reachable:
+                    break
+            if reachable:
+                values = [part.key, part.value] if isinstance(part, ast.DictComp) else [part.elt]
+                stack.extend((x, inner) for x in values)
+            continue
+        if isinstance(part, ast.BoolOp):
+            # Stop at a literal that decides a short-circuit expression.
+            evaluated = []
+            for value in part.values:
+                evaluated.append(value)
+                if isinstance(value, ast.Constant) and (
+                    (isinstance(part.op, ast.And) and not value.value) or
+                    (isinstance(part.op, ast.Or) and bool(value.value))
+                ):
+                    break
+            stack.extend((value, hidden) for value in evaluated)
             continue
         if isinstance(part, ast.Call):
             yield part, hidden
         stack.extend((x, hidden) for x in ast.iter_child_nodes(part))
 
 
-def _test_edges(tree, targets, *, follow_paths=False):
+def _test_edges(tree, targets, *, follow_paths=False, pytest_collision=False):
     aliases, shadowed = defaultdict(list), set()
     for stmt in tree.body:
         if isinstance(stmt, ast.ImportFrom) and stmt.level == 0 and stmt.module:
@@ -165,6 +198,12 @@ def _test_edges(tree, targets, *, follow_paths=False):
             for node in _scope_nodes(wrapper):
                 shadowed.update(_bound_names(node))
                 shadowed.update(_expression_bindings(node))
+                if isinstance(node, ast.Call) and _call_name(node.func) in ('setattr', 'delattr', 'monkeypatch.setattr') and node.args:
+                    base = node.args[0]
+                    while isinstance(base, (ast.Attribute, ast.Subscript)):
+                        base = base.value
+                    if isinstance(base, ast.Name):
+                        shadowed.add(base.id)
     if "*" in aliases or "*" in shadowed:
         return
     # Only a plain, unique module-level function can be a local bridge.
@@ -205,6 +244,27 @@ def _test_edges(tree, targets, *, follow_paths=False):
             return (package + "." + imported if imported else package, attr)
         return (package, imported) if imported else None
 
+    def supported_decorators(fn, class_bindings):
+        # A unique, unshadowed pytest import supports the standard parametrizer.
+        # All other decorators remain ambiguous and cannot establish a link.
+        for decorator in fn.decorator_list:
+            if not isinstance(decorator, ast.Call):
+                return False
+            parametrize = decorator.func
+            if (not isinstance(parametrize, ast.Attribute) or parametrize.attr != 'parametrize'
+                    or not isinstance(parametrize.value, ast.Attribute) or parametrize.value.attr != 'mark'
+                    or not isinstance(parametrize.value.value, ast.Name)):
+                return False
+            name = parametrize.value.value.id
+            if pytest_collision or name in shadowed or name in class_bindings or aliases.get(name) != [('pytest', None)]:
+                return False
+            values = decorator.args[1] if len(decorator.args) > 1 else next(
+                (kw.value for kw in decorator.keywords if kw.arg == 'argvalues'), None)
+            if (isinstance(values, (ast.List, ast.Tuple, ast.Set)) and not values.elts) or (
+                    isinstance(values, ast.Dict) and not values.keys):
+                return False
+        return True
+
     # Cache only direct imported calls from helpers; no recursion or dynamic dispatch.
     bridge = {}
     for name, fn in helpers.items():
@@ -214,9 +274,19 @@ def _test_edges(tree, targets, *, follow_paths=False):
         if isinstance(parent, ast.ClassDef) and parent.decorator_list:
             continue
         functions = parent.body if isinstance(parent, ast.ClassDef) and parent.name.startswith("Test") else [parent]
+        class_bindings = ({name for node in _scope_nodes(parent) for name in _bound_names(node)}
+                          if isinstance(parent, ast.ClassDef) else set())
+        if isinstance(parent, ast.ClassDef):
+            for node in _scope_nodes(parent):
+                if isinstance(node, ast.Call) and _call_name(node.func) in ('setattr', 'delattr', 'monkeypatch.setattr') and node.args:
+                    base = node.args[0]
+                    while isinstance(base, (ast.Attribute, ast.Subscript)):
+                        base = base.value
+                    if isinstance(base, ast.Name):
+                        class_bindings.add(base.id)
         for test in functions:
             if (not isinstance(test, (ast.FunctionDef, ast.AsyncFunctionDef))
-                    or not test.name.startswith("test_") or test.decorator_list):
+                    or not test.name.startswith("test_") or not supported_decorators(test, class_bindings)):
                 continue
             for line, base, attr in calls(test):
                 if (target := resolve(base, attr)) in targets:
@@ -279,6 +349,9 @@ def _unique_names(docs, targets):
     observed = defaultdict(list)
     ambiguous = set()
     pattern = re.compile(r"\b(?:" + "|".join(re.escape(n) for n in sorted(names)) + r")\b")
+    pytest_collision = any(
+        _module(path) == 'pytest' for path in docs
+    )
     for path, (role, _, text, *_rest) in docs.items():
         if role != "code" or not _module(path):
             continue
@@ -340,6 +413,9 @@ def discover(docs, seeds, roles, *, selected_paths=(), follow_paths=False):
     test_imports = {(module, *module.rpartition(".")[::2]) for module, _ in targets}
     has_docs = "docs" in roles or any(docs[p][0] == "docs" for p in selected_paths)
     unique = _unique_names(docs, targets) if has_docs else {}
+    pytest_collision = any(
+        _module(path) == 'pytest' for path in docs
+    )
     for path, (role, _, text, *_rest) in docs.items():
         if (role not in {"tests", "docs"} or (role not in roles and path not in selected_paths)):
             continue
@@ -353,7 +429,7 @@ def discover(docs, seeds, roles, *, selected_paths=(), follow_paths=False):
                 tree = ast.parse(text)
             except (SyntaxError, RecursionError):
                 continue
-            for line, anchor, target, helper in _test_edges(tree, targets, follow_paths=follow_paths):
+            for line, anchor, target, helper in _test_edges(tree, targets, follow_paths=follow_paths, pytest_collision=pytest_collision):
                 snippet, declaration = targets[target]
                 result.append(Edge(role, path, line, anchor, modules[target[0]], target[1],
                                    snippet, declaration if follow_paths else None, helper))
