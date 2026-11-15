@@ -140,6 +140,10 @@ Propose how to verify the result, update it and synchronize approved parts.
 Explain the plan before making changes; respect my existing permissions.
 ```
 
+### Experimental local model example
+
+The [Parcimonia v3 LFM3-VL-2B LoRA](https://huggingface.co/zedgamer/parcimonia-lfm3-vl-2b-lora) is an experimental PEFT adapter requiring the [LFM3-VL-2B base model](https://huggingface.co/LiquidAI/LFM3-VL-2B); it is not a standalone GGUF. A separate experimental [Q8_0 GGUF](https://huggingface.co/zedgamer/parcimonia-lfm3-vl-2b-GGUF) supports a local text-only route through the [local LLM worker](docs/LOCAL_LLM_EUREKAI.md). Model quality and cost savings have not been established.
+
 ## Evidence and limits
 
 - The demo demonstrates the decision rule and explicit abstention on authored

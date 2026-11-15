@@ -309,3 +309,7 @@ decision = ShadowRouter(min_confidence=0.9).propose(task, candidates)
 print(decision.selected_route_id)  # rule
 print(decision.mode)               # shadow
 ```
+
+## Source-bound repository evidence
+
+The local [repository evidence workflow](REPOSITORY_EVIDENCE.md) selects source, test and documentation candidates and can follow bounded static relations. A detected call is a review lead, not proof that a test ran or that its assertions establish correctness. The [evidence workflow](EVIDENCE_WORKFLOW.md) keeps execution receipts and review decisions bound to their source.

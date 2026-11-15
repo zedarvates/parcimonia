@@ -146,6 +146,10 @@ Propose comment vérifier le résultat, le mettre à jour et synchroniser les é
 Explique le plan avant de modifier quoi que ce soit ; respecte mes autorisations existantes.
 ```
 
+### Exemple expérimental de modèle local
+
+Le [LoRA Parcimonia v3 LFM3-VL-2B](https://huggingface.co/zedgamer/parcimonia-lfm3-vl-2b-lora) est un adaptateur PEFT expérimental qui nécessite le [modèle de base LFM3-VL-2B](https://huggingface.co/LiquidAI/LFM3-VL-2B) ; ce n'est pas un GGUF autonome. Un [GGUF Q8_0](https://huggingface.co/zedgamer/parcimonia-lfm3-vl-2b-GGUF) expérimental distinct sert aux usages textuels via le [worker LLM local](docs/LOCAL_LLM_EUREKAI.md). La qualité du modèle et les économies ne sont pas établies.
+
 ## Preuves et limites
 
 - La démo montre la règle de décision et l'abstention explicite sur des entrées
