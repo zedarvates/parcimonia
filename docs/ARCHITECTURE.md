@@ -4,7 +4,7 @@ This document describes the target architecture. The implemented subset is
 documented in [Shadow routing policy](SHADOW_ROUTING.md); components listed here
 must not be assumed to be wired into the current prototype.
 
-Tiberium is an orchestration and economic-routing layer, not a replacement foundation model.
+Parcimonia is an orchestration and economic-routing layer, not a replacement foundation model.
 
 ```text
 User / Application
@@ -13,7 +13,7 @@ Agent / Planner / LLM
         |
         v
 +------------------------+
-|      Tiberium Core     |
+|     Parcimonia Core    |
 |------------------------|
 | Task normalizer        |
 | Capability discovery   |
@@ -59,10 +59,10 @@ The router may skip layers.
 V0 proposes an alternative route beside the baseline and does not silently replace it.
 
 ## Botte Secrète
-Botte Secrète remains the broader agent/tool orchestration system. CapabilityAtlas exposes capabilities and consequences; Tiberium chooses economical combinations and evidence-aware escalation.
+Botte Secrète remains the broader agent/tool orchestration system. CapabilityAtlas exposes capabilities and consequences; Parcimonia chooses economical combinations and evidence-aware escalation.
 
 ## ShardJEPA
-ShardJEPA is a predictive capability. Tiberium decides when it is appropriate, whether confidence is sufficient, and when escalation is required.
+ShardJEPA is a predictive capability. Parcimonia decides when it is appropriate, whether confidence is sufficient, and when escalation is required.
 
 ## Safety properties
 - deterministic hard-stop policies outrank learned routing

@@ -5,6 +5,15 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) and the
 instructions apply to new contributors as well as returning agents; they do not
 install a runtime, enable active routing or register a hook.
 
+## Public name
+
+Use **Parcimonia** for the project and **Parcimonia Local** for the existing local
+plugin. Apply the [naming rules](docs/BRANDING.md) to documentation, UI, metadata,
+demos and public submissions; do not reintroduce an earlier working name.
+Existing Python distribution/import identifiers, immutable evidence and physical
+paths are compatibility references, not public product names. Renaming them
+requires a separately verified migration.
+
 ## Choose a mechanism before executing
 
 - For a substantive task or materially changed phase, consult Botte Secrète's

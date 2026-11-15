@@ -1,9 +1,22 @@
-# Branding / Naming Note
+# Parcimonia naming and visual identity
 
-The project and repository name is now **Parcimonia**:
+The public project name is **Parcimonia**:
 https://github.com/zedarvates/parcimonia.
-The bootstrap's Python package remains `tiberium_ai` for compatibility.
-Historical references below describe the original codename.
+
+## Public naming
+
+Use **Parcimonia** in documentation, plugin descriptions, interfaces, screenshots,
+videos, release introductions and marketplace submissions. The existing local
+plugin is **Parcimonia Local**, with the identifier `parcimonia-local`.
+Do not reintroduce an earlier working name as a title, subtitle, alias, keyword
+or promotional origin story.
+
+The Python distribution `tiberium-ai` and import namespace `tiberium_ai` remain
+technical compatibility identifiers for the released library. Use them only
+where exact installation commands, imports, archive names or source provenance
+require them; they are not alternative public product names. Renaming these
+contracts requires a separately verified migration. Preserve immutable release
+archives, recorded evidence and historical physical paths.
 
 ## README header
 
@@ -16,12 +29,5 @@ The image is stored in the repository and referenced with a relative path so
 GitHub can render it without an external image service. Its generation prompt
 is preserved in [assets/header-prompt.md](assets/header-prompt.md).
 
-"Tiberium AI" is a working codename inspired by the Command & Conquer universe.
-
-Keep the technical project independent:
-- no EA logos or artwork
-- no Command & Conquer visual identity
-- no implication of endorsement or affiliation
-- architecture/API names should survive a project rename
-
-Before public promotion, package publication or a formal website launch, perform a dedicated trademark/name review and consider selecting an original public project name.
+Keep the visual identity original and independent. Do not reuse third-party
+logos or artwork or imply endorsement or affiliation.
