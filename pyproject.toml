@@ -32,7 +32,7 @@ packages = ["src/tiberium_ai"]
 [tool.hatch.build.targets.sdist]
 include = [
   "/src", "/tests", "/examples", "/plugins/parcimonia-local", "/scripts",
-  "/docs", "/wiki", "/README.md", "/LICENSE", "/CONTRIBUTING.md", "/SECURITY.md",
+  "/docs", "/wiki", "/README.md", "/README.fr.md", "/ROADMAP.md", "/LICENSE", "/CONTRIBUTING.md", "/SECURITY.md",
   "/CHANGELOG.md", "/pyproject.toml",
   "/AGENTS.md", "/.gitattributes",
 ]
