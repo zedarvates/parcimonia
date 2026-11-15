@@ -7,6 +7,330 @@ import pytest
 from tiberium_ai import repo_evidence as evidence
 
 
+@pytest.mark.parametrize("mode", [False, True])
+@pytest.mark.parametrize("case", ["decorated_target", "decorated_test", "generator_test", "decorated_class", "generator_target"])
+def test_ambiguous_executable_relationship_is_not_claimed(case, mode):
+    code = "def put():\n    return 'Archive canonical transaction receipts'\n"
+    test = "from demo.store import put\ndef test_archive():\n    assert put()\n"
+    if case == "decorated_target":
+        code = "@replace\n" + code
+    elif case == "decorated_test":
+        test = "from demo.store import put\n@replace\ndef test_archive():\n    assert put()\n"
+    elif case == "generator_test":
+        test = "from demo.store import put\ndef test_archive():\n    yield put()\n"
+    elif case == "decorated_class":
+        test = "from demo.store import put\n@replace\nclass TestArchive:\n    def test_archive(self):\n        assert put()\n"
+    else:
+        code = "def put():\n    yield 'Archive canonical transaction receipts'\n"
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": code.encode(), "tests/test_a.py": test.encode()},
+        required_roles=("code", "tests"), follow_paths=mode)
+    assert not out["source_relations"]
+    assert not out["proof_verified"]
+
+
+@pytest.mark.parametrize("body", [
+    "def inner(x=put()):\n    pass\n",
+    "class Inner(put()):\n    pass\n",
+    "(lambda x=put(): x)\n",
+    "[put() for _ in (1,)]\n",
+])
+@pytest.mark.parametrize("mode", [False, True])
+def test_calls_in_evaluated_nested_expressions_are_linked(body, mode):
+    test = "from demo.store import put\ndef test_archive():\n" + "".join(
+        "    " + line for line in body.splitlines(keepends=True))
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": b"def put():\n    return 'Archive canonical transaction receipts'\n",
+         "tests/test_a.py": test.encode()}, required_roles=("code", "tests"), follow_paths=mode)
+    assert [link["kind"] for link in out["source_relations"]] == ["test_calls_code"]
+    assert not out["proof_verified"]
+
+
+@pytest.mark.parametrize("body", [
+    "(lambda: put())\n",
+    "(put() for _ in (1,))\n",
+    "[put() for put in (lambda: True,)]\n",
+])
+@pytest.mark.parametrize("mode", [False, True])
+def test_nested_expression_does_not_link_delayed_or_shadowed_calls(body, mode):
+    test = "from demo.store import put\ndef test_archive():\n    " + body
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": b"def put():\n    return 'Archive canonical transaction receipts'\n",
+         "tests/test_a.py": test.encode()}, required_roles=("code", "tests"), follow_paths=mode)
+    assert not out["source_relations"]
+
+
+@pytest.mark.parametrize("mode", [False, True])
+def test_comprehension_attribute_target_does_not_shadow_import(mode):
+    test = b"import demo.store as store\ndef test_archive():\n    [store.put() for store.x in (1,)]\n"
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": b"def put():\n    return 'Archive canonical transaction receipts'\n",
+         "tests/test_a.py": test}, required_roles=("code", "tests"), follow_paths=mode)
+    assert [link["kind"] for link in out["source_relations"]] == ["test_calls_code"]
+
+
+@pytest.mark.parametrize("binding", [
+    "(lambda x=(put := lambda: False): None)\n",
+    "def other(x=(put := lambda: False)):\n    pass\n",
+    "class Other((put := object)):\n    pass\n",
+    "[(put := lambda: False) for _ in (1,)]\n",
+])
+@pytest.mark.parametrize("where", ["source", "test_module", "test_body"])
+@pytest.mark.parametrize("follow_paths", [False, True])
+def test_evaluated_expression_bindings_suppress_ambiguous_links(binding, where, follow_paths):
+    source = "def put():\n    return 'Archive canonical transaction receipts'\n"
+    test = "from demo.store import put\ndef test_archive():\n    assert put()\n"
+    if where == "source":
+        source += binding
+    elif where == "test_module":
+        test = "from demo.store import put\n" + binding + "def test_archive():\n    assert put()\n"
+    else:
+        test = "from demo.store import put\ndef test_archive():\n" + "".join(
+            "    " + line for line in binding.splitlines(keepends=True)
+        ) + "    assert put()\n"
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": source.encode(), "tests/test_a.py": test.encode()},
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert not out["source_relations"]
+    assert not out["proof_verified"]
+
+
+@pytest.mark.parametrize("expression", [
+    "(lambda: (put := 42))\n",
+    "[put for put in (1,)]\n",
+    "def other():\n    put = 42\n",
+])
+def test_expression_local_bindings_do_not_hide_module_target(expression):
+    files = {"src/demo/store.py": ("def put():\n    return 'Archive canonical transaction receipts'\n" + expression).encode(),
+             "tests/test_a.py": b"from demo.store import put\ndef test_archive():\n    assert put()\n"}
+    out = evidence.select_repository_evidence("Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=True)
+    assert [link["kind"] for link in out["source_relations"]] == ["test_calls_code"]
+
+
+@pytest.mark.parametrize("decorated", [
+    "@(put := lambda f: f)\ndef other():\n    pass\n",
+    "@(put := lambda f: f)\nasync def other():\n    pass\n",
+    "@(put := lambda cls: cls)\nclass Other:\n    pass\n",
+    "if FLAG:\n    @(put := lambda f: f)\n    def other():\n        pass\n",
+    "@[(put := lambda f: f) for _ in (1,)][0]\ndef other():\n    pass\n",
+    "@(lambda x=(put := 42): lambda f: f)()\ndef other():\n    pass\n",
+    "@(lambda *, x=(put := 42): lambda f: f)()\ndef other():\n    pass\n",
+    "@(lambda x: lambda f: f)([(put := 42) for _ in []])\ndef other():\n    pass\n",
+    "@(lambda x: lambda f: f)((put := 42 for _ in [0]))\ndef other():\n    pass\n",
+])
+@pytest.mark.parametrize("follow_paths", [False, True])
+def test_decorator_binding_blocks_ambiguous_test_link(decorated, follow_paths):
+    base = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    test = b"from demo.store import put\ndef test_archive():\n    assert put()\n"
+    files = {"src/demo/store.py": base, "tests/test_a.py": test}
+    control = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert [link["kind"] for link in control["source_relations"]] == ["test_calls_code"]
+    files["src/demo/store.py"] += b"\n" + decorated.encode()
+    ambiguous = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert not ambiguous["source_relations"]
+    assert ambiguous["status"] == "gaps_detected"
+    assert not ambiguous["proof_verified"]
+
+
+@pytest.mark.parametrize("other", [
+    "@decorator\ndef other():\n    pass\n",
+    "@((lambda: (put := 1))())\ndef other():\n    pass\n",
+    "@[(lambda f: f) for put in (1,)][0]\ndef other():\n    pass\n",
+    "def other():\n    @(put := lambda f: f)\n    def inner():\n        pass\n",
+])
+def test_non_module_decorator_binding_preserves_test_link(other):
+    source = ("def put():\n    return 'Archive canonical transaction receipts'\n\n" + other).encode()
+    test = b"from demo.store import put\ndef test_archive():\n    assert put()\n"
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": source, "tests/test_a.py": test},
+        required_roles=("code", "tests"), follow_paths=True,
+    )
+    assert [link["kind"] for link in out["source_relations"]] == ["test_calls_code"]
+
+
+def test_decorator_binding_blocks_qualified_doc_symbol_link():
+    source = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    files = {"src/demo/store.py": source, "docs/operator.md": b"Use `demo.store.put`.\n"}
+    control = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "docs"), follow_paths=True,
+    )
+    assert [link["kind"] for link in control["source_relations"]] == ["doc_references_code"]
+    files["src/demo/store.py"] += b"\n@(put := lambda f: f)\ndef other():\n    pass\n"
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "docs"), follow_paths=True,
+    )
+    assert not out["source_relations"]
+    assert not out["proof_verified"]
+
+
+@pytest.mark.parametrize("decorator", [
+    "@(put := lambda f: f)",
+    "@(lambda x=(put := 42): lambda f: f)()",
+])
+@pytest.mark.parametrize("follow_paths", [False, True])
+def test_test_module_decorator_binding_invalidates_imported_alias(decorator, follow_paths):
+    source = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    test = b"from demo.store import put\ndef test_archive():\n    assert put()\n"
+    files = {"src/demo/store.py": source, "tests/test_a.py": test}
+    control = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert [link["kind"] for link in control["source_relations"]] == ["test_calls_code"]
+    files["tests/test_a.py"] = (
+        "from demo.store import put\n" + decorator + "\ndef test_archive():\n    assert put()\n"
+    ).encode()
+    ambiguous = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert not ambiguous["source_relations"]
+    assert not ambiguous["proof_verified"]
+
+
+def test_test_module_lambda_local_decorator_binding_keeps_imported_alias():
+    source = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    test = (b"from demo.store import put\n@((lambda: (put := 1))())\n"
+            b"def unrelated():\n    pass\n"
+            b"def test_archive():\n    assert put()\n")
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": source, "tests/test_a.py": test},
+        required_roles=("code", "tests"), follow_paths=True,
+    )
+    assert [link["kind"] for link in out["source_relations"]] == ["test_calls_code"]
+
+
+@pytest.mark.parametrize("follow_paths", [False, True])
+def test_local_decorator_binding_invalidates_imported_call(follow_paths):
+    source = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    baseline = b"from demo.store import put\ndef test_archive():\n    assert put()\n"
+    files = {"src/demo/store.py": source, "tests/test_a.py": baseline}
+    control = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert [link["kind"] for link in control["source_relations"]] == ["test_calls_code"]
+    files["tests/test_a.py"] = (
+        b"from demo.store import put\ndef test_archive():\n"
+        b"    @(put := lambda f: f)\n    def inner():\n        pass\n    assert put()\n"
+    )
+    ambiguous = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert not ambiguous["source_relations"]
+    assert not ambiguous["proof_verified"]
+
+
+def test_decorator_rebinding_invalidates_local_test_helper():
+    source = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    prefix = b"import demo.store as storage\ndef bridge():\n    return storage.put()\n"
+    suffix = b"def test_archive():\n    assert bridge()\n"
+    files = {"src/demo/store.py": source, "tests/test_a.py": prefix + suffix}
+    control = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=True,
+    )
+    assert [link["kind"] for link in control["source_relations"]] == ["test_calls_via_helper"]
+    files["tests/test_a.py"] = (
+        prefix + b"@(bridge := lambda f: f)\ndef decorated():\n    pass\n" + suffix
+    )
+    ambiguous = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files,
+        required_roles=("code", "tests"), follow_paths=True,
+    )
+    assert not ambiguous["source_relations"]
+    assert not ambiguous["proof_verified"]
+
+
+@pytest.mark.parametrize("conditional_binding", [
+    "if FLAG:\n    def put():\n        return 'conditional'\n",
+    "if FLAG:\n    async def put():\n        return 'conditional'\n",
+    "if FLAG:\n    class put:\n        pass\n",
+    "try:\n    pass\nexcept Exception:\n    def put():\n        return 'conditional'\n",
+])
+@pytest.mark.parametrize("follow_paths", [False, True])
+def test_conditional_module_definition_blocks_ambiguous_test_link(conditional_binding, follow_paths):
+    baseline = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    test = b"from demo.store import put\ndef test_archive():\n    assert put()\n"
+    control = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": baseline, "tests/test_a.py": test},
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert [link["kind"] for link in control["source_relations"]] == ["test_calls_code"]
+    source = baseline + b"\n" + conditional_binding.encode()
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": source, "tests/test_a.py": test},
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert not out["source_relations"]
+    assert out["status"] == "gaps_detected"
+    assert not out["proof_verified"]
+
+
+@pytest.mark.parametrize("follow_paths", [False, True])
+@pytest.mark.parametrize("other_scope", [
+    b"def other():\n    def put():\n        return 'local'\n    return put()\n",
+    b"def other():\n    async def put():\n        return 'local'\n",
+    b"class Other:\n    class put:\n        pass\n",
+])
+def test_nested_local_definition_does_not_shadow_module_target(other_scope, follow_paths):
+    source = (b"def put():\n    return 'Archive canonical transaction receipts'\n\n"
+              + other_scope)
+    test = b"from demo.store import put\ndef test_archive():\n    assert put()\n"
+    out = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts",
+        {"src/demo/store.py": source, "tests/test_a.py": test},
+        required_roles=("code", "tests"), follow_paths=follow_paths,
+    )
+    assert [link["kind"] for link in out["source_relations"]] == ["test_calls_code"]
+    assert not out["proof_verified"]
+
+
+@pytest.mark.parametrize("follow_paths", [False, True])
+@pytest.mark.parametrize("conditional_binding", [
+    b"if FLAG:\n    def put():\n        return 'conditional'\n",
+    b"if FLAG:\n    async def put():\n        return 'conditional'\n",
+    b"if FLAG:\n    class put:\n        pass\n",
+    b"try:\n    pass\nexcept Exception:\n    def put():\n        return 'conditional'\n",
+])
+def test_qualified_documentation_does_not_link_conditional_redefinition(conditional_binding, follow_paths):
+    source = b"def put():\n    return 'Archive canonical transaction receipts'\n"
+    docs = b"# Operator\nUse `demo.store.put`.\n"
+    files = {"src/demo/store.py": source, "docs/operator.md": docs}
+    control = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files, required_roles=("code", "docs"),
+        follow_paths=follow_paths,
+    )
+    assert [link["kind"] for link in control["source_relations"]] == ["doc_references_code"]
+    files["src/demo/store.py"] += b"\n" + conditional_binding
+    ambiguous = evidence.select_repository_evidence(
+        "Archive canonical transaction receipts", files, required_roles=("code", "docs"),
+        follow_paths=follow_paths,
+    )
+    assert not ambiguous["source_relations"]
+    assert not ambiguous["proof_verified"]
+
+
 def test_retrieves_sources_without_inventory_and_cites_exact_lines():
     files = {
         "other/deep/resume_index.py": b"\ndef resume_index(journal):\n    return journal.resume()\n",
