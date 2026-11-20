@@ -84,6 +84,48 @@ shown above. The Python distribution is still `tiberium-ai` and imports use
 [Release qualification](docs/RELEASE.md) distinguishes archive checks, CI results
 and native Codex validation.
 
+## Automatic assessment with a Codex hook
+
+For automatic assessment at prompt submission, configure a lifecycle hook in
+your agent host (harness). You can still call the tools manually. This example uses the local assessor from the companion
+[Botte Secrète](https://github.com/zedarvates/botte-secrete) project.
+
+1. Use a reviewed Botte Secrète source checkout with Python 3.10+. In the project
+   you want to automate, merge this example into `.codex/hooks.json`. Replace the
+   example paths with absolute paths to that checkout and use the Python command
+   available to Codex.
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -X utf8 /opt/botte-secrete/skills/preflight/hook.py",
+            "commandWindows": "python -X utf8 C:/tools/botte-secrete/skills/preflight/hook.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+2. Open the trusted project in local Codex, then review and trust the hook via
+   `/hooks` in the CLI or **Settings → Hooks** in the desktop app.
+3. Submit `Run the pytest suite` and inspect the hook result for
+   `[botte preflight] Parcimonia: software_testing`. The handler assesses the
+   prompt locally and returns advisory context. Codex still decides whether to
+   use a tool under the session's permissions.
+
+For another harness, register its equivalent prompt-submission event, adapt
+the input and output contract, and test it in that host. The JSON above targets
+local Codex. [Codex hook configuration](https://learn.chatgpt.com/docs/hooks).
+
+
 ## Available capabilities
 
 | Capability | Current scope | Guide |
