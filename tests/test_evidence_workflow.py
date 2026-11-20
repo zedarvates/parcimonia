@@ -68,6 +68,19 @@ def test_diff_and_resume_track_real_coverage_and_invalidate_changed_results(chec
     assert after["files"][0]["changed_lines_without_execution_trace"] == 1
 
 
+def test_diff_preview_keeps_unicode_separator_inside_git_line(checkout):
+    source = checkout / "calc.py"
+    source.write_text('def increment(value):\n    return "value\u2028+phantom"\n', encoding="utf-8")
+
+    _, rows, omitted = flow.git_delta(checkout, "HEAD")
+
+    assert omitted == 0
+    assert rows[0]["preview"] == [
+        "-    return value + 1",
+        '+    return "value\u2028+phantom"',
+    ]
+
+
 def test_environment_untracked_and_tampering_cannot_reuse_result(checkout, tmp_path, monkeypatch):
     folder = tmp_path / "run"
     proof = run.capture_pytest(checkout, "tests/test_calc.py::test_increment", folder, coverage=False)
