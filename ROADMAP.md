@@ -64,8 +64,13 @@ prepared separately from installed plugins; it grants no action permission.
 A first library-only preflight for TASK-114 is prepared on
 `feat/runtime-preflight-20261102`, stacked on draft PR #40. It composes the
 existing profile filter, fresh availability reports and local compute advisor.
-See [runtime preflight](docs/RUNTIME_PREFLIGHT.md). Host reservation and the
-real concurrency criterion remain open; this adapter does not acquire a lease.
+See [runtime preflight](docs/RUNTIME_PREFLIGHT.md). A following library adapter
+binds a host-owned memory expectation to that preflight and reviews the existing
+provider's atomic snapshot; see [host memory receipts](docs/HOST_MEMORY_RECEIPTS.md).
+The pinned Botte PR #166 backend was exercised with temporary state and authored
+capacity, including its existing four-process concurrency test. Target-host
+admission, the heavy-operation slot and multi-host qualification remain open.
+The adapter neither acquires a reservation nor establishes exclusivity.
 
 TASK-114 builds on TASK-113; TASK-115 uses the runtime observations from TASK-114.
 Later work keeps the existing evidence gates. TASK-116 reuses TASK-094 rather

@@ -62,8 +62,9 @@ Le parcours à qualifier est :
 
 1. Réunir des observations actuelles et effectuer le préflight.
 2. Demander une acquisition atomique au mécanisme de réservation existant.
-3. Faire vérifier par l'hôte le propriétaire, la tâche, la route, le poste,
-   les ressources et l'échéance du bail réellement obtenu.
+3. Faire vérifier par l'hôte la liaison à la tâche, la route, le poste et les
+   ressources réellement réservées. Si le fournisseur ne porte ni propriétaire
+   ni échéance, conserver ces limites au lieu de lui attribuer ces garanties.
 4. Revalider les conditions utiles juste avant le lancement, puis libérer selon
    le protocole de l'hôte et réconcilier l'état après interruption.
 
@@ -90,6 +91,11 @@ raccordement. Ils ne qualifient pas le matériel d'Odin, Eurekaï, Thor ou Glyph
 ni la reconnexion d'Ultimate Odycer. La surface MCP du plugin reste celle de la
 PR #40 ; ce raccord de bibliothèque n'ajoute pas de nouvel outil MCP.
 
+Le raccord suivant des [reçus RAM](HOST_MEMORY_RECEIPTS.md) réutilise le snapshot
+atomique du garde candidat existant. Son démonstrateur utilise de vrais fichiers
+temporaires avec une capacité construite ; le test concurrent natif a été
+exécuté. La qualification sur l'hôte cible et le slot lourd reste ouverte.
+
 Voir [observations](VERIFIED_OBSERVATIONS.md),
 [profils](EXECUTION_PROFILES.md), [V1](V1_GATES.md) et
 [backlog](../kanban.md).
@@ -100,4 +106,4 @@ indépendante a fait corriger une contradiction entre ressources déclarées et
 candidat, ainsi que l’arrondi d’une mesure trop ancienne. Les cas racine et
 dépendance, les bornes temporelles et 17 mutations d’identité/état ont été
 examinés séparément. Grammaire Python 3.10 et liens relatifs contrôlés.
-Les tests de l’hôte, du bail atomique et du jeu restent à réaliser.
+Les tests de l’hôte cible et du jeu restent à réaliser.

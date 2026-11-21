@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Bind a private host memory expectation to an externally held preflight hash,
+  then review the existing provider's atomic snapshot without reserving memory.
+  Check exact budgets, aggregate counters, native headroom and causal freshness;
+  redact native keys and retain unavailable state as unknown. Exercise the
+  pinned candidate backend with temporary files and authored capacity.
 - Compose pinned-route runtime preflight from the existing profile filter,
   current health reports and local compute advisor. Preserve explicit GPU/heavy
   requirements, unknown declarations and exact resource/measurement ages.
