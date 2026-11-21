@@ -13,6 +13,13 @@
 - Track the broader verified-mission work as TASK-113 through TASK-119 in the
   existing backlog. Installed plugins and published release archives are unchanged.
 
+## 0.5.2
+
+- Add a local evidence workflow for checkpoints, repository deltas, Git diffs,
+  pytest receipts with optional per-test coverage, and bounded log excerpts.
+- Reserve exact files and Python declarations before lexical retrieval. Keep
+  static evidence distinct from test execution and refuse stale receipts.
+
 ## 0.5.1 — 2026-10-31
 
 - Publish the combined main tree as 0.5.1. Build canonical release archives once,
