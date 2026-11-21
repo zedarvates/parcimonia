@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Compose pinned-route runtime preflight from the existing profile filter,
+  current health reports and local compute advisor. Preserve explicit GPU/heavy
+  requirements, unknown declarations and exact resource/measurement ages.
+  Eligibility only prepares host-owned reservation; it grants no action or lease.
 - Review task observations against exact task/source/input/verifier identities and
   caller-selected freshness limits. Retain recent failure, unknown outcomes,
   stale reports and simultaneous conflicts; propose one declared observation

@@ -61,6 +61,12 @@ prepared separately from installed plugins; it grants no action permission.
 | 6 / TASK-118 | Extract reusable procedure candidates and connect sourced rapprochements | A candidate beats its declared baseline on reserved cases without a quality regression; citations remain reviewable and negative results are kept |
 | 7 / TASK-119 | Bridge local vision transport to typed decisions and a versioned region contract | Absent targets, invalid regions and uncertain inputs are handled explicitly on labelled examples; video extraction/tracking remains a separate qualification |
 
+A first library-only preflight for TASK-114 is prepared on
+`feat/runtime-preflight-20261102`, stacked on draft PR #40. It composes the
+existing profile filter, fresh availability reports and local compute advisor.
+See [runtime preflight](docs/RUNTIME_PREFLIGHT.md). Host reservation and the
+real concurrency criterion remain open; this adapter does not acquire a lease.
+
 TASK-114 builds on TASK-113; TASK-115 uses the runtime observations from TASK-114.
 Later work keeps the existing evidence gates. TASK-116 reuses TASK-094 rather
 than replacing the planner; TASK-117 extends TASK-112; TASK-118 reuses the
