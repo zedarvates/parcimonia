@@ -20,6 +20,7 @@ from .cache import CachedBackend
 from .core import DecisionSession, fingerprint
 from .providers import TypeSafeBackend
 from .source_triage import assess_novelty, triage_attention, retrieve_source_candidates
+from .workflow import plan_workflow_review, summarize_acceptance_cost, summarize_workflow_reviews
 from .recipes import (audit_skills, check_rules, classify_feedback, compact_context,
                       lexical_files, rank_files, select_skill, trace_requirements, triage_review)
 
@@ -54,7 +55,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--version", action="version", version=f"Parcimonia {__version__}")
     p.add_argument("recipe", choices=["index", "usage", "audit-skills", "skill", "rank",
                    "compact", "review", "rules", "requirements", "feedback", "browser", "compare",
-                   "attention", "novelty", "source-search"])
+                   "attention", "novelty", "source-search", "review-plan", "review-status", "acceptance-cost"])
     p.add_argument("--input", type=Path, help="JSON file; otherwise read stdin")
     p.add_argument("--db", type=Path, help="explicit local SQLite path for skill operations")
     p.add_argument("--answers", type=Path, help="normalized recorded Reflex answers (offline)")
@@ -137,6 +138,14 @@ def main(argv: list[str] | None = None) -> int:
             result = retrieve_source_candidates(data["source"], data["records"],
                 limit=data.get("limit", 8), max_records=data.get("max_records", 500),
                 max_bytes=data.get("max_bytes", 1048576))
+        elif args.recipe == "review-plan":
+            result = plan_workflow_review(data)
+        elif args.recipe == "review-status":
+            result = summarize_workflow_reviews(data["plan"], data["attempts"],
+                                                evidence_root=data.get("evidence_root"))
+        elif args.recipe == "acceptance-cost":
+            result = summarize_acceptance_cost(data["scope"], data["events"],
+                                               accepted_event_id=data.get("accepted_event_id"))
         elif args.recipe == "browser":
             s = data["snapshot"]
             snapshot = BrowserSnapshot(s["version"], s["url"], tuple(Control(**c) for c in s["controls"]))

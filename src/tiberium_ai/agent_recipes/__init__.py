@@ -10,6 +10,11 @@ from .browser import BrowserRunner, BrowserSnapshot, Control
 from .source_triage import (
     assess_novelty, triage_attention, register_source_verifier, retrieve_source_candidates,
 )
+from .workflow import (
+    capture_workflow_event, plan_workflow_review,
+    summarize_acceptance_cost, summarize_workflow_reviews,
+)
+from .replay import RecipeEpisode, RecipeRevision, replay_recipe_candidate
 
 __all__ = [
     "SkillCatalog", "DecisionSession", "Proposal", "BrowserRunner",
@@ -18,4 +23,7 @@ __all__ = [
     "trace_requirements", "triage_review",
     "assess_novelty", "triage_attention", "register_source_verifier",
     "retrieve_source_candidates",
+    "capture_workflow_event", "plan_workflow_review",
+    "summarize_acceptance_cost", "summarize_workflow_reviews",
+    "RecipeEpisode", "RecipeRevision", "replay_recipe_candidate",
 ]
