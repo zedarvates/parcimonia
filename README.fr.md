@@ -22,6 +22,9 @@ Vous pouvez l'utiliser pour :
 **Bibliothèque stable : [0.5.1](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1).
 Plugin Codex local distinct : 0.4.1. Aucun routage automatique de production activé.**
 
+Le plugin local distinct dispose d'un [candidat 0.4.3 dans les sources](plugins/parcimonia-local/README.md)
+avec une [revue consultative des observations](docs/VERIFIED_OBSERVATIONS.md).
+
 [Essayer](#essayer-la-démo-stable) · [Capacités](#capacités-disponibles) ·
 [Adapter](#adapter-parcimonia-à-vos-usages) · [Contribuer](#contribuer)
 

@@ -87,8 +87,10 @@ class TimeBudget:
 class LocalCapacity:
     """Local GPU/process budget for one continuation step.
 
-    Missing VRAM is unknown, not zero. Zero concurrent slots block local models
-    and MCP, not deterministic rules or frontier cloud routes.
+    Missing VRAM cannot satisfy a positive GPU-memory requirement. A route
+    explicitly requiring zero VRAM may start without a GPU observation, but
+    still needs a concurrent slot. Zero slots block local models and MCP, not
+    deterministic rules or frontier cloud routes.
     """
 
     vram_free_mb: float | None = None
@@ -106,9 +108,12 @@ class LocalCapacity:
     def can_start_local(self) -> bool:
         if self.concurrent_slots <= 0:
             return False
-        if self.vram_free_mb is not None and self.vram_free_mb < self.min_vram_for_local_mb:
-            return False
-        return True
+        if self.min_vram_for_local_mb == 0:
+            return True
+        return (
+            self.vram_free_mb is not None
+            and self.vram_free_mb >= self.min_vram_for_local_mb
+        )
 
 
 @dataclass(frozen=True)
@@ -162,6 +167,12 @@ class ContinuationArbiter:
         time_budget: TimeBudget | None = None,
         capacity: LocalCapacity | None = None,
     ) -> ContinuationVerdict:
+        """Propose a continuation under the supplied constraints.
+
+        ``capacity=None`` preserves the legacy advisory behavior and skips this
+        resource check. It does not establish that local hardware is ready;
+        hosts needing admission must supply a current capacity observation.
+        """
         if not isinstance(task, Task):
             raise TypeError("task must be a Task instance.")
         if not isinstance(quota, QuotaMetrics):

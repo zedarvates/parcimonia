@@ -36,6 +36,47 @@ real task through its baseline, recording model and capability versions, and
 aggregating observations into a report. Synthetic tests and `caller_reported`
 records do not establish real savings or model quality.
 
+## Verified mission improvements — 2026-11-02
+
+Track the verified-mission improvements under the existing `GOAL-PARCIMONIA`
+in [kanban.md](kanban.md). This section is a view of that backlog, not a second
+scheduler.
+
+The first bounded increment is [observation review](docs/VERIFIED_OBSERVATIONS.md)
+(TASK-113): bind current reports to the exact task, source, input and verifier;
+retain missing, stale, negative and conflicting observations; propose the next
+caller-declared probe. The same increment aligns explicit local-capacity
+admission when VRAM is unknown. Implementation is prepared on
+`feat/verified-observations-20261102`, with offline behavior and isolated stdio
+checks. Real consumer and host qualification remain pending. A candidate local-plugin surface is
+prepared separately from installed plugins; it grants no action permission.
+
+| Order / task | Increment using existing components | Observable exit criterion |
+| --- | --- | --- |
+| 1 / TASK-113 | Observation freshness and identity checks, explicit capacity admission, advisory plugin tool | Offline behavior and real stdio discovery/call tests reject old or incompatible evidence, preserve later failure and tied conflicts, and never return action authorization |
+| 2 / TASK-114 | Bind runtime and capability observations to the existing registry and resource-admission paths | An unavailable capability, stale machine snapshot or occupied reservation is reported before starting; two consumers cannot both claim one existing heavy-operation slot |
+| 3 / TASK-115 | Qualify one complete consumer-owned reconnection scenario, with versioned client/server observations | A real interrupted session resumes play, or an explicit failure/unknown is retained; interruption and duplicate execution cases have replayable receipts |
+| 4 / TASK-116 | Extend the feasibility and plan-verification contracts to dependent steps, durations and alternatives | A plan violating a hard temporal/resource constraint is rejected; feasible alternatives retain separate resource dimensions and caller preferences |
+| 5 / TASK-117 | Connect transitions to existing versioned memory and replay | Reuse invalidates when a bound source, input, policy or verifier changes; delayed results and contradictions remain attributable |
+| 6 / TASK-118 | Extract reusable procedure candidates and connect sourced rapprochements | A candidate beats its declared baseline on reserved cases without a quality regression; citations remain reviewable and negative results are kept |
+| 7 / TASK-119 | Bridge local vision transport to typed decisions and a versioned region contract | Absent targets, invalid regions and uncertain inputs are handled explicitly on labelled examples; video extraction/tracking remains a separate qualification |
+
+TASK-114 builds on TASK-113; TASK-115 uses the runtime observations from TASK-114.
+Later work keeps the existing evidence gates. TASK-116 reuses TASK-094 rather
+than replacing the planner; TASK-117 extends TASK-112; TASK-118 reuses the
+controlled comparisons in TASK-109 and the existing draft PR #38 for sourced
+rapprochements. No draft PR is assumed merged.
+
+The first reconnection example is authored data, not an executed Ultimate Odycer
+session. Runtime adapters, machine reservations, actual model quality, a learned
+predictor and deployment remain separate evidence requirements. Record accepted
+task outcomes, false successes, interventions, elapsed time and measured resource
+use; a successful tool call or a matching report does not establish mission
+completion or savings. Use [V1 gates](docs/V1_GATES.md),
+[measurement records](docs/MEASUREMENT.md),
+[deterministic verification](docs/VERIFICATION.md) and
+[memory execution receipts](docs/MEMORY_EXECUTION.md).
+
 ## Phase 0 — Foundation and shadow routing
 Goal: prove cheaper routes can be proposed without changing real execution.
 

@@ -21,6 +21,9 @@ You can use it to:
 **Stable library: [0.5.1](https://github.com/zedarvates/parcimonia/releases/tag/v0.5.1).
 Separate local Codex plugin: 0.4.1. No automatic production routing is enabled.**
 
+The separate local plugin has a [0.4.3 source candidate](plugins/parcimonia-local/README.md)
+with advisory [observation review](docs/VERIFIED_OBSERVATIONS.md).
+
 [Try it](#try-the-stable-demo) · [Capabilities](#available-capabilities) ·
 [Adapt it](#adapt-parcimonia-to-your-own-use) · [Contribute](#contributing)
 
