@@ -163,6 +163,16 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
   - Notes : les rapports fournis restent non attestés ; le scénario reconnexion est authoré. `capacity=None` conserve le comportement historique et ne vaut pas admission matérielle. Une route CPU peut déclarer explicitement un besoin VRAM nul.
 
   - Vérification du 02/11 : Python 3.12.14, 4 165 tests et 100 sous-tests réussis ; découverte et appels stdio isolés ; défaut d’arrondi détecté en revue indépendante puis corrigé et contrôlé sur 864 cas numériques. Source candidate non fusionnée, qualification du consommateur réel et installation Codex séparées.
+  - CI du 02/11 : PR #40 head `9d128432eec1df96ed56d10214f79b919a0b2a5f`, Linux et Windows Python 3.10/3.14 réussis. Le correctif d’export via lien pendant reprend la PR #36 ; la PR #40 reste non fusionnée.
+
+- [ ] TASK-114 [P1] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Relier état réel, disponibilité des capacités et réservation de ressources existante
+  - Dépendances : TASK-113, TASK-G4
+  - Critères : snapshots datés par poste et versions de capacités ; disparition d'un outil détectée ; ancienne observation revalidée ; collision entre deux consommateurs d'un même slot lourd refusée.
+  - Notes : réutiliser le registre, l'admission locale et le mécanisme de réservation de l'hôte ; un avis de capacité ne constitue pas un bail. Tester d'abord un hôte, puis la portée multi-postes réellement raccordée.
+
+  - Avancement du 02/11 : premier préflight de bibliothèque en préparation sur `feat/runtime-preflight-20261102`, basé sur la PR #40 ; réemploi du filtre de profils, du contrôle d’observations et du conseiller local. Guide `docs/RUNTIME_PREFLIGHT.md`. Aucun bail acquis ; la réservation atomique et la qualification réelle restent requises.
+  - Vérification du raccord : Python 3.12.14, 4 200 tests et 100 sous-tests réussis ; 34 tests du nouveau module, revue indépendante et corrections des contradictions de ressources et de la date des mesures. Le critère d’exclusion entre deux consommateurs reste ouvert.
 
 - [ ] TASK-060 [P3] [difficulté: compact] [class: feature] [horizon: near]
   - Intitulé : Round-trip WebBrain MCP réel en ASK only
@@ -171,11 +181,6 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## À faire (Backlog)
 
-- [ ] TASK-114 [P1] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
-  - Intitulé : Relier état réel, disponibilité des capacités et réservation de ressources existante
-  - Dépendances : TASK-113, TASK-G4
-  - Critères : snapshots datés par poste et versions de capacités ; disparition d'un outil détectée ; ancienne observation revalidée ; collision entre deux consommateurs d'un même slot lourd refusée.
-  - Notes : réutiliser le registre, l'admission locale et le mécanisme de réservation de l'hôte ; un avis de capacité ne constitue pas un bail. Tester d'abord un hôte, puis la portée multi-postes réellement raccordée.
 
 - [ ] TASK-115 [P1] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Qualifier une boucle complète sur un parcours réel de reconnexion du consommateur
