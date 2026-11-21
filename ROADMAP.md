@@ -51,6 +51,13 @@ admission when VRAM is unknown. Implementation is prepared on
 checks. Real consumer and host qualification remain pending. A candidate local-plugin surface is
 prepared separately from installed plugins; it grants no action permission.
 
+A library-only extension compares the next declared probes through caller-owned
+hypothesis partitions and exact estimate budgets. It retains information,
+latency and cost tradeoffs rather than assigning implicit weights; unmodelled
+outcomes, unknown constrained costs and current failures prevent selection.
+See [observation probe planning](docs/OBSERVATION_PROBE_PLANNING.md). Its model
+does not establish real test quality, information gain or savings.
+
 | Order / task | Increment using existing components | Observable exit criterion |
 | --- | --- | --- |
 | 1 / TASK-113 | Observation freshness and identity checks, explicit capacity admission, advisory plugin tool | Offline behavior and real stdio discovery/call tests reject old or incompatible evidence, preserve later failure and tied conflicts, and never return action authorization |

@@ -164,6 +164,8 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
   - Vérification du 02/11 : Python 3.12.14, 4 165 tests et 100 sous-tests réussis ; découverte et appels stdio isolés ; défaut d’arrondi détecté en revue indépendante puis corrigé et contrôlé sur 864 cas numériques. Source candidate non fusionnée, qualification du consommateur réel et installation Codex séparées.
   - CI du 02/11 : PR #40 head `9d128432eec1df96ed56d10214f79b919a0b2a5f`, Linux et Windows Python 3.10/3.14 réussis. Le correctif d’export via lien pendant reprend la PR #36 ; la PR #40 reste non fusionnée.
+  - Prolongement du 02/11 : comparateur consultatif de sondes préparé sur `feat/observation-probe-planning-20261102`, basé sur la PR #40. Modèle d'hypothèses lié à la requête, résultats attendus, plafonds exacts et front information/latence/coût ; une issue non modélisée ou un coût inconnu sous plafond empêche la sélection de la sonde concernée, un échec actuel bloque toute proposition. Guide `docs/OBSERVATION_PROBE_PLANNING.md`. Qualité des sondes et gain réel restent à mesurer sur le consommateur.
+  - Qualification du comparateur : Python 3.12.14, 4 228 tests et 100 sous-tests réussis, dont 62 nouveaux cas ; oracle indépendant sur 300 cas générés, démonstrateur normal et `-O`. Amplification du parcours par objets Python partagés corrigée et conservée dans une régression avec délai maximal ; bornes valides contrôlées. Aucun test métier, modèle ou hôte réel exécuté par ce comparateur, aucune activation.
 
 - [ ] TASK-114 [P1] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Relier état réel, disponibilité des capacités et réservation de ressources existante
