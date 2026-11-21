@@ -307,7 +307,10 @@ def git_delta(root, base):
                 spans.append({"before_start": int(a), "before_count": int(b or 1),
                               "start": int(c), "count": int(d or 1)})
             seen_hunk = False
-            for line in decoded.splitlines():
+            # Git delimits patch records with LF. Unicode separators inside
+            # source text are part of the same record.
+            for line in decoded.split("\n"):
+                line = line.removesuffix("\r")
                 if HUNK.match(line):
                     seen_hunk = True
                 elif seen_hunk and line.startswith(("+", "-")):
