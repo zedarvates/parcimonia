@@ -140,6 +140,13 @@ local Codex. [Codex hook configuration](https://learn.chatgpt.com/docs/hooks).
 | Local text/vision clients | Explicit, bounded requests; model quality and hardware readiness require local evaluation | [Text](docs/LOCAL_LLM_EUREKAI.md) · [Vision](docs/LOCAL_VISION.md) |
 | Similar and complementary asset relations | Added on `main` **after 0.5.1**; declared references, not certified geometric compatibility | [Relations](docs/ASSET_RELATIONS.md) |
 
+[Inception discussion continuity](docs/INCEPTION.md) adds an opt-in durable
+journal, fresh-session checkpoints and explicit event exchange between replicas.
+It preserves failed attempts, uncertain causes and concurrent decisions, and
+reuses the knowledge crosswalk for unverified link candidates. The CLI exchanges
+bounded files; a live cloud/local transport and host slash command are separate
+integrations.
+
 The [detailed capability and evidence notes](docs/CAPABILITIES.md) retain the
 per-mechanism limits, experiments and Python examples. Separate active execution
 APIs require a policy, budgets, a sandbox and a kill switch; their presence does
