@@ -1,6 +1,6 @@
 # Parcimonia Kanban Backlog
 
-Dernière mise à jour : 2026-09-21T00:00:00Z
+Dernière mise à jour : 2026-11-02 (chantier observations vérifiables)
 Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## Terminé
@@ -155,12 +155,67 @@ Mode : Local-First / Résilient (compatible Kanboard Neo et autonome)
 
 ## En cours
 
+- [ ] TASK-113 [P1] [difficulté: compact] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Raccorder observations fraîches, admission locale explicite et outil consultatif du plugin
+  - Dépendances : TASK-G2, TASK-062, TASK-063
+  - Critères : lier tâche/révision, source/révision, hash d'entrée et vérificateur/version ; conserver preuve manquante, périmée, négative ou contradictoire ; proposer une prochaine observation sans l'exécuter ; refuser une exigence VRAM positive si la capacité est inconnue.
+  - Avancement du 02/11 : implémentation et qualification en cours sur `feat/verified-observations-20261102` ; guide `docs/VERIFIED_OBSERVATIONS.md` et outil `parcimonia_local_observations` candidat. Aucun résultat de test n'est présumé, aucune installation ni activation.
+  - Notes : les rapports fournis restent non attestés ; le scénario reconnexion est authoré. `capacity=None` conserve le comportement historique et ne vaut pas admission matérielle. Une route CPU peut déclarer explicitement un besoin VRAM nul.
+
+  - Vérification du 02/11 : Python 3.12.14, 4 165 tests et 100 sous-tests réussis ; découverte et appels stdio isolés ; défaut d’arrondi détecté en revue indépendante puis corrigé et contrôlé sur 864 cas numériques. Source candidate non fusionnée, qualification du consommateur réel et installation Codex séparées.
+  - CI du 02/11 : PR #40 head `9d128432eec1df96ed56d10214f79b919a0b2a5f`, Linux et Windows Python 3.10/3.14 réussis. Le correctif d’export via lien pendant reprend la PR #36 ; la PR #40 reste non fusionnée.
+  - Prolongement du 02/11 : comparateur consultatif de sondes préparé sur `feat/observation-probe-planning-20261102`, basé sur la PR #40. Modèle d'hypothèses lié à la requête, résultats attendus, plafonds exacts et front information/latence/coût ; une issue non modélisée ou un coût inconnu sous plafond empêche la sélection de la sonde concernée, un échec actuel bloque toute proposition. Guide `docs/OBSERVATION_PROBE_PLANNING.md`. Qualité des sondes et gain réel restent à mesurer sur le consommateur.
+  - Qualification du comparateur : Python 3.12.14, 4 228 tests et 100 sous-tests réussis, dont 62 nouveaux cas ; oracle indépendant sur 300 cas générés, démonstrateur normal et `-O`. Amplification du parcours par objets Python partagés corrigée et conservée dans une régression avec délai maximal ; bornes valides contrôlées. Aucun test métier, modèle ou hôte réel exécuté par ce comparateur, aucune activation.
+
+- [ ] TASK-114 [P1] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Relier état réel, disponibilité des capacités et réservation de ressources existante
+  - Dépendances : TASK-113, TASK-G4
+  - Critères : snapshots datés par poste et versions de capacités ; disparition d'un outil détectée ; ancienne observation revalidée ; collision entre deux consommateurs d'un même slot lourd refusée.
+  - Notes : réutiliser le registre, l'admission locale et le mécanisme de réservation de l'hôte ; un avis de capacité ne constitue pas un bail. Tester d'abord un hôte, puis la portée multi-postes réellement raccordée.
+
+  - Avancement du 02/11 : premier préflight de bibliothèque en préparation sur `feat/runtime-preflight-20261102`, basé sur la PR #40 ; réemploi du filtre de profils, du contrôle d’observations et du conseiller local. Guide `docs/RUNTIME_PREFLIGHT.md`. Aucun bail acquis ; la réservation atomique et la qualification réelle restent requises.
+  - Vérification du raccord : Python 3.12.14, 4 200 tests et 100 sous-tests réussis ; 34 tests du nouveau module, revue indépendante et corrections des contradictions de ressources et de la date des mesures. Le critère d’exclusion entre deux consommateurs reste ouvert.
+  - CI du préflight : PR #41 head `c7133c0d030c6acd552d2315668cd0cd3608ac09`, Linux et Windows Python 3.10/3.14 réussis ; proposition non fusionnée.
+  - Raccord RAM du 02/11 : attente privée ancrée sur le préflight puis contrôle pur du snapshot atomique du garde existant, préparés sur `feat/host-reservation-receipts-20261102`, basé sur la PR #41. Guide `docs/HOST_MEMORY_RECEIPTS.md` ; aucune acquisition effectuée par la bibliothèque, aucune propriété/expiration/exclusivité native inventée.
+  - Vérification des reçus : Python 3.12.14, 4 259 tests et 100 sous-tests réussis, dont 59 cas du nouveau contrôle. Revue indépendante : précision temporelle tronquée et snapshot antérieur au préflight corrigés. Démonstrateur normal et `-O` avec le vrai backend épinglé de la PR Botte #166 : absent, réservé, puis libéré dans des fichiers temporaires ; capacité construite. Test concurrent natif existant réussi avec quatre processus, une admission et 4 Gio comptés. La PR fournisseur n'est pas fusionnée ; matériel réel, slot lourd, reprise et portée multi-postes restent à qualifier.
+
 - [ ] TASK-060 [P3] [difficulté: compact] [class: feature] [horizon: near]
   - Intitulé : Round-trip WebBrain MCP réel en ASK only
   - Dépendances : TASK-054
   - Notes : observation-only, loopback, pas d'ACT
 
 ## À faire (Backlog)
+
+
+- [ ] TASK-115 [P1] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Qualifier une boucle complète sur un parcours réel de reconnexion du consommateur
+  - Dépendances : TASK-114, TASK-G1, TASK-G2
+  - Critères : événements client et serveur liés à leurs versions ; interruption puis reprise du parcours ; absence de double action ; échec et issue inconnue conservés ; possibilité réelle de reprendre l'activité contrôlée séparément du code retour.
+  - Notes : Ultimate Odycer est le premier consommateur proposé par l'auteur ; son scénario et ses fichiers appartiennent au dépôt consommateur. Préparer l'adaptateur ici, puis qualifier sur accès réel disponible ; les exemples authorés ne ferment pas cette carte.
+
+- [ ] TASK-116 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Étendre les contrats de plans aux séquences, durées et alternatives comparables
+  - Dépendances : TASK-094, TASK-115
+  - Critères : vérifier préconditions, dépendances, unités, durées et contraintes dures ; rejeter un plan rapide incompatible ; conserver le front de compromis et les préférences fournies.
+  - Notes : prolonger la faisabilité et le vérificateur de plans existants ; aucune nouvelle couche d'orchestration ni scalarisation cachée des contraintes.
+
+- [ ] TASK-117 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Relier transitions, mémoire temporelle et invalidation des preuves réutilisées
+  - Dépendances : TASK-112, TASK-115
+  - Critères : état/action/effet observé et temps liés à un épisode versionné ; contradiction et effet différé préservés ; changement de source, entrée, politique ou vérificateur invalide la réutilisation affectée.
+  - Notes : réutiliser les records et checkpoints ; une corrélation n'est pas une cause démontrée, et le gate géométrique actuel ne devient pas un prédicteur appris.
+
+- [ ] TASK-118 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Extraire des recettes candidates évaluées et relier les rapprochements sourcés
+  - Dépendances : TASK-109, TASK-117
+  - Critères : recettes versionnées avec conditions d'application ; comparaison sur cas réservés, qualité et coût complet ; régression refusée ; rapprochement avec deux passages sources et petit essai explicite.
+  - Notes : reprendre le pilote existant PR #38 (brouillon au point de départ), pas un nouvel index parallèle ; admission, intégration et promotion restent distinctes. Aucun apprentissage de poids ou gain n'est présumé.
+
+- [ ] TASK-119 [P2] [difficulté: raisonnement] [class: feature] [horizon: medium] [goal: GOAL-PARCIMONIA]
+  - Intitulé : Relier le transport vision aux décisions typées et aux régions d'objets
+  - Dépendances : TASK-113, TASK-074
+  - Critères : contrat versionné pour choix/score/oui-non et région ; présence contrôlée avant exploitation d'une boîte ; coordonnées invalides et incertitude conservées ; essai sur images annotées réservées.
+  - Notes : réutiliser LocalVision, Reflex, catalogue et reçus ; une boîte OCR de mots n'est pas une détection d'objet. Extraction de frames, suivi temporel et export vidéo restent un lot distinct à qualifier.
 
 - [ ] TASK-109 [P2] [difficulté: raisonnement] [class: feature] [horizon: near] [goal: GOAL-PARCIMONIA]
   - Intitulé : Comparaison contrôlée des routes Astra/LLM, jugement Jev-like, Needle-like, règle et KNN sur les mêmes tâches

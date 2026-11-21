@@ -18,5 +18,10 @@
     "source": "src/tiberium_ai/local_compute.py",
     "project": "parcimonia",
     "sha256": "c2f8c77011e55ad66ce3f784bb94bcd98bab279856eb3b2cd6a796531c415c49"
+  },
+  "_vendor/observation_review.py": {
+    "source": "src/tiberium_ai/observation_review.py",
+    "project": "parcimonia",
+    "sha256": "be4cda2c94cc80ecee79813567b757c000cfbeabd60946966a9f368f9d00bc16"
   }
 }

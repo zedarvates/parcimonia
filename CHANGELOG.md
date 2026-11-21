@@ -1,5 +1,39 @@
 # Changelog
 
+## Unreleased
+
+- Compare declared observation probes through complete hypothesis partitions,
+  exact estimate budgets and an explicit information/latency/cost frontier.
+  Unknown costs remain incomparable; unmodelled outcomes and current failures
+  prevent selection. This library-only advice does not execute a probe or
+  establish measured information gain or savings.
+- Bind a private host memory expectation to an externally held preflight hash,
+  then review the existing provider's atomic snapshot without reserving memory.
+  Check exact budgets, aggregate counters, native headroom and causal freshness;
+  redact native keys and retain unavailable state as unknown. Exercise the
+  pinned candidate backend with temporary files and authored capacity.
+- Compose pinned-route runtime preflight from the existing profile filter,
+  current health reports and local compute advisor. Preserve explicit GPU/heavy
+  requirements, unknown declarations and exact resource/measurement ages.
+  Eligibility only prepares host-owned reservation; it grants no action or lease.
+- Review task observations against exact task/source/input/verifier identities and
+  caller-selected freshness limits. Retain recent failure, unknown outcomes,
+  stale reports and simultaneous conflicts; propose one declared observation
+  without executing it or treating supplied reports as independently verified.
+- Refuse an explicit local-capacity proposal when positive VRAM requirements meet
+  unknown capacity. Explicit zero-VRAM routes still require a concurrent slot.
+- Expose observation review in the separate Parcimonia Local 0.4.3 source
+  candidate, with a byte-matched vendored implementation and stdio tests.
+- Track the broader verified-mission work as TASK-113 through TASK-119 in the
+  existing backlog. Installed plugins and published release archives are unchanged.
+
+## 0.5.2
+
+- Add a local evidence workflow for checkpoints, repository deltas, Git diffs,
+  pytest receipts with optional per-test coverage, and bounded log excerpts.
+- Reserve exact files and Python declarations before lexical retrieval. Keep
+  static evidence distinct from test execution and refuse stale receipts.
+
 ## 0.5.1 — 2026-10-31
 
 - Publish the combined main tree as 0.5.1. Build canonical release archives once,

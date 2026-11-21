@@ -7,6 +7,7 @@ from _vendor.compute_advisor import advise, TASKS
 from _vendor.hardware import observe
 from _vendor.mcp_runtime import Server, main, object_args
 from _vendor.context_selection import ContextSelector
+from _vendor.observation_review import review_observations
 
 SELECTOR = ContextSelector()
 
@@ -25,6 +26,11 @@ def context(args):
     object_args(args, ("query", "documents"), ("top_k", "max_selected_bytes"))
     return SELECTOR.select(args["query"], args["documents"], top_k=args.get("top_k", 5),
                           max_selected_bytes=args.get("max_selected_bytes", 524288))
+
+
+def observations(args):
+    object_args(args, ("request",))
+    return review_observations(args["request"])
 
 
 NUMBER = {"type": "number", "minimum": 0}
@@ -53,6 +59,22 @@ CANDIDATE = obj({
     "measurement": {"anyOf": [MEASUREMENT, {"type": "null"}]}})
 ANNOTATIONS = {"readOnlyHint": True, "destructiveHint": False,
                "idempotentHint": True, "openWorldHint": False}
+REQUIREMENT = obj({
+    "id": TEXT, "source_id": TEXT, "source_revision": TEXT, "input_sha256": SHA,
+    "verifier_id": TEXT, "verifier_version": TEXT, "max_age_seconds": NUMBER})
+OBSERVATION = obj({
+    "id": TEXT, "requirement_id": TEXT, "task_id": TEXT, "task_revision": TEXT,
+    "source_id": TEXT, "source_revision": TEXT, "input_sha256": SHA,
+    "verifier_id": TEXT, "verifier_version": TEXT, "observed_at": NUMBER,
+    "outcome": {"enum": ["pass", "fail", "unknown"]}})
+OBSERVATION_REQUEST = obj({
+    "task_id": TEXT, "task_revision": TEXT,
+    "requirements": {"type": "array", "minItems": 1, "maxItems": 64, "items": REQUIREMENT},
+    "observations": {"type": "array", "maxItems": 128, "items": OBSERVATION},
+    "probes": {"type": "array", "maxItems": 32, "items": obj({
+        "id": TEXT, "requirement_ids": {"type": "array", "minItems": 1,
+            "maxItems": 64, "uniqueItems": True, "items": TEXT},
+        "estimated_latency_ms": NULL_NUMBER})}})
 TOOLS = [
     {"name": "parcimonia_local_plan", "title": "Proposer une route de calcul",
      "description": "Comparer au plus 32 routes avec ressources fraîches et mesures liées au matériel et à la charge. Inclut démarrage, qualité et réserves. Rapports fournis non attestés ; proposition seulement, aucune exécution.",
@@ -80,9 +102,14 @@ TOOLS = [
                          "top_k": {"type": "integer", "minimum": 1, "maximum": 16},
                          "max_selected_bytes": {"type": "integer", "minimum": 1, "maximum": 16777216}},
                         ("top_k", "max_selected_bytes")), "annotations": ANNOTATIONS},
+    {"name": "parcimonia_local_observations", "title": "Contrôler les observations d'une tâche",
+     "description": "Comparer des observations fournies aux exigences exactes d'une tâche : dates, versions, empreintes et identité du vérificateur. Signaler manques, péremptions, contradictions et échecs récents ; proposer une observation suivante par couverture et latence déclarée. Rapports hôte non attestés, aucune action autorisée ou exécutée.",
+     "inputSchema": obj({"request": OBSERVATION_REQUEST}),
+     "annotations": {**ANNOTATIONS, "idempotentHint": False}},
 ]
 
 if __name__ == "__main__":
     raise SystemExit(main(Server("parcimonia-local", TOOLS, {
         "parcimonia_local_plan": plan, "parcimonia_local_hardware": hardware,
-        "parcimonia_local_context": context}, version="0.4.1")))
+        "parcimonia_local_context": context,
+        "parcimonia_local_observations": observations}, version="0.4.3")))
