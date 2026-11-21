@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Compare declared observation probes through complete hypothesis partitions,
+  exact estimate budgets and an explicit information/latency/cost frontier.
+  Unknown costs remain incomparable; unmodelled outcomes and current failures
+  prevent selection. This library-only advice does not execute a probe or
+  establish measured information gain or savings.
 - Bind a private host memory expectation to an externally held preflight hash,
   then review the existing provider's atomic snapshot without reserving memory.
   Check exact budgets, aggregate counters, native headroom and causal freshness;
