@@ -90,10 +90,10 @@ For automatic assessment at prompt submission, configure a lifecycle hook in
 your agent host (harness). You can still call the tools manually. This example uses the local assessor from the companion
 [Botte Secrète](https://github.com/zedarvates/botte-secrete) project.
 
-1. Use a reviewed Botte Secrète source checkout with Python 3.10+. In the project
-   you want to automate, merge this example into `.codex/hooks.json`. Replace the
-   example paths with absolute paths to that checkout and use the Python command
-   available to Codex.
+1. Use Python 3.10+ and a reviewed Botte Secrète checkout that supports
+   `hook.py --codex`. In the project you want to automate, merge this example
+   into `.codex/hooks.json`. Use absolute paths to that checkout and the Python
+   command available to Codex.
 
 ```json
 {
@@ -103,8 +103,8 @@ your agent host (harness). You can still call the tools manually. This example u
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -X utf8 /opt/botte-secrete/skills/preflight/hook.py",
-            "commandWindows": "python -X utf8 C:/tools/botte-secrete/skills/preflight/hook.py",
+            "command": "python3 -X utf8 /opt/botte-secrete/skills/preflight/hook.py --codex",
+            "commandWindows": "python -X utf8 C:/tools/botte-secrete/skills/preflight/hook.py --codex",
             "timeout": 5
           }
         ]
