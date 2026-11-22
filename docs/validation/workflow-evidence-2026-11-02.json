@@ -1,0 +1,107 @@
+{
+  "schema": "parcimonia.workflow-evidence-validation/v1",
+  "date": "2026-11-02",
+  "base_commit": "79ff14ccf43cd74c904ab359c986ffd7c894da14",
+  "branch": "feat/verified-workflow-20261102",
+  "scope": "Opt-in workflow evidence helpers, CLI integration and recipe replay; no new orchestrator.",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux",
+    "architecture": "x86_64",
+    "interpreter": "/workspace/scratch/46c28779b05a/test-env/bin/python",
+    "model_calls": 0,
+    "runtime_activation": false
+  },
+  "validation": [
+    {
+      "command": "PYTHONPATH=src /workspace/scratch/46c28779b05a/test-env/bin/python -m pytest -q",
+      "result": "passed",
+      "passed": 4174,
+      "subtests_passed": 34,
+      "new_tests": 40,
+      "duration_seconds": 28.86,
+      "warning": "External AnyIO pytest plugin: PytestRemovedIn10Warning on CallSpec2 alias.",
+      "snapshot_note": "Executed after final workflow/replay bodies and docs. Public replay exports in __init__.py were added after suite launch/test collection; the final export delta was then qualified separately below."
+    },
+    {
+      "command": "PYTHONPATH=src /workspace/scratch/46c28779b05a/test-env/bin/python -m pytest -q tests/test_workflow_evidence.py::test_cli_commands_are_wired_without_model_calls tests/test_agent_recipes.py::test_rules_cli_emits_machine_readable_hook_result",
+      "result": "passed",
+      "passed": 2,
+      "duration_seconds": 0.15,
+      "snapshot_note": "Executed on the final code including the public replay exports."
+    },
+    {
+      "command": "PYTHONPATH=src /workspace/scratch/46c28779b05a/test-env/bin/python -",
+      "result": "passed",
+      "snapshot_note": "Final public import smoke check after the export delta.",
+      "stdin_python": "from tiberium_ai.agent_recipes import RecipeEpisode, RecipeRevision, replay_recipe_candidate, plan_workflow_review, summarize_workflow_reviews, capture_workflow_event, summarize_acceptance_cost\nprint(\"Public workflow and replay imports: OK\")\n"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed",
+      "scope": "Tracked diff; new-file contents additionally passed Python collection/tests."
+    }
+  ],
+  "independent_review": {
+    "reviewer_task": "/root/inspect_parcimonia/recipe_replay",
+    "scope": "workflow.py, workflow evidence tests, CLI and exports; root additionally reviewed arithmetic/cutoff behavior.",
+    "provider_independence_certified": false,
+    "findings_and_corrections": [
+      {
+        "id": "WF-REV-1",
+        "finding": "Caller event-list order could hide earlier costs after a selected acceptance index.",
+        "correction": "Cutoff derives from receipt finish timestamps and operation latency; reordered inputs cannot hide costs; overlapping ranges keep full totals unknown.",
+        "status": "corrected_and_regression_tested"
+      },
+      {
+        "id": "WF-REV-2",
+        "finding": "A verified intermediate research/review output could be selected as final acceptance.",
+        "correction": "Acceptance requires the current scope, positive verifier verdict and verification phase.",
+        "status": "corrected_and_regression_tested"
+      },
+      {
+        "id": "WF-REV-3",
+        "finding": "A foreign report could be relabelled with a new plan hash in its outer attempt.",
+        "correction": "Reopened bounded JSON report must match internal plan hash and reviewer, as well as exact file hash.",
+        "status": "corrected_and_regression_tested"
+      },
+      {
+        "id": "WF-REV-4",
+        "finding": "High impact alone could incorrectly report sensitive_paths as the reason.",
+        "correction": "Sensitive-path detection is retained separately from the generic system_design fallback.",
+        "status": "corrected_and_regression_tested"
+      },
+      {
+        "id": "WF-REV-5",
+        "finding": "Token total could stay complete during an ambiguous acceptance overlap; finite arithmetic inputs could overflow during aggregation.",
+        "correction": "Tokens remain unknown for overlaps/time-range ambiguity; overflowing costs and latency remain null with explicit reason codes.",
+        "status": "corrected_and_regression_tested"
+      }
+    ]
+  },
+  "limits": {
+    "real_task_cost": null,
+    "production_saving_measured": false,
+    "target_machine_validation": false,
+    "model_calls": 0,
+    "plugin_installed_or_activated": false,
+    "auto_promotion": false,
+    "semantic_findings_certified": false,
+    "receipt_authenticity": "Caller-supplied captures checked for consistency; not signed execution attestations.",
+    "clock_sync": "Caller must establish synchronization before comparing multi-host receipt times."
+  },
+  "files_sha256": {
+    "docs/AGENT_WORKFLOW.md": "5603c654fc56971eae916bb41619ffd496d42cb65d756091ffc95de2c4bf1fb5",
+    "docs/RECIPE_REPLAY.md": "2779206a07b7296d6261d21155b9566c5703418adcee2b7ffdfdfdee11207898",
+    "docs/WORKFLOW_EVIDENCE.md": "9ef84981bd36f46edf0153544c82e6899c46c04984ab2584e69472a67199ba4a",
+    "src/tiberium_ai/agent_recipes/__init__.py": "2e1d10ac5d91c60c69ba484913787c36c8598774364926005a3d6cab9a812e10",
+    "src/tiberium_ai/agent_recipes/__main__.py": "dae0b2a02c4a759a86e1be5ccc67745fb88b49feddf4987b4d5ac9e2cffff531",
+    "src/tiberium_ai/agent_recipes/replay.py": "e749b8c5d801bb2da7380f2b0333398815d21a9d87c8e71adf9324e8df405a33",
+    "src/tiberium_ai/agent_recipes/workflow.py": "48f82efc5aa8137564a54bb567b52829fc3bc7875c2ca412cc19e170d2deb0f4",
+    "tests/test_recipe_replay.py": "a833c89eb3b5c8624954a5780c42cbaea146c61b920fcb7e4de6564d75065ba5",
+    "tests/test_workflow_evidence.py": "772e437179a7cdd171047a5e8827a79cb554b8a1c4fe5213c02a8eddfde1fa35"
+  },
+  "snapshot_sha256": "351610e0a9c4a292822772dc7eac5bac5f092f4b50fb310c3f371230b3c7e18c",
+  "snapshot_definition": "SHA-256 of compact sorted UTF-8 JSON files_sha256 mapping; this report excludes itself.",
+  "code_frozen": true
+}

@@ -44,6 +44,15 @@ Record the chosen mechanism, verification performed and unresolved prerequisites
 in the normal work report. Do not infer token, latency or cost savings from tool
 use alone; distinguish measured outcomes from estimates and unavailable metrics.
 
+For an existing implementation workflow, the optional
+[review and cost evidence helpers](WORKFLOW_EVIDENCE.md) propose review effort,
+retain failed/stale review attempts, re-read a report on the exact scope, and
+aggregate supplied captures through an accepted result. The JSON CLI commands
+are `review-plan`, `review-status` and `acceptance-cost`; they do not launch work,
+lower the existing shadow triage's depth or authorize a release. Evaluate a
+recurring correction with the [recipe replay adapter](RECIPE_REPLAY.md) on
+separate historical and held-out episodes before considering adoption.
+
 ## Shipping this workflow in another repository or plugin
 
 Put the entry rule in that repository's committed `AGENTS.md` (or its documented
