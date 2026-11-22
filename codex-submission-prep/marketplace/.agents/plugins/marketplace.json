@@ -1,0 +1,20 @@
+{
+  "name": "parcimonia-submission-local",
+  "interface": {
+    "displayName": "Parcimonia submission review"
+  },
+  "plugins": [
+    {
+      "name": "parcimonia-local",
+      "source": {
+        "source": "local",
+        "path": "./plugins/parcimonia-local"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
